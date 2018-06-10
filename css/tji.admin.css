@@ -1,0 +1,13 @@
+/*---------------------------*/
+/* WordPress Admin Styles
+/*---------------------------*/
+
+.viz-chart-container {
+	padding: 1em;
+	text-align: center;
+}
+	
+.viz-chart-container img {
+	max-width: 800px;
+	width: 80%;
+}
