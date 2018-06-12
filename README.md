@@ -24,26 +24,22 @@ The following is an overview of the core files for the TJI website, including a 
 
 Version 1.0 of the website stylesheets are located in two areas within the theme directory. The majority of the styles have been written using the SASS preprocessor.
 
-* (/sass/tji/)[https://github.com/texas-justice-initiative/website/tree/master/sass/tji] which contains site-wide styles and will eventually contain all styles.
-* (/tji-data.css)[https://github.com/texas-justice-initiative/website/tree/master/tji-data.css] for additional styles (primarily the homepage slider).
+* [/sass/tji/](https://github.com/texas-justice-initiative/website/tree/master/sass/tji) which contains site-wide styles and will eventually contain all styles.
+* [/tji-data.css](https://github.com/texas-justice-initiative/website/tree/master/tji-data.css) for additional styles (primarily the homepage slider).
 
 ### JavaScript
 
-All JavaScript code it stored within (/js/)[https://github.com/texas-justice-initiative/website/tree/master/js]. The following outline core JavaScript files for the TJI website.
+All JavaScript code it stored within [/js/](https://github.com/texas-justice-initiative/website/tree/master/js). The following outline core JavaScript files for the TJI website.
 
-* (tji.js)[https://github.com/texas-justice-initiative/website/tree/master/js/tji.js] - General JavaScript which is used site-wide and covers simple functionality.
-* (tji-datasets-explore.js)[https://github.com/texas-justice-initiative/website/tree/master/js/tji-datasets-explore.js] - Contains JavaScript code used on the Explore the Data page to pull from data.world and create charts.
-* (tji-datasets-home.js)[https://github.com/texas-justice-initiative/website/tree/master/js/tji-datasets-home.js] - Contains JavaSCript code used on the Homepage to pull from data.world and create charts.
+* [tji.js](https://github.com/texas-justice-initiative/website/tree/master/js/tji.js) - General JavaScript which is used site-wide and covers simple functionality.
+* [tji-datasets-explore.js](https://github.com/texas-justice-initiative/website/tree/master/js/tji-datasets-explore.js) - Contains JavaScript code used on the Explore the Data page to pull from data.world and create charts.
+* [tji-datasets-home.js](https://github.com/texas-justice-initiative/website/tree/master/js/tji-datasets-home.js) - Contains JavaSCript code used on the Homepage to pull from data.world and create charts.
 
 ### Page Templates
 
 The following are important page templates which contain the html structure for various pages.
 
-* (header.php)[https://github.com/texas-justice-initiative/website/tree/master/sass/tji/header.php] - Loaded on all site pages, contains links to outside sources (Google Fonts, etc.), site meta information, and header navigation structure.
-* (footer.php)[https://github.com/texas-justice-initiative/website/tree/master/sass/tji/footer.php] - Loaded on all site pages, contains JavaScript code which can be loaded after page content, and footer structure. 
-* (template-frontpage.php)[https://github.com/texas-justice-initiative/website/tree/master/sass/tji/template-frontpage.php] - The template file used to display content on the homepage.
-* (page-data.php)[https://github.com/texas-justice-initiative/website/tree/master/sass/tji/page-data.php] - The template file used to display content on the Explore the Data page.
-
-## Additional Information
-
-This guide is incomplete and further information about the theme structure and usage will be added soon.
+* [header.php](https://github.com/texas-justice-initiative/website/tree/master/sass/tji/header.php) - Loaded on all site pages, contains links to outside sources (Google Fonts, etc.), site meta information, and header navigation structure.
+* [footer.php](https://github.com/texas-justice-initiative/website/tree/master/sass/tji/footer.php) - Loaded on all site pages, contains JavaScript code which can be loaded after page content, and footer structure. 
+* [template-frontpage.php](https://github.com/texas-justice-initiative/website/tree/master/sass/tji/template-frontpage.php) - The template file used to display content on the homepage.
+* [page-data.php](https://github.com/texas-justice-initiative/website/tree/master/sass/tji/page-data.php) - The template file used to display content on the Explore the Data page.
