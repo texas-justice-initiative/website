@@ -66,9 +66,19 @@ to something like
 docker-compose down
 docker-compose up
 ```
-
 Open http://localhost:8080 and behold! (Note: your may have to hard-refresh your browser page, if it has cached any of the links).
 
+9. Get ready to GitHub
+You just copied the code from the server, but you want to be using the code from this repo to develop your changes. This repo represents the `/root/tji/www/html/wp-content/themes/tji/` subfolder of the full install. So you want to remove that from the files you just copied, and clone this repo instead. E.g.
+```
+cd root/tji/www/html/wp-content/themes/
+rm -rf tji
+git clone git@github.com:texas-justice-initiative/website.git
+mv website tji
+cd tji
+```
+
+10. Now you can git branch/merge/push/pull/twerk as usual
 
 ## WordPress File Hierarchy
 
