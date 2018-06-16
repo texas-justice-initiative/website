@@ -10,7 +10,7 @@
 get_header();
 
 // Jen's filter sidebar
-get_template_part( 'template-parts/filter-panel' );
+// get_template_part( 'template-parts/filter-panel' );
 ?>
 
 	<div id="primary" class="content-area">
@@ -25,6 +25,7 @@ get_template_part( 'template-parts/filter-panel' );
 
 		endwhile; // End of the loop.
 		?>
+
 <script>
 jQuery(document).ready(function() {
 	jQuery.ajax({
