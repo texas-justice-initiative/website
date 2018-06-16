@@ -45,9 +45,9 @@ to something like
 - Now, http://localhost:8080 will point to the wordpress server (running on port 80 of the wordpress container)
 
 6. Run `docker-compose up` -- then open your browser to localhost:8080 and you should see the website!
-7. However... all the links will be broken. We have one more step to fix this -- editing the database slightly.
-- Open SequelPro (or however you like to connect to mysql).
-- Click the '+' button in the bottom left to create a new, saveable connection.
+7. However... all the links will be broken. We have one more step to fix this -- editing the database slightly. We need to change two rows in the `wp_options` table -- `siteurl` and `home` need to have an option_value of `http://localhost:8080/` (or whatever port you used). If you know how to do this on your own, go for it. If you need them, instructions to do it with SequelPro below:
+- Open SequelPro
+- Click the '+' button in the bottom left to create a new, saveable connection
 - Give it a name, e.g. TJI
 - Enter the configuration parameters you see in the `docker-compose.yml` file. Right now, this looks like:
   - Host: 127.0.0.1 (you can type 'localhost' and sequelpro will change this for you to 127.0.0.1)
@@ -58,8 +58,8 @@ to something like
 - Click 'connect'
 - Find the `wp_options` table
 - Click the 'Content' button at the top to display the database content.
-- Find two rows: `siteurl` and `home` and change their option_value to `http://localhost:8080/` (or whatever port you used).
-- Be sure that the changes saved (hit enter after typing, so it doesn't leave the edited field unsaved).
+- Find two rows: `siteurl` and `home` and change their option_value to `http://localhost:8080/` (or whatever port you used)
+- Be sure that the changes saved (hit enter after typing, so it doesn't leave the edited field unsaved)
 
 8. Restart everything:
 ```
