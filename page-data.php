@@ -58,12 +58,12 @@ get_header();
 	});
 
 	function update_charts(data){
-		make_chart_1(data);
-		make_chart_2(data);
+		chart_cdr_by_year(data, "chart1");
+		chart_cdr_race_donut(data, "chart2");
 	}
 
-	function make_chart_1(data) {
-		var ctx = document.getElementById("chart1").getContext('2d');
+	function chart_cdr_by_year(data, eltid) {
+		var ctx = document.getElementById(eltid).getContext('2d');
 		var grouped = _.groupBy(data, 'year');
 		var keys = _.sortBy(_.keys(grouped));
 		var values = _.map(keys, function(k){ return grouped[k].length});
@@ -108,8 +108,8 @@ get_header();
 		});
 	}
 
-	function make_chart_2(data) {
-		var ctx = document.getElementById("chart2").getContext('2d');
+	function chart_cdr_race_donut(data, eltid) {
+		var ctx = document.getElementById(eltid).getContext('2d');
 		var grouped = _.groupBy(data, 'race');
 		delete grouped[null];
 		var keys = _.sortBy(_.keys(grouped));
