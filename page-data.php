@@ -35,13 +35,13 @@ get_header();
 	jQuery(document).ready(function() {
 		console.log("Fetching data from TJI server...");
 		jQuery.ajax({
-			  url: '/cleaned_custodial_death_reports.json',
+			  url: '/cdr_minimal.json',
 			  type: "GET",
 			  dataType: 'json',
 			  success: function getCustodialDeathsTotal(data) {
 			  		console.log('...success!');
 					data_cdr = data;
-				    document.getElementById("cdr-total-count").innerHTML = data_cdr.length + " people have died in custody";
+				    document.getElementById("cdr-total-count").innerHTML = data_cdr.length;
 				    make_chart_1();
 			  },
 			  error: function(err) {
@@ -99,8 +99,9 @@ get_header();
 </script>
 
 
-<p id='cdr-total-count'>
-	WE BE LOADEENG DE DATA...
+<p class="count-summary">
+<span id='cdr-total-count'>...</span>
+total deaths in police custody since 2006
 </p>
 
 <canvas id="chart1" width="400" height="200"></canvas>
