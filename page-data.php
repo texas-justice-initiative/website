@@ -26,80 +26,89 @@ get_header();
 		// endwhile; // End of the loop.
 		?>
 
+
 <script>
-jQuery(document).ready(function() {
-	jQuery.ajax({
-		  url: 'https://api.data.world/v0/sql/tji/deaths-in-custody',
-		  headers: {
-		    'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwcm9kLXVzZXItY2xpZW50OmplbnVkYW4iLCJpc3MiOiJhZ2VudDpqZW51ZGFuOjo4ZTA1MjQ2NS0yNTY1LTRkMTEtODQ3Yy02OTEwNmU4NWI2MDUiLCJpYXQiOjE1MjU2MDg3NDIsInJvbGUiOlsidXNlcl9hcGlfYWRtaW4iLCJ1c2VyX2FwaV9yZWFkIiwidXNlcl9hcGlfd3JpdGUiXSwiZ2VuZXJhbC1wdXJwb3NlIjp0cnVlfQ.gKvhAUP3P4ob2jybpUEumhyZ_4Wugdh7S13Zc0Yn4pTPBBreXceww0b-hPdr_bLMYPOTIl9J4aoUesEP0_04mA',
+	var data_cdr;
+	var COLOR_TJI_BLUE = '#0B5D93'
+
+	// Fetch the CDR data, store in global variable 
+	jQuery(document).ready(function() {
+		console.log("Fetching data from TJI server...");
+		jQuery.ajax({
+			  url: '/cleaned_custodial_death_reports.json',
+			  type: "GET",
+			  dataType: 'json',
+			  success: function getCustodialDeathsTotal(data) {
+			  		console.log('...success!');
+					data_cdr = data;
+				    document.getElementById("cdr-total-count").innerHTML = data_cdr.length + " people have died in custody";
+				    make_chart_1();
+			  },
+			  error: function(err) {
+				  console.log("...data fetch failed! Error:", err);
+			  }
+			});
+	});
+
+	function make_chart_1() {
+		var ctx = document.getElementById("chart1").getContext('2d');
+		var grouped = _.groupBy(data_cdr, 'year');
+		var keys = _.sortBy(_.keys(grouped));
+		var values = _.map(keys, function(k){ return grouped[k].length});
+		var colors = [];
+		for (i = 0; i < keys.length; ++i) {
+			if (i > 0 && i < keys.length - 1) {
+				colors.push(COLOR_TJI_BLUE);
+			} else {
+				colors.push(undefined);
+			}
+		}
+		var myLineChart = new Chart(ctx, {
+		    type: 'bar',
+		    data: {
+		    	labels: keys,
+		    	datasets:[
+		    		{
+			    		data: values,
+			    		fill: false,
+			    		backgroundColor: colors,
+			    		lineTension: 0.1
+		    		}
+		    	]
 		    },
-		  data: {
-		    query: 'SELECT COUNT(*) FROM cleaned_custodial_death_reports'
-		  },
-		  type: "GET",
-		  success: function getCustodialDeathsTotal(data) {
-				let custodialDeathCount = data[0].count.toLocaleString();
-			    document.getElementById("cdr-total-count").innerHTML = custodialDeathCount;
-		  },
-		  failure: function () {
-			  console.log("Ajax request failed!")
-		  }
+		    options: {
+		    	title: {
+		    		display: true,
+		    		text: "Custodial Deaths by Year",
+		    		fontSize: 36,
+		    	},
+    			legend: {
+    				display: false
+    			},
+    			scales: {
+		            yAxes: [{
+		                ticks: {
+		                    beginAtZero:true
+		                }
+		            }]
+		        },
+    		}
 		});
-	
-});
+	}
+
 </script>
 
 
-<div class="count-summary">TOTAL DEATHS IN POLICE CUSTODY SINCE 2005:<br> 
-	<span id="cdr-total-count"></span>
-</div>;
+<p id='cdr-total-count'>
+	WE BE LOADEENG DE DATA...
+</p>
 
-	<!-- Visualization code or link to source can go here -->
-	<div class="chart-container">
-  		<canvas id="explore-page-chart"></canvas>
-  	</div>
-	<script>
-	var ctx = document.getElementById("explore-page-chart").getContext('2d');
-	var myChart = new Chart(ctx, {
-	    type: 'bar',
-	    data: {
-	        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-	        datasets: [{
-	            label: '# of Votes',
-	            data: [12, 19, 3, 5, 2, 3],
-	            backgroundColor: [
-	                'rgba(255, 99, 132, 0.2)',
-	                'rgba(54, 162, 235, 0.2)',
-	                'rgba(255, 206, 86, 0.2)',
-	                'rgba(75, 192, 192, 0.2)',
-	                'rgba(153, 102, 255, 0.2)',
-	                'rgba(255, 159, 64, 0.2)'
-	            ],
-	            borderColor: [
-	                'rgba(255,99,132,1)',
-	                'rgba(54, 162, 235, 1)',
-	                'rgba(255, 206, 86, 1)',
-	                'rgba(75, 192, 192, 1)',
-	                'rgba(153, 102, 255, 1)',
-	                'rgba(255, 159, 64, 1)'
-	            ],
-	            borderWidth: 1
-	        }]
-	    },
-	    options: {
-	        scales: {
-	            yAxes: [{
-	                ticks: {
-	                    beginAtZero:true
-	                }
-	            }]
-	        }
-	    }
-	});
-	</script>
+<canvas id="chart1" width="400" height="200"></canvas>
 
-		</main><!-- #main -->
-	</div><!-- #primary -->
+</main></div>
+
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 
 <?php
 	
