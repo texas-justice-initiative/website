@@ -74,8 +74,7 @@ You just copied the code from the server, but you want to be using the code from
 ```
 cd root/tji/www/html/wp-content/themes/
 rm -rf tji
-git clone git@github.com:texas-justice-initiative/website.git
-mv website tji
+git clone git@github.com:texas-justice-initiative/website.git tji
 cd tji
 ```
 
