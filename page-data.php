@@ -156,7 +156,7 @@ get_header();
 
 <p class="count-summary">
 <span id='cdr-total-count'>...</span>
-total deaths in police custody since 2006
+total deaths in police custody since 2005
 </p>
 
 <div class="chart-container">
