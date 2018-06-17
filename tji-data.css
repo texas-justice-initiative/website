@@ -67,3 +67,9 @@ $bodyFont: 'Raleway', sans-serif; // 400, 600 weight
     transform: translate3d(0,50%,0);
 }
 */
+
+.chart-container {
+    width: 800px;
+    height: 400px;
+    margin: 50px 0 0 0;
+}

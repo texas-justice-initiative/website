@@ -29,7 +29,14 @@ get_header();
 
 <script>
 	var data_cdr;
-	var COLOR_TJI_BLUE = '#0B5D93'
+	var COLOR_TJI_BLUE = '#0B5D93';
+	var COLOR_TJI_RED = '#CE2727';
+	var COLOR_TJI_DEEPBLUE = '#252939';
+	var COLOR_TJI_PURPLE = '#4D3B6B';
+	var COLOR_TJI_YELLOW = '#F1AB32';
+	var COLOR_TJI_TEAL = '#50E3C2';
+	var COLOR_TJI_DEEPRED = '#872729';
+	var COLOR_TJI_DEEPPURPLE = '#2D1752';
 
 	// Fetch the CDR data, store in global variable 
 	jQuery(document).ready(function() {
@@ -42,7 +49,7 @@ get_header();
 			  		console.log('...success!');
 					data_cdr = data;
 				    document.getElementById("cdr-total-count").innerHTML = data_cdr.length;
-				    make_chart_1();
+				    update_charts(data_cdr);
 			  },
 			  error: function(err) {
 				  console.log("...data fetch failed! Error:", err);
@@ -50,9 +57,14 @@ get_header();
 			});
 	});
 
-	function make_chart_1() {
+	function update_charts(data){
+		make_chart_1(data);
+		make_chart_2(data);
+	}
+
+	function make_chart_1(data) {
 		var ctx = document.getElementById("chart1").getContext('2d');
-		var grouped = _.groupBy(data_cdr, 'year');
+		var grouped = _.groupBy(data, 'year');
 		var keys = _.sortBy(_.keys(grouped));
 		var values = _.map(keys, function(k){ return grouped[k].length});
 		var colors = [];
@@ -96,6 +108,49 @@ get_header();
 		});
 	}
 
+	function make_chart_2(data) {
+		var ctx = document.getElementById("chart2").getContext('2d');
+		var grouped = _.groupBy(data, 'race');
+		delete grouped[null];
+		var keys = _.sortBy(_.keys(grouped));
+		var values = _.map(keys, function(k){ return grouped[k].length});
+		var RACE_COLORS = {
+			'WHITE': COLOR_TJI_BLUE,
+			'BLACK': COLOR_TJI_RED,
+			'HISPANIC': COLOR_TJI_PURPLE,
+			'OTHER': COLOR_TJI_DEEPBLUE,
+		}
+		var colors = _.map(keys, function(k) { return RACE_COLORS[k]});
+		var myChart = new Chart(ctx, {
+		    type: 'doughnut',
+		    data: {
+		    	labels: keys,
+		    	datasets:[
+		    		{
+			    		data: values,
+			    		backgroundColor: colors,
+			    		fill: false,
+			    		lineTension: 0.1
+		    		}
+		    	]
+		    },
+		    options: {
+		    	title: {
+		    		display: true,
+		    		text: "Custodial Deaths by Race",
+		    		fontSize: 36,
+		    	},
+    			legend: {
+    				display: true,
+    				position: 'left',
+    				labels: {
+    					fontSize: 18,
+    				}
+    			},
+    		},
+		});
+	}
+
 </script>
 
 
@@ -104,7 +159,13 @@ get_header();
 total deaths in police custody since 2006
 </p>
 
-<canvas id="chart1" width="400" height="200"></canvas>
+<div class="chart-container">
+	<canvas id="chart1"></canvas>
+</div>
+
+<div class="chart-container">
+	<canvas id="chart2"></canvas>
+</div>
 
 </main></div>
 
