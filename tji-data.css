@@ -70,5 +70,5 @@ $bodyFont: 'Raleway', sans-serif; // 400, 600 weight
 
 .chart-container {
     max-width: 800px;
-    margin: 0;
+    margin: 10px 0 0 0;
 }
