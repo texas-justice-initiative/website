@@ -37,18 +37,49 @@ get_header();
 	var COLOR_TJI_TEAL = '#50E3C2';
 	var COLOR_TJI_DEEPRED = '#872729';
 	var COLOR_TJI_DEEPPURPLE = '#2D1752';
+	var DEFAULT_PALETTE = [
+		COLOR_TJI_BLUE, COLOR_TJI_RED, COLOR_TJI_DEEPBLUE, COLOR_TJI_PURPLE,
+		COLOR_TJI_YELLOW, COLOR_TJI_TEAL, COLOR_TJI_DEEPRED, COLOR_TJI_DEEPPURPLE,
+	]
+
+	var category_colors = {
+		'race': {
+			'WHITE': COLOR_TJI_BLUE,
+			'BLACK': COLOR_TJI_RED,
+			'HISPANIC': COLOR_TJI_PURPLE,
+			'OTHER': COLOR_TJI_DEEPBLUE,
+		},
+		'sex': {
+			'M': COLOR_TJI_BLUE,
+			'F': COLOR_TJI_RED,
+		},
+	}
 
 	// Fetch the CDR data, store in global variable 
 	jQuery(document).ready(function() {
 		console.log("Fetching data from TJI server...");
 		jQuery.ajax({
-			  url: '/cdr_minimal.json',
+			  // url: '/cdr_minimal.json',
+			  url: '/cleaned_custodial_death_reports.json',
 			  type: "GET",
 			  dataType: 'json',
 			  success: function getCustodialDeathsTotal(data) {
 			  		console.log('...success!');
 					data_cdr = data;
 				    document.getElementById("cdr-total-count").innerHTML = data_cdr.length;
+				    _.each(data_cdr, function(js) {
+				    	js['year'] = parseInt(js['death_date'].substring(0, 4));
+				    	if (js['age_at_time_of_death'] < 0) {
+				    		js['age_group'] = undefined;
+				    	} else {
+					    	age_decade = parseInt(Math.floor(js['age_at_time_of_death'] / 10) * 10)
+					    	if (age_decade > 59) {
+					    		js['age_group'] = '60+'
+					    	} else {
+					    		js['age_group'] = age_decade + '-' + (age_decade + 9)
+					    	}
+					    }
+				    })
 				    update_charts(data_cdr);
 			  },
 			  error: function(err) {
@@ -59,7 +90,11 @@ get_header();
 
 	function update_charts(data){
 		chart_cdr_by_year(data, "chart1");
-		chart_cdr_race_donut(data, "chart2");
+		chart_cdr_donut(data, "race", "chart2");
+		chart_cdr_donut(data, "sex", "chart3");
+		chart_cdr_donut(data, "manner_of_death", "chart4");
+		chart_cdr_donut(data, "age_group", "chart5");
+		// Deaths by Age, and Deaths by Agency
 	}
 
 	function chart_cdr_by_year(data, eltid) {
@@ -108,19 +143,18 @@ get_header();
 		});
 	}
 
-	function chart_cdr_race_donut(data, eltid) {
+	function chart_cdr_donut(data, column, eltid) {
 		var ctx = document.getElementById(eltid).getContext('2d');
-		var grouped = _.groupBy(data, 'race');
+		var grouped = _.groupBy(data, column);
 		delete grouped[null];
 		var keys = _.sortBy(_.keys(grouped));
 		var values = _.map(keys, function(k){ return grouped[k].length});
-		var RACE_COLORS = {
-			'WHITE': COLOR_TJI_BLUE,
-			'BLACK': COLOR_TJI_RED,
-			'HISPANIC': COLOR_TJI_PURPLE,
-			'OTHER': COLOR_TJI_DEEPBLUE,
+		var colors;
+		if (category_colors[column] == undefined) {
+			colors = DEFAULT_PALETTE;
+		} else {
+			colors = _.map(keys, function(k) { return category_colors[column][k]});
 		}
-		var colors = _.map(keys, function(k) { return RACE_COLORS[k]});
 		var myChart = new Chart(ctx, {
 		    type: 'doughnut',
 		    data: {
@@ -137,7 +171,7 @@ get_header();
 		    options: {
 		    	title: {
 		    		display: true,
-		    		text: "Custodial Deaths by Race",
+		    		text: "Custodial deaths by " + column,
 		    		fontSize: 36,
 		    	},
     			legend: {
@@ -165,6 +199,18 @@ total deaths in police custody since 2005
 
 <div class="chart-container">
 	<canvas id="chart2"></canvas>
+</div>
+
+<div class="chart-container">
+	<canvas id="chart3"></canvas>
+</div>
+
+<div class="chart-container">
+	<canvas id="chart4"></canvas>
+</div>
+
+<div class="chart-container">
+	<canvas id="chart5"></canvas>
 </div>
 
 </main></div>
