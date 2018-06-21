@@ -52,6 +52,11 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 @import "normalize";
 
 /*--------------------------------------------------------------
+# Flexbox - https://github.com/kristoferjoseph/flexboxgrid
+--------------------------------------------------------------*/
+@import "vendor/flexbox";
+
+/*--------------------------------------------------------------
 # Typography
 --------------------------------------------------------------*/
 @import "typography/typography";
