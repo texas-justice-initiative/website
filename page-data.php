@@ -28,7 +28,7 @@ get_header();
 
 
 <script>
-	var data_cdr;
+	
 	var COLOR_TJI_BLUE = '#0B5D93';
 	var COLOR_TJI_RED = '#CE2727';
 	var COLOR_TJI_DEEPBLUE = '#252939';
@@ -57,6 +57,28 @@ get_header();
 
 	// Fetch the CDR data, store in global variable 
 	jQuery(document).ready(function() {
+
+		var data_cdr;
+
+		jQuery('#js-filters').on('change', function(e) {
+			var filters = jQuery(this).serializeArray();
+			grouped_filters = [];
+			_.map(filters, function(filter) {
+				if(grouped_filters[filter.name]) {
+					grouped_filters[filter.name].push(filter.value);
+				} else {
+					grouped_filters[filter.name] = [filter.value]
+				}
+			});
+			var data_filtered = _.filter(data_cdr, function(val){
+				for (filter in grouped_filters) {
+					if (grouped_filters[filter].indexOf(val[filter]) === -1 ) return false;
+				}
+				return true;
+			})
+			update_charts(data_filtered);
+		})
+
 		console.log("Fetching data from TJI server...");
 		jQuery.ajax({
 			  // url: '/cdr_minimal.json',
@@ -65,14 +87,14 @@ get_header();
 			  dataType: 'json',
 			  success: function getCustodialDeathsTotal(data) {
 			  		console.log('...success!');
-					data_cdr = data;
+						data_cdr = data;
 				    document.getElementById("cdr-total-count").innerHTML = data_cdr.length;
 				    _.each(data_cdr, function(js) {
 				    	js['year'] = parseInt(js['death_date'].substring(0, 4));
 				    	if (js['age_at_time_of_death'] < 0) {
 				    		js['age_group'] = undefined;
 				    	} else {
-					    	age_decade = parseInt(Math.floor(js['age_at_time_of_death'] / 10) * 10)
+					    	age_decade = Math.floor(js['age_at_time_of_death'] / 10) * 10
 					    	if (age_decade > 59) {
 					    		js['age_group'] = '60+'
 					    	} else {
@@ -193,27 +215,58 @@ get_header();
 total deaths in police custody since 2005
 </p>
 
-<div class="chart-container">
+<div class="row">
+<div class="col-sm-12 col-lg-6">
 	<canvas id="chart1"></canvas>
 </div>
 
-<div class="chart-container">
+<div class="col-sm-12 col-lg-6">
 	<canvas id="chart2"></canvas>
 </div>
 
-<div class="chart-container">
+<div class="col-sm-12 col-lg-6">
 	<canvas id="chart3"></canvas>
 </div>
 
-<div class="chart-container">
+<div class="col-sm-12 col-lg-6">
 	<canvas id="chart4"></canvas>
 </div>
 
-<div class="chart-container">
+<div class="col-sm-12 col-lg-6">
 	<canvas id="chart5"></canvas>
 </div>
 
+</div>
+
 </main></div>
+
+<aside id="secondary">
+	<form id="js-filters">
+			<fieldset>
+				<legend>Sex</legend>
+					<div>
+          <input id="Male" type="checkbox" name="sex" value="M" checked>
+          <label for="Male">Male</label>
+        	</div>
+        	<div>
+          <input id="Female" type="checkbox" name="sex" value="F" checked>
+          <label for="Female">Female</label>
+        	</div>
+ 			</fieldset>
+ 			<fieldset>
+				<legend>Race</legend>
+					<div>
+          <input id="Male1" type="checkbox" name="race" value="BLACK" checked>
+          <label for="Male1">BLACK</label>
+        	</div>
+        	<div>
+          <input id="Female1" type="checkbox" name="race" value="WHITE" checked>
+          <label for="Female1">WHITE</label>
+        	</div>
+ 			</fieldset>
+	</form>
+</aside>
+
 
 <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
