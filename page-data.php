@@ -115,7 +115,7 @@ get_header();
     var options = {
       title: {
         display: true,
-        text: "By " + this.groupBy,
+        text: "By " + this.groupBy.replace(/_/g, " "),  // Convert underscores to spaces
         fontSize: 36,
       },
       legend: {
