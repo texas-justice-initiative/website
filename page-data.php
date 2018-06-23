@@ -32,7 +32,7 @@ get_header();
   //TODO: make color constant object
   //chartview should accept charts config object
   //  id: for where charts need to go
-  //  charts: [column1, col2, ...] -- auto gen the title from columns
+  //  charts: [column1, col2, ...]
   //  template for chart -- or set default in ChartView prototype.chartTemplate
   //build dom objects for charts 
   //chartview should accept filter config object
@@ -53,10 +53,9 @@ get_header();
 
   var COLOR_MISSING_DATA = '#AAAAAA'
 
-  var TJIGroupByBarChart = function(elt_id, title, groupBy, data) {
+  var TJIGroupByBarChart = function(elt_id, groupBy, data) {
     this.elt_id = elt_id;
     this.groupBy = groupBy;
-    this.title = title;
     this.chart = null;
     this.create(data);
   }
@@ -156,8 +155,8 @@ get_header();
     };
   }
 
-  var TJIGroupByDonutChart = function(elt_id, title, groupBy, data) {
-    TJIGroupByBarChart.call(this, elt_id, title, groupBy, data);
+  var TJIGroupByDonutChart = function(elt_id, groupBy, data) {
+    TJIGroupByBarChart.call(this, elt_id, groupBy, data);
   }
   TJIGroupByDonutChart.prototype = Object.create(TJIGroupByBarChart.prototype);
   TJIGroupByDonutChart.prototype.constructor = TJIGroupByDonutChart;
@@ -219,11 +218,11 @@ get_header();
   }
 
   ChartView.prototype.create_charts = function() {
-    this.state.charts.push(new TJIGroupByBarChart('chart1', 'By Year', 'year', this.state.data));
-    this.state.charts.push(new TJIGroupByDonutChart('chart2', 'By Race', 'race', this.state.data));
-    this.state.charts.push(new TJIGroupByDonutChart('chart3', 'By Sex', 'sex', this.state.data));
-    this.state.charts.push(new TJIGroupByDonutChart('chart4', 'By Manner of Death', 'manner_of_death', this.state.data));
-    this.state.charts.push(new TJIGroupByDonutChart('chart5', 'By Age Group', 'age_group', this.state.data));
+    this.state.charts.push(new TJIGroupByBarChart('chart1', 'year', this.state.data));
+    this.state.charts.push(new TJIGroupByDonutChart('chart2', 'race', this.state.data));
+    this.state.charts.push(new TJIGroupByDonutChart('chart3', 'sex', this.state.data));
+    this.state.charts.push(new TJIGroupByDonutChart('chart4', 'manner_of_death', this.state.data));
+    this.state.charts.push(new TJIGroupByDonutChart('chart5', 'age_group', this.state.data));
   }
 
   ChartView.prototype.attach_events = function() {
