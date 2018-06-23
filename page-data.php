@@ -111,7 +111,6 @@ get_header();
   }
 
   TJIGroupByBarChart.prototype.get_options = function() {
-
     var options = {
       title: {
         display: true,
@@ -127,7 +126,7 @@ get_header();
             beginAtZero:true
           }
         }]
-      },
+      }
     }
     return _.extend(options, this.get_options_overrides());
   }
@@ -171,6 +170,17 @@ get_header();
           fontSize: 18,
         }
       },
+      pieceLabel: {
+        mode: function (args) {
+          return args.percentage + '%';
+        },
+        precision: 0,
+        showZero: true,
+        fontSize: 10,
+        fontColor: '#fff',
+        // available value is 'default', 'border' and 'outside'
+        position: 'default'
+      }
     };
   }
 
@@ -331,6 +341,7 @@ total deaths in police custody since 2005
 
 <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+<script src="https://cdn.rawgit.com/emn178/Chart.PieceLabel.js/master/build/Chart.PieceLabel.min.js"></script>
 
 <?php
   
