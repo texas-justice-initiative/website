@@ -28,6 +28,20 @@ get_header();
 
 
 <script>
+
+	//TODO: make color constant object
+	//chartview should accept charts config object
+	//	id: for where charts need to go
+	//  charts: [column1, col2, ...] -- auto gen the title from columns
+	//  template for chart -- or set default in ChartView prototype.chartTemplate
+	//build dom objects for charts 
+	//chartview should accept filter config object
+	//  id: for where filters need to go
+	//  filters: [{race: [{black: 'BLACK'}, {white: 'WHITE'}, ...]}, {sex: [{'male':'m'}, ...]}]
+	//  template for filter -- or set default in ChartView prototype.filterTemplate
+	//build dom objects for filters - should come from ChartView.template
+	//WRITE documentation for how you expect people to use these classes
+
 	var COLOR_TJI_BLUE = '#0B5D93';
 	var COLOR_TJI_RED = '#CE2727';
 	var COLOR_TJI_DEEPBLUE = '#252939';
@@ -39,7 +53,7 @@ get_header();
 
 	var COLOR_MISSING_DATA = '#AAAAAA'
 
-	var TJIChart = function(elt_id, title, groupBy, data) {
+	var TJIGroupByBarChart = function(elt_id, title, groupBy, data) {
 		this.elt_id = elt_id;
 		this.groupBy = groupBy;
 		this.title = title;
@@ -47,9 +61,9 @@ get_header();
 		this.create(data);
 	}
 
-	TJIChart.prototype.type = 'bar';
+	TJIGroupByBarChart.prototype.type = 'bar';
 
-	TJIChart.prototype.groupby_colormaps = {
+	TJIGroupByBarChart.prototype.groupby_colormaps = {
 		'race': {
 			'WHITE': COLOR_TJI_BLUE,
 			'BLACK': COLOR_TJI_RED,
@@ -70,7 +84,7 @@ get_header();
 		]
 	}
 
-	TJIChart.prototype.create = function(data) {
+	TJIGroupByBarChart.prototype.create = function(data) {
 		var grouped = this.get_group_counts(data);
 		var colors = this.get_group_colors(grouped.keys);
 		this.chart = new Chart(document.getElementById(this.elt_id).getContext('2d'), {
@@ -90,14 +104,14 @@ get_header();
 		});
 	}
 
-	TJIChart.prototype.update = function(data) {
+	TJIGroupByBarChart.prototype.update = function(data) {
 		var grouped = this.get_group_counts(data);
 		this.chart.data.datasets[0].data = grouped.counts;
 		this.chart.data.labels = grouped.keys;
 		this.chart.update();
 	}
 
-	TJIChart.prototype.get_options = function() {
+	TJIGroupByBarChart.prototype.get_options = function() {
 
 		var options = {
     	title: {
@@ -119,11 +133,11 @@ get_header();
 		return _.extend(options, this.get_options_overrides());
 	}
 
-	TJIChart.prototype.get_options_overrides = function() {
+	TJIGroupByBarChart.prototype.get_options_overrides = function() {
 		return {};
 	}
 
-	TJIChart.prototype.get_group_colors = function(keys) {
+	TJIGroupByBarChart.prototype.get_group_colors = function(keys) {
 		var colormap = this.groupby_colormaps[this.groupBy];
 		if (!colormap) return this.groupby_colormaps['default'];
 		return _.map(keys, function(k) {
@@ -131,7 +145,7 @@ get_header();
 		})
 	}
 
-	TJIChart.prototype.get_group_counts = function(data) {
+	TJIGroupByBarChart.prototype.get_group_counts = function(data) {
 		data = _.filter(data, this.groupBy);
 		var grouped = _.groupBy(data, this.groupBy);
 		var keys = _.sortBy(_.keys(grouped));
@@ -142,14 +156,13 @@ get_header();
 		};
 	}
 
-	var TJIDoughnutChart = function(elt_id, title, groupBy, data) {
-		TJIChart.call(this, elt_id, title, groupBy, data);
+	var TJIGroupByDonutChart = function(elt_id, title, groupBy, data) {
+		TJIGroupByBarChart.call(this, elt_id, title, groupBy, data);
 	}
-
-	TJIDoughnutChart.prototype = Object.create(TJIChart.prototype);
-	TJIDoughnutChart.prototype.constructor = TJIDoughnutChart;
-	TJIDoughnutChart.prototype.type = 'doughnut';
-	TJIDoughnutChart.prototype.get_options_overrides = function() {
+	TJIGroupByDonutChart.prototype = Object.create(TJIGroupByBarChart.prototype);
+	TJIGroupByDonutChart.prototype.constructor = TJIGroupByDonutChart;
+	TJIGroupByDonutChart.prototype.type = 'doughnut';
+	TJIGroupByDonutChart.prototype.get_options_overrides = function() {
 		return {
 			scales: {},
 			legend: {
@@ -162,73 +175,99 @@ get_header();
 		};
 	}
 
-	// Fetch the CDR data, store in global variable 
-	jQuery(document).ready(function() {
+	var ChartView = function(url){
 
-		var data_cdr;
-		var charts;
+		this.state = {
+			data: null,
+			filters: [],
+			charts: [],
+			url: url,
+		}
 
+		this.initialize();
+	}
+
+	ChartView.prototype.get_data = function() {
+		var that = this;
+		jQuery.getJSON(this.state.url)
+			.done(function(data){
+				that.state.data = data;
+				that.parse_data()
+				that.create_charts();
+			})
+			.fail(function(e){
+				console.log('error fetching data from: ' + this.state.url, e);
+			})
+	}
+
+	ChartView.prototype.parse_data = function() {
+	 	_.each(this.state.data, function(data_row) {
+	 		//build column for year
+    	data_row['year'] = parseInt(data_row['death_date'].substring(0, 4));
+    	if (data_row['age_at_time_of_death'] < 0) {
+    		data_row['age_group'] = undefined;
+    	} else {
+    		//create age group buckets
+	    	age_decade = Math.floor(data_row['age_at_time_of_death'] / 10) * 10
+	    	if (age_decade > 59) {
+	    		data_row['age_group'] = '60+'
+	    	} else {
+	    		data_row['age_group'] = age_decade + '-' + (age_decade + 9)
+	    	}
+	    }
+    });
+	}
+
+	ChartView.prototype.create_charts = function() {
+		this.state.charts.push(new TJIGroupByBarChart('chart1', 'By Year', 'year', this.state.data));
+		this.state.charts.push(new TJIGroupByDonutChart('chart2', 'By Race', 'race', this.state.data));
+		this.state.charts.push(new TJIGroupByDonutChart('chart3', 'By Sex', 'sex', this.state.data));
+		this.state.charts.push(new TJIGroupByDonutChart('chart4', 'By Manner of Death', 'manner_of_death', this.state.data));
+		this.state.charts.push(new TJIGroupByDonutChart('chart5', 'By Age Group', 'age_group', this.state.data));
+	}
+
+	ChartView.prototype.attach_events = function() {
+		var that = this;
 		jQuery('#js-filters').on('change', function(e) {
-			var filters = jQuery(this).serializeArray();
-			grouped_filters = [];
-			_.map(filters, function(filter) {
-				if(grouped_filters[filter.name]) {
-					grouped_filters[filter.name].push(filter.value);
-				} else {
-					grouped_filters[filter.name] = [filter.value]
-				}
-			});
-			var data_filtered = _.filter(data_cdr, function(val){
-				for (filter in grouped_filters) {
-					if (grouped_filters[filter].indexOf(val[filter]) === -1 ) return false;
-				}
-				return true;
-			})
-			_.each(charts, function(chart){
-				chart.update(data_filtered);
-			})
+			that.state.filters = jQuery(this).serializeArray();
+			that.filter_data();
+		})
+	}
+
+	ChartView.prototype.filter_data = function() {
+		var grouped_filters = [];
+		_.map(this.state.filters, function(filter) {
+			if(grouped_filters[filter.name]) {
+				grouped_filters[filter.name].push(filter.value);
+			} else {
+				grouped_filters[filter.name] = [filter.value]
+			}
+		});
+
+		var data = _.filter(this.state.data, function(val){
+			for (filter in grouped_filters) {
+				if (grouped_filters[filter].indexOf(val[filter]) === -1 ) return false;
+			}
+			return true;
 		})
 
-		console.log("Fetching data from TJI server...");
-		jQuery.ajax({
-			  // url: '/cdr_minimal.json',
-			  url: '/cleaned_custodial_death_reports.json',
-			  type: "GET",
-			  dataType: 'json',
-			  success: function getCustodialDeathsTotal(data) {
-			  		console.log('...success!');
-						data_cdr = data;
-				    document.getElementById("cdr-total-count").innerHTML = data_cdr.length;
-				    _.each(data_cdr, function(js) {
-				    	js['year'] = parseInt(js['death_date'].substring(0, 4));
-				    	if (js['age_at_time_of_death'] < 0) {
-				    		js['age_group'] = undefined;
-				    	} else {
-					    	age_decade = Math.floor(js['age_at_time_of_death'] / 10) * 10
-					    	if (age_decade > 59) {
-					    		js['age_group'] = '60+'
-					    	} else {
-					    		js['age_group'] = age_decade + '-' + (age_decade + 9)
-					    	}
-					    }
-				    })
-				    charts = make_charts(data_cdr);
-			  },
-			  error: function(err) {
-				  console.log("...data fetch failed! Error:", err);
-			  }
-			});
-	});
-
-	function make_charts(data){
-		var charts = [];
-		charts.push(new TJIChart('chart1', 'Some Chart', 'year', data));
-		charts.push(new TJIDoughnutChart('chart3', 'Some Chart', 'race', data));
-		charts.push(new TJIDoughnutChart('chart4', 'Some Chart', 'sex', data));
-		charts.push(new TJIDoughnutChart('chart5', 'Some Chart', 'manner_of_death', data));
-		charts.push(new TJIDoughnutChart('chart2', 'Some Chart', 'age_group', data));
-		return charts;
+		this.update_charts(data);
 	}
+
+	ChartView.prototype.update_charts = function(data) {
+		_.each(this.state.charts, function(chart){
+			chart.update(data);
+		})
+	}
+
+	ChartView.prototype.initialize = function() {
+		this.attach_events();
+		this.get_data();
+	}
+
+	jQuery(function(){
+		var chartView = new ChartView('/cleaned_custodial_death_reports.json');
+	})
 
 </script>
 
