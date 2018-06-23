@@ -28,7 +28,7 @@ get_header();
 
 
 <script>
-	
+
 	var COLOR_TJI_BLUE = '#0B5D93';
 	var COLOR_TJI_RED = '#CE2727';
 	var COLOR_TJI_DEEPBLUE = '#252939';
@@ -59,6 +59,7 @@ get_header();
 	jQuery(document).ready(function() {
 
 		var data_cdr;
+		var charts;
 
 		jQuery('#js-filters').on('change', function(e) {
 			var filters = jQuery(this).serializeArray();
@@ -76,7 +77,9 @@ get_header();
 				}
 				return true;
 			})
-			update_charts(data_filtered);
+			_.each(charts, function(chart){
+				update_chart(chart, data_filtered);
+			})
 		})
 
 		console.log("Fetching data from TJI server...");
@@ -102,7 +105,7 @@ get_header();
 					    	}
 					    }
 				    })
-				    update_charts(data_cdr);
+				    charts = make_charts(data_cdr);
 			  },
 			  error: function(err) {
 				  console.log("...data fetch failed! Error:", err);
@@ -110,20 +113,42 @@ get_header();
 			});
 	});
 
-	function update_charts(data){
-		chart_cdr_by_year(data, "chart1");
-		chart_cdr_donut(data, "race", "chart2");
-		chart_cdr_donut(data, "sex", "chart3");
-		chart_cdr_donut(data, "manner_of_death", "chart4");
-		chart_cdr_donut(data, "age_group", "chart5");
+	function update_chart(chart, data_filtered) {
+		var data = group_data(data_filtered, chart.groupBy);
+		chart.data.datasets[0].data = data.values;
+		chart.data.labels = data.keys;
+		chart.update();
+	}
+
+	function make_charts(data){
+		var charts = [];
+		charts.push(chart_cdr_by_year(data, "chart1"));
+		charts.push(chart_cdr_donut(data, "race", "chart2"));
+		charts.push(chart_cdr_donut(data, "sex", "chart3"));
+		charts.push(chart_cdr_donut(data, "manner_of_death", "chart4"));
+		charts.push(chart_cdr_donut(data, "age_group", "chart5"));
 		// Deaths by Age, and Deaths by Agency
+		return charts;
+	}
+
+	function group_data(data, column) {
+		data = _.filter(data, column);
+		var grouped = _.groupBy(data, column);
+		var keys = _.sortBy(_.keys(grouped));
+		var values = _.map(keys, function(k){ return grouped[k].length});
+		return {
+			keys: keys,
+			values: values
+		};
 	}
 
 	function chart_cdr_by_year(data, eltid) {
 		var ctx = document.getElementById(eltid).getContext('2d');
-		var grouped = _.groupBy(data, 'year');
-		var keys = _.sortBy(_.keys(grouped));
-		var values = _.map(keys, function(k){ return grouped[k].length});
+
+		var grouped_data = group_data(data, 'year');
+		var keys = grouped_data.keys;
+		var values = grouped_data.values;
+
 		var colors = [];
 		for (i = 0; i < keys.length; ++i) {
 			if (i > 0 && i < keys.length - 1) {
@@ -132,7 +157,7 @@ get_header();
 				colors.push(undefined);
 			}
 		}
-		var myLineChart = new Chart(ctx, {
+		var myChart = new Chart(ctx, {
 		    type: 'bar',
 		    data: {
 		    	labels: keys,
@@ -163,14 +188,17 @@ get_header();
 		        },
     		}
 		});
+		myChart.groupBy = 'year';
+		return myChart;
 	}
 
 	function chart_cdr_donut(data, column, eltid) {
 		var ctx = document.getElementById(eltid).getContext('2d');
-		var grouped = _.groupBy(data, column);
-		delete grouped[null];
-		var keys = _.sortBy(_.keys(grouped));
-		var values = _.map(keys, function(k){ return grouped[k].length});
+		
+		var grouped_data = group_data(data, column);
+		var keys = grouped_data.keys;
+		var values = grouped_data.values;
+
 		var colors;
 		if (category_colors[column] == undefined) {
 			colors = DEFAULT_PALETTE;
@@ -205,6 +233,9 @@ get_header();
     			},
     		},
 		});
+		myChart.groupBy = column;
+
+		return myChart;
 	}
 
 </script>
