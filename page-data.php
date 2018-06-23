@@ -28,7 +28,6 @@ get_header();
 
 
 <script>
-
 	var COLOR_TJI_BLUE = '#0B5D93';
 	var COLOR_TJI_RED = '#CE2727';
 	var COLOR_TJI_DEEPBLUE = '#252939';
@@ -37,12 +36,20 @@ get_header();
 	var COLOR_TJI_TEAL = '#50E3C2';
 	var COLOR_TJI_DEEPRED = '#872729';
 	var COLOR_TJI_DEEPPURPLE = '#2D1752';
-	var DEFAULT_PALETTE = [
-		COLOR_TJI_BLUE, COLOR_TJI_RED, COLOR_TJI_DEEPBLUE, COLOR_TJI_PURPLE,
-		COLOR_TJI_YELLOW, COLOR_TJI_TEAL, COLOR_TJI_DEEPRED, COLOR_TJI_DEEPPURPLE,
-	]
 
-	var category_colors = {
+	var COLOR_MISSING_DATA = '#AAAAAA'
+
+	var TJIChart = function(elt_id, title, groupBy, data) {
+		this.elt_id = elt_id;
+		this.groupBy = groupBy;
+		this.title = title;
+		this.chart = null;
+		this.create(data);
+	}
+
+	TJIChart.prototype.type = 'bar';
+
+	TJIChart.prototype.groupby_colormaps = {
 		'race': {
 			'WHITE': COLOR_TJI_BLUE,
 			'BLACK': COLOR_TJI_RED,
@@ -53,6 +60,106 @@ get_header();
 			'M': COLOR_TJI_BLUE,
 			'F': COLOR_TJI_RED,
 		},
+		'year': {
+			2005: COLOR_MISSING_DATA,
+			'default': COLOR_TJI_BLUE
+		},
+		'default': [
+			COLOR_TJI_BLUE, COLOR_TJI_RED, COLOR_TJI_DEEPBLUE, COLOR_TJI_PURPLE,
+			COLOR_TJI_YELLOW, COLOR_TJI_TEAL, COLOR_TJI_DEEPRED, COLOR_TJI_DEEPPURPLE,
+		]
+	}
+
+	TJIChart.prototype.create = function(data) {
+		var grouped = this.get_group_counts(data);
+		var colors = this.get_group_colors(grouped.keys);
+		this.chart = new Chart(document.getElementById(this.elt_id).getContext('2d'), {
+	    type: this.type,
+	    data: {
+	    	labels: grouped.keys,
+	    	datasets:[
+	    		{
+		    		data: grouped.counts,
+		    		fill: false,
+		    		backgroundColor: colors,
+		    		lineTension: 0.1
+	    		}
+	    	]
+	    },
+	    options: this.get_options()
+		});
+	}
+
+	TJIChart.prototype.update = function(data) {
+		var grouped = this.get_group_counts(data);
+		this.chart.data.datasets[0].data = grouped.counts;
+		this.chart.data.labels = grouped.keys;
+		this.chart.update();
+	}
+
+	TJIChart.prototype.get_options = function() {
+
+		var options = {
+    	title: {
+    		display: true,
+    		text: this.title,
+    		fontSize: 36,
+    	},
+			legend: {
+				display: false
+			},
+			scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero:true
+          }
+        }]
+      },
+		}
+		return _.extend(options, this.get_options_overrides());
+	}
+
+	TJIChart.prototype.get_options_overrides = function() {
+		return {};
+	}
+
+	TJIChart.prototype.get_group_colors = function(keys) {
+		var colormap = this.groupby_colormaps[this.groupBy];
+		if (!colormap) return this.groupby_colormaps['default'];
+		return _.map(keys, function(k) {
+			return colormap[k] ? colormap[k] : colormap['default'];
+		})
+	}
+
+	TJIChart.prototype.get_group_counts = function(data) {
+		data = _.filter(data, this.groupBy);
+		var grouped = _.groupBy(data, this.groupBy);
+		var keys = _.sortBy(_.keys(grouped));
+		var counts = _.map(keys, function(k){ return grouped[k].length});
+		return {
+			keys: keys,
+			counts: counts
+		};
+	}
+
+	var TJIDoughnutChart = function(elt_id, title, groupBy, data) {
+		TJIChart.call(this, elt_id, title, groupBy, data);
+	}
+
+	TJIDoughnutChart.prototype = Object.create(TJIChart.prototype);
+	TJIDoughnutChart.prototype.constructor = TJIDoughnutChart;
+	TJIDoughnutChart.prototype.type = 'doughnut';
+	TJIDoughnutChart.prototype.get_options_overrides = function() {
+		return {
+			scales: {},
+			legend: {
+				display: true,
+				position: 'left',
+				labels: {
+					fontSize: 18,
+				}
+			},
+		};
 	}
 
 	// Fetch the CDR data, store in global variable 
@@ -78,7 +185,7 @@ get_header();
 				return true;
 			})
 			_.each(charts, function(chart){
-				update_chart(chart, data_filtered);
+				chart.update(data_filtered);
 			})
 		})
 
@@ -113,129 +220,14 @@ get_header();
 			});
 	});
 
-	function update_chart(chart, data_filtered) {
-		var data = group_data(data_filtered, chart.groupBy);
-		chart.data.datasets[0].data = data.values;
-		chart.data.labels = data.keys;
-		chart.update();
-	}
-
 	function make_charts(data){
 		var charts = [];
-		charts.push(chart_cdr_by_year(data, "chart1"));
-		charts.push(chart_cdr_donut(data, "race", "chart2"));
-		charts.push(chart_cdr_donut(data, "sex", "chart3"));
-		charts.push(chart_cdr_donut(data, "manner_of_death", "chart4"));
-		charts.push(chart_cdr_donut(data, "age_group", "chart5"));
-		// Deaths by Age, and Deaths by Agency
+		charts.push(new TJIChart('chart1', 'Some Chart', 'year', data));
+		charts.push(new TJIDoughnutChart('chart3', 'Some Chart', 'race', data));
+		charts.push(new TJIDoughnutChart('chart4', 'Some Chart', 'sex', data));
+		charts.push(new TJIDoughnutChart('chart5', 'Some Chart', 'manner_of_death', data));
+		charts.push(new TJIDoughnutChart('chart2', 'Some Chart', 'age_group', data));
 		return charts;
-	}
-
-	function group_data(data, column) {
-		data = _.filter(data, column);
-		var grouped = _.groupBy(data, column);
-		var keys = _.sortBy(_.keys(grouped));
-		var values = _.map(keys, function(k){ return grouped[k].length});
-		return {
-			keys: keys,
-			values: values
-		};
-	}
-
-	function chart_cdr_by_year(data, eltid) {
-		var ctx = document.getElementById(eltid).getContext('2d');
-
-		var grouped_data = group_data(data, 'year');
-		var keys = grouped_data.keys;
-		var values = grouped_data.values;
-
-		var colors = [];
-		for (i = 0; i < keys.length; ++i) {
-			if (i > 0 && i < keys.length - 1) {
-				colors.push(COLOR_TJI_BLUE);
-			} else {
-				colors.push(undefined);
-			}
-		}
-		var myChart = new Chart(ctx, {
-		    type: 'bar',
-		    data: {
-		    	labels: keys,
-		    	datasets:[
-		    		{
-			    		data: values,
-			    		fill: false,
-			    		backgroundColor: colors,
-			    		lineTension: 0.1
-		    		}
-		    	]
-		    },
-		    options: {
-		    	title: {
-		    		display: true,
-		    		text: "Custodial Deaths by Year",
-		    		fontSize: 36,
-		    	},
-    			legend: {
-    				display: false
-    			},
-    			scales: {
-		            yAxes: [{
-		                ticks: {
-		                    beginAtZero:true
-		                }
-		            }]
-		        },
-    		}
-		});
-		myChart.groupBy = 'year';
-		return myChart;
-	}
-
-	function chart_cdr_donut(data, column, eltid) {
-		var ctx = document.getElementById(eltid).getContext('2d');
-		
-		var grouped_data = group_data(data, column);
-		var keys = grouped_data.keys;
-		var values = grouped_data.values;
-
-		var colors;
-		if (category_colors[column] == undefined) {
-			colors = DEFAULT_PALETTE;
-		} else {
-			colors = _.map(keys, function(k) { return category_colors[column][k]});
-		}
-		var myChart = new Chart(ctx, {
-		    type: 'doughnut',
-		    data: {
-		    	labels: keys,
-		    	datasets:[
-		    		{
-			    		data: values,
-			    		backgroundColor: colors,
-			    		fill: false,
-			    		lineTension: 0.1
-		    		}
-		    	]
-		    },
-		    options: {
-		    	title: {
-		    		display: true,
-		    		text: "Custodial deaths by " + column,
-		    		fontSize: 36,
-		    	},
-    			legend: {
-    				display: true,
-    				position: 'left',
-    				labels: {
-    					fontSize: 18,
-    				}
-    			},
-    		},
-		});
-		myChart.groupBy = column;
-
-		return myChart;
 	}
 
 </script>
