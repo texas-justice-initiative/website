@@ -31,7 +31,7 @@ var TJIGroupByBarChart = function(elt_id, groupBy, data, missing_data_label) {
   this.groupBy = groupBy;
   this.chart = null;
   this.missing_data_label = missing_data_label || '(not given)';
-  this.color_mapping = null;
+  this.ordered_keys = null;
   this.create(data);
 }
 
@@ -44,19 +44,15 @@ TJIGroupByBarChart.prototype.create = function(data) {
   var that = this;
   var grouped = this.get_group_counts(data);
 
-  // 'create' is only run with the full data set.
-  // So we store our color mapping (e.g. male = blue, female = red)
-  // so that if the user ends up filtering some of them out, we can
-  // prevent chartjs from altering the label-color pairings.
-  this.color_mapping = {};
-  _.each(grouped.keys, function(k, idx) {
-    that.color_mapping[k] = that.color_palette[idx % that.color_palette.length];
-  });
-
-  // Apply color mapping
-  var colors = _.map(grouped.keys, function(k) {
-    return that.color_mapping[k]
+  var colors = _.map(grouped.keys, function(k, i) {
+    return that.color_palette[i % that.color_palette.length];
   })
+
+  // 'create' is only run with the full data set.
+  // We store the 'full' set of unique groupBy values,
+  // since want to show every unique value in the legend,
+  // even if the user filters some of them out later.
+  this.ordered_keys = grouped.keys
 
   // Build the chart
   this.chart = new Chart(document.getElementById(this.elt_id).getContext('2d'), {
@@ -82,10 +78,6 @@ TJIGroupByBarChart.prototype.update = function(data) {
   var grouped = this.get_group_counts(data);
   this.chart.data.datasets[0].data = grouped.counts;
   this.chart.data.labels = grouped.keys;
-  
-  this.chart.data.datasets[0].backgroundColor = _.map(grouped.keys, function(k) {
-    return that.color_mapping[k]
-  });
   this.chart.update();
 }
 
@@ -125,12 +117,17 @@ TJIGroupByBarChart.prototype.get_options_overrides = function() {
 TJIGroupByBarChart.prototype.get_group_counts = function(data) {
   data = _.filter(data, this.groupBy);
   var grouped = _.groupBy(data, this.groupBy);
-  var keys = _.sortBy(_.keys(grouped));
-  if (keys.indexOf(this.missing_data_label) !== -1) {
-    keys.splice(keys.indexOf(this.missing_data_label), 1);
-    keys.push(this.missing_data_label);
+  var keys;
+  if (this.ordered_keys) {
+    keys = this.ordered_keys
+  } else {
+    var keys = _.sortBy(_.keys(grouped));
+    if (keys.indexOf(this.missing_data_label) !== -1) {
+      keys.splice(keys.indexOf(this.missing_data_label), 1);
+      keys.push(this.missing_data_label);
+    }
   }
-  var counts = _.map(keys, function(k){ return grouped[k].length});
+  var counts = _.map(keys, function(k){ return (grouped[k] || []).length});
   return {
     keys: keys,
     counts: counts
