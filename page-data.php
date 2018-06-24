@@ -58,15 +58,33 @@ get_header();
     this.groupBy = groupBy;
     this.chart = null;
     this.missing_data_label = missing_data_label || '(not given)';
+    this.color_mapping = null;
     this.create(data);
   }
 
   TJIGroupByBarChart.prototype.type = 'bar';
 
-  TJIGroupByBarChart.prototype.colormap = COLOR_TJI_BLUE;
+  TJIGroupByBarChart.prototype.color_palette = [COLOR_TJI_BLUE];
 
   TJIGroupByBarChart.prototype.create = function(data) {
     var grouped = this.get_group_counts(data);
+
+    // 'create' is only run with the full data set.
+    // So we store our color mapping (e.g. "Male" = blue) so that
+    // subsequent filterings and changes don't alter the color
+    // associated with males.
+    this.color_mapping = {};
+    var that = this;
+    _.each(grouped.keys, function(k, idx) {
+      that.color_mapping[k] = that.color_palette[idx % that.color_palette.length];
+    });
+    console.log(this.color_mapping);
+
+    var colors = _.map(grouped.keys, function(k) {
+      return that.color_mapping[k]
+    })
+
+    // Build the chart
     this.chart = new Chart(document.getElementById(this.elt_id).getContext('2d'), {
       type: this.type,
       data: {
@@ -75,7 +93,7 @@ get_header();
           {
             data: grouped.counts,
             fill: false,
-            backgroundColor: this.colormap,
+            backgroundColor: colors,
             lineTension: 0.1
           }
         ]
@@ -88,6 +106,10 @@ get_header();
     var grouped = this.get_group_counts(data);
     this.chart.data.datasets[0].data = grouped.counts;
     this.chart.data.labels = grouped.keys;
+    var that = this;
+    this.chart.data.datasets[0].backgroundColor = _.map(grouped.keys, function(k) {
+      return that.color_mapping[k]
+    });
     this.chart.update();
   }
 
@@ -137,7 +159,7 @@ get_header();
   TJIGroupByDonutChart.prototype = Object.create(TJIGroupByBarChart.prototype);
   TJIGroupByDonutChart.prototype.constructor = TJIGroupByDonutChart;
   TJIGroupByDonutChart.prototype.type = 'doughnut';
-  TJIGroupByDonutChart.prototype.colormap = [
+  TJIGroupByDonutChart.prototype.color_palette = [
     COLOR_TJI_BLUE, COLOR_TJI_RED, COLOR_TJI_DEEPBLUE, COLOR_TJI_PURPLE,
     COLOR_TJI_YELLOW, COLOR_TJI_TEAL, COLOR_TJI_DEEPRED, COLOR_TJI_DEEPPURPLE,
   ];
