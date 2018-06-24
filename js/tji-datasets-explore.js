@@ -1,6 +1,5 @@
 
 //TODO: make color constant object
-//WRITE documentation for how you expect people to use these classes
 
 var COLOR_TJI_BLUE = '#0B5D93';
 var COLOR_TJI_RED = '#CE2727';
@@ -186,11 +185,11 @@ TJIGroupByDoughnutChart.prototype.get_options_overrides = function() {
 // *   chart_wrapper: HTML to wrap around each chart's canvas object
 // *   count_template: HTML for the "showing this man records" element
 // *                   at the top, containing a "{count}" placeholder somewhere
-// *                   (which ChartView will replace with the record count).
+// *                   (which TJIChartView will replace with the record count).
 // ********************************************************************
 
 
-var ChartView = function(chart_configs, charts_elt_id, filters_elt_id, chart_wrapper, count_template){
+var TJIChartView = function(chart_configs, charts_elt_id, filters_elt_id, chart_wrapper, count_template){
 
   this.state = {
     data: null,
@@ -209,11 +208,15 @@ var ChartView = function(chart_configs, charts_elt_id, filters_elt_id, chart_wra
   this.get_data();
 }
 
-ChartView.prototype.missing_data_label = '(not given)';
+TJIChartView.prototype.missing_data_label = '(not given)';
+TJIChartView.prototype.column_whitelist = [
+  'year', 'race', 'sex', 'manner_of_death', 'age_group',
+  'type_of_custody', 'death_location_type', 'means_of_death',
+];
 
 // Fetch CDR data from server and trigger the construction
 // of the charts, filter panel, etc.
-ChartView.prototype.get_data = function() {
+TJIChartView.prototype.get_data = function() {
   var that = this;
   jQuery.getJSON('/cleaned_custodial_death_reports.json')
     .done(function(data){
@@ -230,13 +233,9 @@ ChartView.prototype.get_data = function() {
 
 // Apply any data transformations necessary before beginning to build
 // out the rest of the view.
-ChartView.prototype.parse_data = function() {
+TJIChartView.prototype.parse_data = function() {
 
   var that = this;
-  var column_whitelist = [
-    'year', 'race', 'sex', 'manner_of_death', 'age_group',
-    'type_of_custody', 'death_location_type', 'means_of_death',
-  ]
 
     // Create new columns
 
@@ -256,32 +255,36 @@ ChartView.prototype.parse_data = function() {
       }
     }
 
-    _.each(column_whitelist, function(key) {
+    _.each(this.column_whitelist, function(key) {
       if (data_row[key] === undefined || data_row[key] === null || data_row[key] === '') {
         data_row[key] = that.missing_data_label;
       }
     });
   });
+}
+
+TJIChartView.prototype.create_filter_panel = function() {
 
   // Generate filter values
 
-  filters = []
-  _.each(column_whitelist, function(column) {
-    // Get a sorted list of all the unique values for this column
+  this.filters = []
+  var that = this
+
+  // Get a sorted list of all the unique values for each column
+  _.each(this.column_whitelist, function(column) {
     values = _.filter(_.sortBy(_.uniq(_.map(that.state.data, column))), _.identity);
     if (values.indexOf(that.missing_data_label) !== -1) {
       values.splice(values.indexOf(that.missing_data_label), 1);
       values.push(that.missing_data_label);
     }
-    filters.push({
+    that.filters.push({
       key: column,
       values: values
     });
   });
-  this.filters = filters;
-}
 
-ChartView.prototype.create_filter_panel = function() {
+  // Build out checkboxes n stuff
+
   var $filters = jQuery('<form id="js-TJIfilters" />');
   _.each(this.filters, function(f) {
     var fieldset = jQuery('<fieldset><legend>' + f.key.replace(/_/g, " ") + '</legend></fieldset>');
@@ -304,7 +307,7 @@ ChartView.prototype.create_filter_panel = function() {
   this.state.active_filters = jQuery(this).serializeArray();  
 }
 
-ChartView.prototype.create_charts = function() {
+TJIChartView.prototype.create_charts = function() {
   var that = this;
   this.state.$count = jQuery(this.count_template.replace('{count}', this.state.data.length)).prependTo(this.charts_elt_id);
   _.each(this.chart_configs, function(config, i){
@@ -327,7 +330,7 @@ ChartView.prototype.create_charts = function() {
   });
 }
 
-ChartView.prototype.attach_events = function() {
+TJIChartView.prototype.attach_events = function() {
   var that = this;
   jQuery('#js-TJIfilters').on('change', function(e) {
     that.state.active_filters = jQuery(this).serializeArray();
@@ -336,7 +339,7 @@ ChartView.prototype.attach_events = function() {
 }
 
 // Called when the user changes any data filters.
-ChartView.prototype.filter_data = function() {
+TJIChartView.prototype.filter_data = function() {
   var grouped_filters = [];
   _.map(this.state.active_filters, function(filter) {
     if(grouped_filters[filter.name]) {
@@ -356,7 +359,7 @@ ChartView.prototype.filter_data = function() {
   this.update_charts(data);
 }
 
-ChartView.prototype.update_charts = function(data) {
+TJIChartView.prototype.update_charts = function(data) {
   this.state.$count.text(data.length + ' records');
   _.each(this.state.charts, function(chart){
     chart.update(data);
