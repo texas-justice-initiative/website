@@ -39,18 +39,21 @@ TJIGroupByBarChart.prototype.type = 'bar';
 
 TJIGroupByBarChart.prototype.color_palette = [COLOR_TJI_BLUE];
 
+// Create the chart for the first time
 TJIGroupByBarChart.prototype.create = function(data) {
   var that = this;
   var grouped = this.get_group_counts(data);
 
   // 'create' is only run with the full data set.
-  // So we store our color mapping (e.g. "Male" = blue) so that
-  // subsequent filterings and changes don't alter the color
-  // associated with males.
+  // So we store our color mapping (e.g. male = blue, female = red)
+  // so that if the user ends up filtering some of them out, we can
+  // prevent chartjs from altering the label-color pairings.
   this.color_mapping = {};
   _.each(grouped.keys, function(k, idx) {
     that.color_mapping[k] = that.color_palette[idx % that.color_palette.length];
   });
+
+  // Apply color mapping
   var colors = _.map(grouped.keys, function(k) {
     return that.color_mapping[k]
   })
@@ -73,6 +76,7 @@ TJIGroupByBarChart.prototype.create = function(data) {
   });
 }
 
+// Update the chart with a new (filtered) dataset
 TJIGroupByBarChart.prototype.update = function(data) {
   var that = this;
   var grouped = this.get_group_counts(data);
@@ -85,6 +89,7 @@ TJIGroupByBarChart.prototype.update = function(data) {
   this.chart.update();
 }
 
+// Return an 'options' object for the ChartJS constructor
 TJIGroupByBarChart.prototype.get_options = function() {
   var options = {
     title: {
@@ -106,10 +111,17 @@ TJIGroupByBarChart.prototype.get_options = function() {
   return _.extend(options, this.get_options_overrides());
 }
 
+// Subclasses should override this to alter options as needed
 TJIGroupByBarChart.prototype.get_options_overrides = function() {
   return {};
 }
 
+// Group the data by the groupBy key, and count how many records
+// have each key. Returns an object with two lists:
+//   {
+//     keys: [list of sorted, unique groupby keys],
+//     counts: [list of number of records for each key]
+//   }
 TJIGroupByBarChart.prototype.get_group_counts = function(data) {
   data = _.filter(data, this.groupBy);
   var grouped = _.groupBy(data, this.groupBy);
@@ -174,9 +186,10 @@ TJIGroupByDoughnutChart.prototype.get_options_overrides = function() {
 // *                  e.g. [{type: 'bar', group_by:'year'}, ...]
 // *   charts_elt_id: id of HTML element to put charts in
 // *   filters_elt_id: id of HTML element to put filter checkboxes in
-// *   chart_wrapper: HTML for wrapper around chart canvas object
-// *   count_template: HTML for record-count element, containing "{count}"
-// *                   somewhere (which will be replaced with the record count).
+// *   chart_wrapper: HTML to wrap around each chart's canvas object
+// *   count_template: HTML for the "showing this man records" element
+// *                   at the top, containing a "{count}" placeholder somewhere
+// *                   (which ChartView will replace with the record count).
 // ********************************************************************
 
 
@@ -184,7 +197,7 @@ var ChartView = function(chart_configs, charts_elt_id, filters_elt_id, chart_wra
 
   this.state = {
     data: null,
-    active_filters: [], //put active filters here
+    active_filters: [],  // put active filters here
     charts: [],
     $count: null
   }
@@ -201,6 +214,8 @@ var ChartView = function(chart_configs, charts_elt_id, filters_elt_id, chart_wra
 
 ChartView.prototype.missing_data_label = '(not given)';
 
+// Fetch CDR data from server and trigger the construction
+// of the charts, filter panel, etc.
 ChartView.prototype.get_data = function() {
   var that = this;
   jQuery.getJSON('/cleaned_custodial_death_reports.json')
@@ -216,6 +231,8 @@ ChartView.prototype.get_data = function() {
     })
 }
 
+// Apply any data transformations necessary before beginning to build
+// out the rest of the view.
 ChartView.prototype.parse_data = function() {
 
   var that = this;
@@ -321,6 +338,7 @@ ChartView.prototype.attach_events = function() {
   })
 }
 
+// Called when the user changes any data filters.
 ChartView.prototype.filter_data = function() {
   var grouped_filters = [];
   _.map(this.state.active_filters, function(filter) {

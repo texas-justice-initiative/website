@@ -15,25 +15,29 @@ get_header();
     <main id="main" class="site-main">
 
     <?php
-    // Bring in data from WordPress page
-    while ( have_posts() ) :
-     the_post();
-
-     get_template_part( 'template-parts/content', 'page' );
-
-    endwhile;
+      // Bring in data from WordPress page
+      while ( have_posts() ) :
+       the_post();
+       get_template_part( 'template-parts/content', 'page' );
+      endwhile;
     ?>
 
 <script>
   // See js/tji-datasets-explore.js
   jQuery(function(){
-    var chartView = new ChartView([
-      {type: 'bar', group_by:'year'},
-      {type: 'doughnut', group_by:'race'},
-      {type: 'doughnut', group_by:'sex'},
-      {type: 'doughnut', group_by:'manner_of_death'},
-      {type: 'doughnut', group_by:'age_group'},
-    ], '#js-TJIChartView', '#secondary', '<div class="col-sm-12 col-lg-6" />', '<div class="col-sm-12">{count} records</div>');
+    var chartView = new ChartView(
+      [
+        {type: 'bar', group_by:'year'},
+        {type: 'doughnut', group_by:'race'},
+        {type: 'doughnut', group_by:'sex'},
+        {type: 'doughnut', group_by:'manner_of_death'},
+        {type: 'doughnut', group_by:'age_group'},
+      ],
+      '#js-TJIChartView',  // Element to build the charts into
+      '#secondary',  // Element to put the filter panel inside
+      '<div class="col-sm-12 col-lg-6" />',  // Wrapper for chart canvases
+      '<div class="col-sm-12">{count} records</div>'  // Template for record count element
+    );
   })
 </script>
 
@@ -44,7 +48,6 @@ get_header();
 
 <aside id="secondary">
 </aside>
-
 
 <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
