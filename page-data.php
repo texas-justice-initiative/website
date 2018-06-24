@@ -63,30 +63,10 @@ get_header();
 
   TJIGroupByBarChart.prototype.type = 'bar';
 
-  TJIGroupByBarChart.prototype.groupby_colormaps = {
-    'race': {
-      'WHITE': COLOR_TJI_BLUE,
-      'BLACK': COLOR_TJI_RED,
-      'HISPANIC': COLOR_TJI_PURPLE,
-      'OTHER': COLOR_TJI_DEEPBLUE,
-    },
-    'sex': {
-      'M': COLOR_TJI_BLUE,
-      'F': COLOR_TJI_RED,
-    },
-    'year': {
-      2005: COLOR_INCOMPLETE_YEARS,
-      'default': COLOR_TJI_BLUE
-    },
-    'default': [
-      COLOR_TJI_BLUE, COLOR_TJI_RED, COLOR_TJI_DEEPBLUE, COLOR_TJI_PURPLE,
-      COLOR_TJI_YELLOW, COLOR_TJI_TEAL, COLOR_TJI_DEEPRED, COLOR_TJI_DEEPPURPLE,
-    ]
-  }
+  TJIGroupByBarChart.prototype.colormap = COLOR_TJI_BLUE;
 
   TJIGroupByBarChart.prototype.create = function(data) {
     var grouped = this.get_group_counts(data);
-    var colors = this.get_group_colors(grouped.keys);
     this.chart = new Chart(document.getElementById(this.elt_id).getContext('2d'), {
       type: this.type,
       data: {
@@ -95,7 +75,7 @@ get_header();
           {
             data: grouped.counts,
             fill: false,
-            backgroundColor: colors,
+            backgroundColor: this.colormap,
             lineTension: 0.1
           }
         ]
@@ -136,14 +116,6 @@ get_header();
     return {};
   }
 
-  TJIGroupByBarChart.prototype.get_group_colors = function(keys) {
-    var colormap = this.groupby_colormaps[this.groupBy];
-    if (!colormap) return this.groupby_colormaps['default'];
-    return _.map(keys, function(k) {
-      return colormap[k] ? colormap[k] : colormap['default'];
-    })
-  }
-
   TJIGroupByBarChart.prototype.get_group_counts = function(data) {
     data = _.filter(data, this.groupBy);
     var grouped = _.groupBy(data, this.groupBy);
@@ -165,6 +137,10 @@ get_header();
   TJIGroupByDonutChart.prototype = Object.create(TJIGroupByBarChart.prototype);
   TJIGroupByDonutChart.prototype.constructor = TJIGroupByDonutChart;
   TJIGroupByDonutChart.prototype.type = 'doughnut';
+  TJIGroupByDonutChart.prototype.colormap = [
+    COLOR_TJI_BLUE, COLOR_TJI_RED, COLOR_TJI_DEEPBLUE, COLOR_TJI_PURPLE,
+    COLOR_TJI_YELLOW, COLOR_TJI_TEAL, COLOR_TJI_DEEPRED, COLOR_TJI_DEEPPURPLE,
+  ];
   TJIGroupByDonutChart.prototype.get_options_overrides = function() {
     return {
       scales: {},
