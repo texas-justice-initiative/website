@@ -146,9 +146,9 @@ TJIGroupByDoughnutChart.prototype.get_options_overrides = function() {
     scales: {},
     legend: {
       display: true,
-      position: 'left',
+      position: 'bottom',
       labels: {
-        fontSize: 18,
+        fontSize: 12,
       }
     },
     pieceLabel: {
@@ -295,7 +295,7 @@ ChartView.prototype.create_charts = function() {
   this.state.$count = jQuery(this.count_template.replace('{count}', this.state.data.length)).prependTo(this.charts_elt_id);
   _.each(this.chart_configs, function(config, i){
     var id = 'tjichart_' + i;
-    jQuery(that.chart_wrapper).append('<canvas id="'+id+'"/>').appendTo(that.charts_elt_id);
+    jQuery(that.chart_wrapper).append('<canvas id="'+id+'" height="1" width="1"/>').appendTo(that.charts_elt_id);
     
     var chart_constructor;
     switch(config.type) {

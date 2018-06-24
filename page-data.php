@@ -24,7 +24,6 @@ get_header();
     endwhile;
     ?>
 
-
 <script>
   // See js/tji-datasets-explore.js
   jQuery(function(){
