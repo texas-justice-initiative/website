@@ -51,12 +51,13 @@ get_header();
   var COLOR_TJI_DEEPRED = '#872729';
   var COLOR_TJI_DEEPPURPLE = '#2D1752';
 
-  var COLOR_MISSING_DATA = '#AAAAAA'
+  var COLOR_INCOMPLETE_YEARS = '#AAAAAA'
 
-  var TJIGroupByBarChart = function(elt_id, groupBy, data) {
+  var TJIGroupByBarChart = function(elt_id, groupBy, data, missing_data_label) {
     this.elt_id = elt_id;
     this.groupBy = groupBy;
     this.chart = null;
+    this.missing_data_label = missing_data_label || '(not given)';
     this.create(data);
   }
 
@@ -74,7 +75,7 @@ get_header();
       'F': COLOR_TJI_RED,
     },
     'year': {
-      2005: COLOR_MISSING_DATA,
+      2005: COLOR_INCOMPLETE_YEARS,
       'default': COLOR_TJI_BLUE
     },
     'default': [
@@ -147,6 +148,10 @@ get_header();
     data = _.filter(data, this.groupBy);
     var grouped = _.groupBy(data, this.groupBy);
     var keys = _.sortBy(_.keys(grouped));
+    if (keys.indexOf(this.missing_data_label) !== -1) {
+      keys.splice(keys.indexOf(this.missing_data_label), 1);
+      keys.push(this.missing_data_label);
+    }
     var counts = _.map(keys, function(k){ return grouped[k].length});
     return {
       keys: keys,
@@ -154,8 +159,8 @@ get_header();
     };
   }
 
-  var TJIGroupByDonutChart = function(elt_id, groupBy, data) {
-    TJIGroupByBarChart.call(this, elt_id, groupBy, data);
+  var TJIGroupByDonutChart = function(elt_id, groupBy, data, missing_data_label) {
+    TJIGroupByBarChart.call(this, elt_id, groupBy, data, missing_data_label);
   }
   TJIGroupByDonutChart.prototype = Object.create(TJIGroupByBarChart.prototype);
   TJIGroupByDonutChart.prototype.constructor = TJIGroupByDonutChart;
@@ -184,7 +189,7 @@ get_header();
     };
   }
 
-  var ChartView = function(url){
+  var ChartView = function(url, missing_data_label){
 
     this.state = {
       data: null,
@@ -192,6 +197,10 @@ get_header();
       charts: [],
       url: url,
     }
+
+    this.filters = null;
+
+    this.missing_data_label = missing_data_label || '(not given)';
 
     this.initialize();
   }
@@ -201,8 +210,10 @@ get_header();
     jQuery.getJSON(this.state.url)
       .done(function(data){
         that.state.data = data;
-        that.parse_data()
+        that.parse_data();
         that.create_charts();
+        that.create_filter_panel();
+        that.attach_events();
       })
       .fail(function(e){
         console.log('error fetching data from: ' + this.state.url, e);
@@ -210,13 +221,23 @@ get_header();
   }
 
   ChartView.prototype.parse_data = function() {
-    _.each(this.state.data, function(data_row) {
-      //build column for year
-      data_row['year'] = parseInt(data_row['death_date'].substring(0, 4));
+
+    var that = this;
+    var column_whitelist = [
+      'year', 'race', 'sex', 'manner_of_death', 'age_group',
+      'type_of_custody', 'death_location_type', 'means_of_death',
+    ]
+
+      // Create new columns
+
+    _.each(this.state.data, function(data_row, i) {
+      // Build column for year
+      data_row['year'] = data_row['death_date'].substring(0, 4);
+
+      // Create age group buckets
       if (data_row['age_at_time_of_death'] < 0) {
-        data_row['age_group'] = undefined;
+        data_row['age_group'] = null;
       } else {
-        //create age group buckets
         age_decade = Math.floor(data_row['age_at_time_of_death'] / 10) * 10
         if (age_decade > 59) {
           data_row['age_group'] = '60+'
@@ -224,15 +245,70 @@ get_header();
           data_row['age_group'] = age_decade + '-' + (age_decade + 9)
         }
       }
+
+      _.each(column_whitelist, function(key) {
+        if (data_row[key] === undefined || data_row[key] === null || data_row[key] === '') {
+          data_row[key] = that.missing_data_label;
+        }
+      });
     });
+
+    // Generate filter values
+
+    filters = []
+    _.each(column_whitelist, function(column) {
+      // Get a sorted list of all the unique values for this column
+      values = _.filter(_.sortBy(_.uniq(_.map(that.state.data, column))), _.identity);
+      if (values.indexOf(that.missing_data_label) !== -1) {
+        values.splice(values.indexOf(that.missing_data_label), 1);
+        values.push(that.missing_data_label);
+      }
+      filters.push({
+        key: column,
+        values: values
+      });
+    });
+    this.filters = filters;
+  }
+
+  // <form id="js-filters">
+  //     <fieldset>
+  // <input id="Male" type="checkbox" name="sex" value="M" checked>
+
+  //       <legend>Sex</legend>
+  ChartView.prototype.create_filter_panel = function() {
+    var $filters = jQuery('<form id="js-filters" />');
+    _.each(this.filters, function(f) {
+      var fieldset = jQuery('<fieldset><legend>' + f.key.replace(/_/g, " ") + '</legend></fieldset>');
+      _.each(f.values, function(v) {
+        var input = jQuery('<input/>', {
+          type: "checkbox",
+          checked: "checked",
+          id: v,
+          name: f.key,
+          value: v,
+        });
+        var label = jQuery('<label/>', {
+          for: v,
+        }).text(v);
+        fieldset.append(jQuery('<div></div>').append(input, label));
+      });
+      $filters.append(fieldset);
+    });
+    jQuery('#secondary').append($filters);
   }
 
   ChartView.prototype.create_charts = function() {
-    this.state.charts.push(new TJIGroupByBarChart('chart1', 'year', this.state.data));
-    this.state.charts.push(new TJIGroupByDonutChart('chart2', 'race', this.state.data));
-    this.state.charts.push(new TJIGroupByDonutChart('chart3', 'sex', this.state.data));
-    this.state.charts.push(new TJIGroupByDonutChart('chart4', 'manner_of_death', this.state.data));
-    this.state.charts.push(new TJIGroupByDonutChart('chart5', 'age_group', this.state.data));
+    this.state.charts.push(
+      new TJIGroupByBarChart('chart1', 'year', this.state.data, this.missing_data_label));
+    this.state.charts.push(
+      new TJIGroupByDonutChart('chart2', 'race', this.state.data, this.missing_data_label));
+    this.state.charts.push(
+      new TJIGroupByDonutChart('chart3', 'sex', this.state.data, this.missing_data_label));
+    this.state.charts.push(
+      new TJIGroupByDonutChart('chart4', 'manner_of_death', this.state.data, this.missing_data_label));
+    this.state.charts.push(
+      new TJIGroupByDonutChart('chart5', 'age_group', this.state.data, this.missing_data_label));
   }
 
   ChartView.prototype.attach_events = function() {
@@ -255,7 +331,7 @@ get_header();
 
     var data = _.filter(this.state.data, function(val){
       for (filter in grouped_filters) {
-        if (grouped_filters[filter].indexOf(val[filter]) === -1 ) return false;
+        if (val[filter] && grouped_filters[filter].indexOf(val[filter]) === -1 ) return false;
       }
       return true;
     })
@@ -270,7 +346,6 @@ get_header();
   }
 
   ChartView.prototype.initialize = function() {
-    this.attach_events();
     this.get_data();
   }
 
@@ -312,30 +387,6 @@ total deaths in police custody since 2005
 </main></div>
 
 <aside id="secondary">
-  <form id="js-filters">
-      <fieldset>
-        <legend>Sex</legend>
-          <div>
-          <input id="Male" type="checkbox" name="sex" value="M" checked>
-          <label for="Male">Male</label>
-          </div>
-          <div>
-          <input id="Female" type="checkbox" name="sex" value="F" checked>
-          <label for="Female">Female</label>
-          </div>
-      </fieldset>
-      <fieldset>
-        <legend>Race</legend>
-          <div>
-          <input id="Male1" type="checkbox" name="race" value="BLACK" checked>
-          <label for="Male1">BLACK</label>
-          </div>
-          <div>
-          <input id="Female1" type="checkbox" name="race" value="WHITE" checked>
-          <label for="Female1">WHITE</label>
-          </div>
-      </fieldset>
-  </form>
 </aside>
 
 
