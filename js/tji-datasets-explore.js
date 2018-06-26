@@ -38,19 +38,22 @@ TJIGroupByBarChart.prototype.type = 'bar';
 
 TJIGroupByBarChart.prototype.color_palette = [COLOR_TJI_BLUE];
 
-// Create the chart for the first time
+// Create the chart for the first time.
+// This also permanently sets the legend and color mapping.
 TJIGroupByBarChart.prototype.create = function(data) {
   var that = this;
-  var grouped = this.get_group_counts(data);
+  var grouped = this.get_sorted_group_counts(data);
 
   var colors = _.map(grouped.keys, function(k, i) {
     return that.color_palette[i % that.color_palette.length];
   })
 
   // 'create' is only run with the full data set.
-  // We store the 'full' set of unique groupBy values,
-  // since want to show every unique value in the legend,
-  // even if the user filters some of them out later.
+  // While the user may later filter out certain values
+  // (e.g. a particular race or gender), we want to continue
+  // to show every possible value in the legend, and keep
+  // the color mapping the same. Hence we store the full set
+  // of groupBy keys now, in their sorted order.
   this.ordered_keys = grouped.keys
 
   // Build the chart
@@ -73,10 +76,8 @@ TJIGroupByBarChart.prototype.create = function(data) {
 
 // Update the chart with a new (filtered) dataset
 TJIGroupByBarChart.prototype.update = function(data) {
-  var that = this;
-  var grouped = this.get_group_counts(data);
+  var grouped = this.get_sorted_group_counts(data);
   this.chart.data.datasets[0].data = grouped.counts;
-  this.chart.data.labels = grouped.keys;
   this.chart.update();
 }
 
@@ -113,7 +114,7 @@ TJIGroupByBarChart.prototype.get_options_overrides = function() {
 //     keys: [list of sorted, unique groupby keys],
 //     counts: [list of number of records for each key]
 //   }
-TJIGroupByBarChart.prototype.get_group_counts = function(data) {
+TJIGroupByBarChart.prototype.get_sorted_group_counts = function(data) {
   data = _.filter(data, this.groupBy);
   var grouped = _.groupBy(data, this.groupBy);
   var keys;
@@ -121,6 +122,7 @@ TJIGroupByBarChart.prototype.get_group_counts = function(data) {
     keys = this.ordered_keys
   } else {
     var keys = _.sortBy(_.keys(grouped));
+    // Move the special "missing data" label to the last position
     if (keys.indexOf(this.missing_data_label) !== -1) {
       keys.splice(keys.indexOf(this.missing_data_label), 1);
       keys.push(this.missing_data_label);
@@ -193,7 +195,7 @@ var TJIChartView = function(chart_configs, charts_elt_id, filters_elt_id, chart_
 
   this.state = {
     data: null,
-    active_filters: [],  // put active filters here
+    active_filters: [],
     charts: [],
     $count: null
   }
@@ -340,7 +342,10 @@ TJIChartView.prototype.attach_events = function() {
 
 // Called when the user changes any data filters.
 TJIChartView.prototype.filter_data = function() {
-  var grouped_filters = [];
+  // Create a mapping from filter name to active values.
+  // E.g. "race" to ["WHITE", "HISPANIC"] if those are
+  // the only boxes checked.
+  var grouped_filters = {}
   _.map(this.state.active_filters, function(filter) {
     if(grouped_filters[filter.name]) {
       grouped_filters[filter.name].push(filter.value);
