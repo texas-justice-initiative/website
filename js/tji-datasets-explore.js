@@ -235,8 +235,14 @@ TJIChartView.prototype.get_data = function() {
     })
 }
 
-// The data is compressed into a small json object for fast page loading,
-// but we expand it here for convenient manipulation in this app.
+/* The data is compressed into a small json object for fast page loading,
+ * which we decompress here for convenient manipulation in this app.
+ * 
+ * Currently, the data is compressed by this script in our data-processing repo:
+ * https://github.com/texas-justice-initiative/data-processing/blob/master/data_cleaning/create_compressed_cdr_for_website.ipynb 
+ * 
+ * See that file for an explanation of the compression and examples.
+ */
 TJIChartView.prototype.decompress_data = function() {
   // We want a list of json objects, one per record. We will build these
   // out incrementally.
