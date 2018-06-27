@@ -22,6 +22,8 @@ get_header();
       endwhile;
     ?>
 
+<div class="loader"></div>
+
 <div id="js-TJIChartView" class="row">
 </div>
 
@@ -50,7 +52,7 @@ get_header();
       '#js-TJIChartView',  // Element to build the charts into
       '#secondary',  // Element to put the filter panel inside
       '<div class="col-sm-12 col-lg-6" />',  // Wrapper for chart canvases
-      '<div class="col-sm-12">{count} records</div>'  // Template for record count element
+      '<div class="col-sm-12 count">{count} records</div>'  // Template for record count element
     );
   })
 </script>

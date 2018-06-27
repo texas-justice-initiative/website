@@ -223,6 +223,7 @@ TJIChartView.prototype.get_data = function() {
   var url = '/cdr_compressed.json';
   jQuery.getJSON(url)
     .done(function(data){
+      jQuery('.loader').hide();
       that.state.data = data;
       that.decompress_data();
       that.transform_data();
@@ -392,8 +393,9 @@ TJIChartView.prototype.filter_data = function() {
   this.update_charts(data);
 }
 
-TJIChartView.prototype.update_charts = function(data) {
-  this.state.$count.text(data.length + ' records');
+TJIChartView.prototype.update_charts = function(data, full_data) {
+  var count_text = ' records ' + (data.length < this.state.data.length ? '[filtered]' : 'total');
+  this.state.$count.text(data.length + count_text);
   _.each(this.state.charts, function(chart){
     chart.update(data);
   })
