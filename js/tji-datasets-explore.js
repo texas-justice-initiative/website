@@ -220,17 +220,42 @@ TJIChartView.prototype.column_whitelist = [
 // of the charts, filter panel, etc.
 TJIChartView.prototype.get_data = function() {
   var that = this;
-  jQuery.getJSON('/cleaned_custodial_death_reports.json')
+  var url = '/cdr_compressed.json';
+  jQuery.getJSON(url)
     .done(function(data){
       that.state.data = data;
+      that.decompress_data();
       that.parse_data();
       that.create_charts();
       that.create_filter_panel();
       that.attach_events();
     })
-    .fail(function(e){
-      console.log('error fetching data from: ' + this.state.url, e);
+    .fail(function(jqxhr, textStatus, error){
+      console.log('error fetching data from: ' + url, error);
     })
+}
+
+// The data is compressed into a small json object for fast page loading,
+// but we expand it here for convenient manipulation in this app.
+TJIChartView.prototype.decompress_data = function() {
+  // We want a list of json objects, one per record. We will build these
+  // out incrementally.
+  var new_data = [];
+  for (var i = 0; i < this.state.data['_meta']['num_records']; ++i) {
+    new_data.push({});
+  }
+
+  _.forEach(this.state.data, function(compressed_values, column) {
+    if (column == '_meta') return;
+    var values = compressed_values['records'];
+    if (compressed_values['lookup']) {
+      values = _.map(values, function(v){ return compressed_values['lookup'][v]; });
+    }
+    _.each(values, function(v, idx) {
+      new_data[idx][column] = v;
+    });
+  });
+  this.state.data = new_data;
 }
 
 // Apply any data transformations necessary before beginning to build
@@ -239,12 +264,7 @@ TJIChartView.prototype.parse_data = function() {
 
   var that = this;
 
-    // Create new columns
-
   _.each(this.state.data, function(data_row, i) {
-    // Build column for year
-    data_row['year'] = data_row['death_date'].substring(0, 4);
-
     // Create age group buckets
     if (data_row['age_at_time_of_death'] < 0) {
       data_row['age_group'] = null;
@@ -257,7 +277,8 @@ TJIChartView.prototype.parse_data = function() {
       }
     }
 
-    _.each(this.column_whitelist, function(key) {
+    // Replace missing values with a special label value
+    _.each(that.column_whitelist, function(key, idx) {
       if (data_row[key] === undefined || data_row[key] === null || data_row[key] === '') {
         data_row[key] = that.missing_data_label;
       }
