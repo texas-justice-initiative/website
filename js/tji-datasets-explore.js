@@ -269,7 +269,9 @@ TJIChartView.prototype.transform_data = function() {
 
   _.each(this.state.data, function(data_row, i) {
     // Create age group buckets
-    if (data_row['age_at_time_of_death'] < 0) {
+    if (data_row['age_at_time_of_death'] < 0 ||
+        data_row['age_at_time_of_death'] == undefined ||
+        data_row['age_at_time_of_death'] == null) {
       data_row['age_group'] = null;
     } else {
       age_decade = Math.floor(data_row['age_at_time_of_death'] / 10) * 10
