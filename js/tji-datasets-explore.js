@@ -225,7 +225,7 @@ TJIChartView.prototype.get_data = function() {
     .done(function(data){
       that.state.data = data;
       that.decompress_data();
-      that.parse_data();
+      that.transform_data();
       that.create_charts();
       that.create_filter_panel();
       that.attach_events();
@@ -241,26 +241,23 @@ TJIChartView.prototype.decompress_data = function() {
   // We want a list of json objects, one per record. We will build these
   // out incrementally.
   var new_data = [];
-  for (var i = 0; i < this.state.data['_meta']['num_records']; ++i) {
-    new_data.push({});
-  }
+  _.times(this.state.data['meta']['num_records'], function(){ new_data.push({}); });
 
-  _.forEach(this.state.data, function(compressed_values, column) {
-    if (column == '_meta') return;
-    var values = compressed_values['records'];
-    if (compressed_values['lookup']) {
-      values = _.map(values, function(v){ return compressed_values['lookup'][v]; });
-    }
-    _.each(values, function(v, idx) {
-      new_data[idx][column] = v;
-    });
+  var that = this;
+  var meta = this.state.data.meta;
+  var records = this.state.data.records;
+  _.forEach(records, function(values, column) {
+      var lookup  = meta.lookups[column] || {};
+      _.each(values, function(v, idx) {
+          new_data[idx][column] = lookup[v];
+      });
   });
   this.state.data = new_data;
 }
 
 // Apply any data transformations necessary before beginning to build
 // out the rest of the view.
-TJIChartView.prototype.parse_data = function() {
+TJIChartView.prototype.transform_data = function() {
 
   var that = this;
 
