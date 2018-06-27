@@ -185,26 +185,27 @@ TJIGroupByDoughnutChart.prototype.get_options_overrides = function() {
 // *   charts_elt_id: id of HTML element to put charts in
 // *   filters_elt_id: id of HTML element to put filter checkboxes in
 // *   chart_wrapper: HTML to wrap around each chart's canvas object
-// *   count_template: HTML for the "showing this man records" element
-// *                   at the top, containing a "{count}" placeholder somewhere
-// *                   (which TJIChartView will replace with the record count).
+// *   record_count_template: HTML for the "showing this man records" element
+// *       at the top, containing a "{count}" placeholder somewhere
+// *       (which TJIChartView will replace with the record count).
 // ********************************************************************
 
 
-var TJIChartView = function(chart_configs, charts_elt_id, filters_elt_id, chart_wrapper, count_template){
+var TJIChartView = function(chart_configs, charts_elt_id, filters_elt_id,
+                            chart_wrapper, record_count_template){
 
   this.state = {
     data: null,
     active_filters: [],
     charts: [],
-    $count: null
+    $record_count: null
   }
 
   this.chart_configs = chart_configs;
   this.charts_elt_id = charts_elt_id;
   this.filters_elt_id = filters_elt_id;
   this.chart_wrapper = chart_wrapper;
-  this.count_template = count_template;
+  this.record_count_template = record_count_template;
   this.filters = null;
 
   this.get_data();
@@ -223,6 +224,7 @@ TJIChartView.prototype.get_data = function() {
   var url = '/cdr_compressed.json';
   jQuery.getJSON(url)
     .done(function(data){
+      jQuery(that.charts_elt_id).empty();
       that.state.data = data;
       that.decompress_data();
       that.transform_data();
@@ -338,7 +340,7 @@ TJIChartView.prototype.create_filter_panel = function() {
 
 TJIChartView.prototype.create_charts = function() {
   var that = this;
-  this.state.$count = jQuery(this.count_template.replace('{count}', this.state.data.length)).prependTo(this.charts_elt_id);
+  this.update_record_count(this.state.data);
   _.each(this.chart_configs, function(config, i){
     var id = 'tjichart_' + i;
     jQuery(that.chart_wrapper).append('<canvas id="'+id+'" height="1" width="1"/>').appendTo(that.charts_elt_id);
@@ -392,8 +394,13 @@ TJIChartView.prototype.filter_data = function() {
 }
 
 TJIChartView.prototype.update_charts = function(data) {
-  this.state.$count.text(data.length + ' records');
+  this.update_record_count(data);
   _.each(this.state.charts, function(chart){
     chart.update(data);
   })
+}
+
+TJIChartView.prototype.update_record_count = function(data) {
+  if (this.state.$record_count) jQuery(this.state.$record_count).remove();
+  this.state.$record_count = jQuery(this.record_count_template.replace('{count}', data.length)).prependTo(this.charts_elt_id);
 }
