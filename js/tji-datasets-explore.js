@@ -277,11 +277,13 @@ TJIChartView.prototype.parse_data = function() {
       }
     }
 
-    // Replace missing values with a special label value
-    _.each(that.column_whitelist, function(key, idx) {
-      if (data_row[key] === undefined || data_row[key] === null || data_row[key] === '') {
+    _.each(data_row, function(value, key) {
+      // Replace missing values with a special label value
+      if (value === undefined || value === null || value === '') {
         data_row[key] = that.missing_data_label;
       }
+      // Convert everything to string, so the filters can match correctly.
+      data_row[key] = '' + data_row[key];
     });
   });
 }
