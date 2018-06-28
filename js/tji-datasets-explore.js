@@ -396,7 +396,7 @@ TJIChartView.prototype.filter_data = function() {
   this.update_charts(data);
 }
 
-TJIChartView.prototype.update_charts = function(data, full_data) {
+TJIChartView.prototype.update_charts = function(data) {
   var count_text = ' records ' + (data.length < this.state.data.length ? '[filtered]' : 'total');
   this.state.$count.text(data.length + count_text);
   _.each(this.state.charts, function(chart){
