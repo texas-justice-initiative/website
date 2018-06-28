@@ -191,13 +191,15 @@ TJIGroupByDoughnutChart.prototype.get_options_overrides = function() {
 // ********************************************************************
 
 
-var TJIChartView = function(chart_configs, charts_elt_id, filters_elt_id, chart_wrapper, count_template){
+var TJIChartView = function(chart_configs, charts_elt_id, filters_elt_id,
+                            chart_wrapper, count_template, loader_html){
 
   this.state = {
     data: null,
     active_filters: [],
     charts: [],
-    $count: null
+    $count: null,
+    $loader: null
   }
 
   this.chart_configs = chart_configs;
@@ -206,6 +208,7 @@ var TJIChartView = function(chart_configs, charts_elt_id, filters_elt_id, chart_
   this.chart_wrapper = chart_wrapper;
   this.count_template = count_template;
   this.filters = null;
+  this.state.$loader = jQuery(loader_html).prependTo(this.charts_elt_id);
 
   this.get_data();
 }
@@ -223,7 +226,7 @@ TJIChartView.prototype.get_data = function() {
   var url = '/cdr_compressed.json';
   jQuery.getJSON(url)
     .done(function(data){
-      jQuery('.loader').hide();
+      that.state.$loader.hide();
       that.state.data = data;
       that.decompress_data();
       that.transform_data();
