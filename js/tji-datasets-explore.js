@@ -211,7 +211,7 @@ var TJIChartView = function(chart_configs, charts_elt_id, filters_elt_id, chart_
 }
 
 TJIChartView.prototype.missing_data_label = '(not given)';
-TJIChartView.prototype.column_whitelist = [
+TJIChartView.prototype.filter_columns = [
   'year', 'race', 'sex', 'manner_of_death', 'age_group',
   'type_of_custody', 'death_location_type', 'means_of_death',
 ];
@@ -220,33 +220,57 @@ TJIChartView.prototype.column_whitelist = [
 // of the charts, filter panel, etc.
 TJIChartView.prototype.get_data = function() {
   var that = this;
-  jQuery.getJSON('/cleaned_custodial_death_reports.json')
+  var url = '/cdr_compressed.json';
+  jQuery.getJSON(url)
     .done(function(data){
       that.state.data = data;
-      that.parse_data();
+      that.decompress_data();
+      that.transform_data();
       that.create_charts();
       that.create_filter_panel();
       that.attach_events();
     })
-    .fail(function(e){
-      console.log('error fetching data from: ' + this.state.url, e);
+    .fail(function(jqxhr, textStatus, error){
+      console.log('error fetching data from: ' + url, error);
     })
+}
+
+/* The data is compressed into a small json object for fast page loading,
+ * which we decompress here for convenient manipulation in this app.
+ * 
+ * Currently, the data is compressed by this script in our data-processing repo:
+ * https://github.com/texas-justice-initiative/data-processing/blob/master/data_cleaning/create_compressed_cdr_for_website.ipynb 
+ * 
+ * See that file for an explanation of the compression and examples.
+ */
+TJIChartView.prototype.decompress_data = function() {
+  var that = this;
+  var meta = this.state.data.meta;
+  var records = this.state.data.records;
+  // We want a list of json objects, one per record. We will build these
+  // out incrementally.
+  var new_data = [];
+  _.times(this.state.data['meta']['num_records'], function(){ new_data.push({}); });
+  _.each(records, function(values, column) {
+      var lookup  = meta.lookups[column] || {};
+      _.each(values, function(v, idx) {
+          new_data[idx][column] = lookup[v];
+      });
+  });
+  this.state.data = new_data;
 }
 
 // Apply any data transformations necessary before beginning to build
 // out the rest of the view.
-TJIChartView.prototype.parse_data = function() {
+TJIChartView.prototype.transform_data = function() {
 
   var that = this;
 
-    // Create new columns
-
   _.each(this.state.data, function(data_row, i) {
-    // Build column for year
-    data_row['year'] = data_row['death_date'].substring(0, 4);
-
     // Create age group buckets
-    if (data_row['age_at_time_of_death'] < 0) {
+    if (data_row['age_at_time_of_death'] < 0 ||
+        data_row['age_at_time_of_death'] === undefined ||
+        data_row['age_at_time_of_death'] === null) {
       data_row['age_group'] = null;
     } else {
       age_decade = Math.floor(data_row['age_at_time_of_death'] / 10) * 10
@@ -257,10 +281,13 @@ TJIChartView.prototype.parse_data = function() {
       }
     }
 
-    _.each(this.column_whitelist, function(key) {
-      if (data_row[key] === undefined || data_row[key] === null || data_row[key] === '') {
+    _.each(data_row, function(value, key) {
+      // Replace missing values with a special label value
+      if (value === undefined || value === null || value === '') {
         data_row[key] = that.missing_data_label;
       }
+      // Convert everything to string, so the filters can match correctly.
+      data_row[key] = '' + data_row[key];
     });
   });
 }
@@ -273,7 +300,7 @@ TJIChartView.prototype.create_filter_panel = function() {
   var that = this
 
   // Get a sorted list of all the unique values for each column
-  _.each(this.column_whitelist, function(column) {
+  _.each(this.filter_columns, function(column) {
     values = _.filter(_.sortBy(_.uniq(_.map(that.state.data, column))), _.identity);
     if (values.indexOf(that.missing_data_label) !== -1) {
       values.splice(values.indexOf(that.missing_data_label), 1);
