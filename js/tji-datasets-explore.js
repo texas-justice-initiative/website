@@ -211,7 +211,7 @@ var TJIChartView = function(chart_configs, charts_elt_id, filters_elt_id, chart_
 }
 
 TJIChartView.prototype.missing_data_label = '(not given)';
-TJIChartView.prototype.column_whitelist = [
+TJIChartView.prototype.filter_columns = [
   'year', 'race', 'sex', 'manner_of_death', 'age_group',
   'type_of_custody', 'death_location_type', 'means_of_death',
 ];
@@ -244,15 +244,14 @@ TJIChartView.prototype.get_data = function() {
  * See that file for an explanation of the compression and examples.
  */
 TJIChartView.prototype.decompress_data = function() {
+  var that = this;
+  var meta = this.state.data.meta;
+  var records = this.state.data.records;
   // We want a list of json objects, one per record. We will build these
   // out incrementally.
   var new_data = [];
   _.times(this.state.data['meta']['num_records'], function(){ new_data.push({}); });
-
-  var that = this;
-  var meta = this.state.data.meta;
-  var records = this.state.data.records;
-  _.forEach(records, function(values, column) {
+  _.each(records, function(values, column) {
       var lookup  = meta.lookups[column] || {};
       _.each(values, function(v, idx) {
           new_data[idx][column] = lookup[v];
@@ -270,8 +269,8 @@ TJIChartView.prototype.transform_data = function() {
   _.each(this.state.data, function(data_row, i) {
     // Create age group buckets
     if (data_row['age_at_time_of_death'] < 0 ||
-        data_row['age_at_time_of_death'] == undefined ||
-        data_row['age_at_time_of_death'] == null) {
+        data_row['age_at_time_of_death'] === undefined ||
+        data_row['age_at_time_of_death'] === null) {
       data_row['age_group'] = null;
     } else {
       age_decade = Math.floor(data_row['age_at_time_of_death'] / 10) * 10
@@ -301,7 +300,7 @@ TJIChartView.prototype.create_filter_panel = function() {
   var that = this
 
   // Get a sorted list of all the unique values for each column
-  _.each(this.column_whitelist, function(column) {
+  _.each(this.filter_columns, function(column) {
     values = _.filter(_.sortBy(_.uniq(_.map(that.state.data, column))), _.identity);
     if (values.indexOf(that.missing_data_label) !== -1) {
       values.splice(values.indexOf(that.missing_data_label), 1);
