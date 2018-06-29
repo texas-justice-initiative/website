@@ -23,6 +23,8 @@ get_header();
     ?>
 
 <div id="js-TJIChartView" class="row">
+	<h2>Current Data Set: <span class="tji-current-dataset"></span></h2>
+	
 </div>
 
 </main></div>
@@ -49,8 +51,8 @@ get_header();
       ],
       '#js-TJIChartView',  // Element to build the charts into
       '#secondary',  // Element to put the filter panel inside
-      '<div class="col-sm-12 col-lg-6" />',  // Wrapper for chart canvases
-      '<div class="col-sm-12">{count} records</div>'  // Template for record count element
+      '<div class="col-xs-12 col-sm-6 col-md-4 tji-chart" />',  // Wrapper for chart canvases
+      '<div class="col-sm-12 tji-data-count">{count} records</div>'  // Template for record count element
     );
   })
 </script>

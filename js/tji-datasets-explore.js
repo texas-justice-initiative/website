@@ -98,6 +98,9 @@ TJIGroupByBarChart.prototype.get_options = function() {
           beginAtZero:true
         }
       }]
+    },
+    layout: {
+	    padding: 20
     }
   }
   return _.extend(options, this.get_options_overrides());
@@ -311,7 +314,7 @@ TJIChartView.prototype.create_filter_panel = function() {
 
 TJIChartView.prototype.create_charts = function() {
   var that = this;
-  this.state.$count = jQuery(this.count_template.replace('{count}', this.state.data.length)).prependTo(this.charts_elt_id);
+  this.state.$count = jQuery(this.count_template.replace('{count}', this.state.data.length)).appendTo(this.charts_elt_id);
   _.each(this.chart_configs, function(config, i){
     var id = 'tjichart_' + i;
     jQuery(that.chart_wrapper).append('<canvas id="'+id+'" height="1" width="1"/>').appendTo(that.charts_elt_id);
