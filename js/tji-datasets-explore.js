@@ -188,33 +188,34 @@ TJIGroupByDoughnutChart.prototype.get_options_overrides = function() {
 // *   charts_elt_id: id of HTML element to put charts in
 // *   filters_elt_id: id of HTML element to put filter checkboxes in
 // *   chart_wrapper: HTML to wrap around each chart's canvas object
-// *   count_template: HTML for the "showing this man records" element
-// *                   at the top, containing a "{count}" placeholder somewhere
-// *                   (which TJIChartView will replace with the record count).
+// *   record_count_template: HTML for the "showing this man records" element
+// *       at the top, containing a "{count}" placeholder somewhere
+// *       (which TJIChartView will replace with the record count).
 // ********************************************************************
 
 
-var TJIChartView = function(chart_configs, charts_elt_id, filters_elt_id, chart_wrapper, count_template){
+var TJIChartView = function(chart_configs, charts_elt_id, filters_elt_id,
+                            chart_wrapper, record_count_template){
 
   this.state = {
     data: null,
     active_filters: [],
     charts: [],
-    $count: null
+    $record_count: null
   }
 
   this.chart_configs = chart_configs;
   this.charts_elt_id = charts_elt_id;
   this.filters_elt_id = filters_elt_id;
   this.chart_wrapper = chart_wrapper;
-  this.count_template = count_template;
+  this.record_count_template = record_count_template;
   this.filters = null;
 
   this.get_data();
 }
 
 TJIChartView.prototype.missing_data_label = '(not given)';
-TJIChartView.prototype.column_whitelist = [
+TJIChartView.prototype.filter_columns = [
   'year', 'race', 'sex', 'manner_of_death', 'age_group',
   'type_of_custody', 'death_location_type', 'means_of_death',
 ];
@@ -223,33 +224,58 @@ TJIChartView.prototype.column_whitelist = [
 // of the charts, filter panel, etc.
 TJIChartView.prototype.get_data = function() {
   var that = this;
-  jQuery.getJSON('/cleaned_custodial_death_reports.json')
+  var url = '/cdr_compressed.json';
+  jQuery.getJSON(url)
     .done(function(data){
+      jQuery(that.charts_elt_id).empty();
       that.state.data = data;
-      that.parse_data();
+      that.decompress_data();
+      that.transform_data();
       that.create_charts();
       that.create_filter_panel();
       that.attach_events();
     })
-    .fail(function(e){
-      console.log('error fetching data from: ' + this.state.url, e);
+    .fail(function(jqxhr, textStatus, error){
+      console.log('error fetching data from: ' + url, error);
     })
+}
+
+/* The data is compressed into a small json object for fast page loading,
+ * which we decompress here for convenient manipulation in this app.
+ * 
+ * Currently, the data is compressed by this script in our data-processing repo:
+ * https://github.com/texas-justice-initiative/data-processing/blob/master/data_cleaning/create_compressed_cdr_for_website.ipynb 
+ * 
+ * See that file for an explanation of the compression and examples.
+ */
+TJIChartView.prototype.decompress_data = function() {
+  var that = this;
+  var meta = this.state.data.meta;
+  var records = this.state.data.records;
+  // We want a list of json objects, one per record. We will build these
+  // out incrementally.
+  var new_data = [];
+  _.times(this.state.data['meta']['num_records'], function(){ new_data.push({}); });
+  _.each(records, function(values, column) {
+      var lookup  = meta.lookups[column] || {};
+      _.each(values, function(v, idx) {
+          new_data[idx][column] = lookup[v];
+      });
+  });
+  this.state.data = new_data;
 }
 
 // Apply any data transformations necessary before beginning to build
 // out the rest of the view.
-TJIChartView.prototype.parse_data = function() {
+TJIChartView.prototype.transform_data = function() {
 
   var that = this;
 
-    // Create new columns
-
   _.each(this.state.data, function(data_row, i) {
-    // Build column for year
-    data_row['year'] = data_row['death_date'].substring(0, 4);
-
     // Create age group buckets
-    if (data_row['age_at_time_of_death'] < 0) {
+    if (data_row['age_at_time_of_death'] < 0 ||
+        data_row['age_at_time_of_death'] === undefined ||
+        data_row['age_at_time_of_death'] === null) {
       data_row['age_group'] = null;
     } else {
       age_decade = Math.floor(data_row['age_at_time_of_death'] / 10) * 10
@@ -260,10 +286,13 @@ TJIChartView.prototype.parse_data = function() {
       }
     }
 
-    _.each(this.column_whitelist, function(key) {
-      if (data_row[key] === undefined || data_row[key] === null || data_row[key] === '') {
+    _.each(data_row, function(value, key) {
+      // Replace missing values with a special label value
+      if (value === undefined || value === null || value === '') {
         data_row[key] = that.missing_data_label;
       }
+      // Convert everything to string, so the filters can match correctly.
+      data_row[key] = '' + data_row[key];
     });
   });
 }
@@ -276,7 +305,7 @@ TJIChartView.prototype.create_filter_panel = function() {
   var that = this
 
   // Get a sorted list of all the unique values for each column
-  _.each(this.column_whitelist, function(column) {
+  _.each(this.filter_columns, function(column) {
     values = _.filter(_.sortBy(_.uniq(_.map(that.state.data, column))), _.identity);
     if (values.indexOf(that.missing_data_label) !== -1) {
       values.splice(values.indexOf(that.missing_data_label), 1);
@@ -314,7 +343,7 @@ TJIChartView.prototype.create_filter_panel = function() {
 
 TJIChartView.prototype.create_charts = function() {
   var that = this;
-  this.state.$count = jQuery(this.count_template.replace('{count}', this.state.data.length)).appendTo(this.charts_elt_id);
+  this.update_record_count(this.state.data);
   _.each(this.chart_configs, function(config, i){
     var id = 'tjichart_' + i;
     jQuery(that.chart_wrapper).append('<canvas id="'+id+'" height="1" width="1"/>').appendTo(that.charts_elt_id);
@@ -368,8 +397,13 @@ TJIChartView.prototype.filter_data = function() {
 }
 
 TJIChartView.prototype.update_charts = function(data) {
-  this.state.$count.text(data.length + ' records');
+  this.update_record_count(data);
   _.each(this.state.charts, function(chart){
     chart.update(data);
   })
+}
+
+TJIChartView.prototype.update_record_count = function(data) {
+  if (this.state.$record_count) jQuery(this.state.$record_count).remove();
+  this.state.$record_count = jQuery(this.record_count_template.replace('{count}', data.length)).prependTo(this.charts_elt_id);
 }
