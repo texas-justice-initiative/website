@@ -27,9 +27,7 @@ var COLOR_TJI_DEEPPURPLE = '#2D1752';
 
 var TJIGroupByBarChart = function(elt_id, groupBy, data, missing_data_label) {
   this.elt_id = elt_id;
-  this.title_elt_id = elt_id + "-title";
-  this.canvas_elt_id = elt_id + "-canvas";
-  this.legend_elt_id = elt_id + "-legend";
+  this.$root = $(elt_id);
   this.groupBy = groupBy;
   this.colors = null;
   this.chart = null;
@@ -46,8 +44,10 @@ TJIGroupByBarChart.prototype.color_palette = [COLOR_TJI_BLUE];
 // This also permanently sets the legend and color mapping.
 TJIGroupByBarChart.prototype.create = function(data) {
   var root_elt_selector = '#' + this.elt_id;
-  jQuery('<div class="tji-chart-title">' + this.groupBy.replace(/_/g, " ") + '</div>').attr('id', this.title_elt_id).appendTo(root_elt_selector);
-  jQuery('<canvas class="tji-chart-canvas" height="1" width="1"/>').attr('id', this.canvas_elt_id).appendTo(root_elt_selector);
+  var canvas_id = this.elt_id + '-canvas'
+  var components = []
+  jQuery('<div class="tji-chart-title">' + this.groupBy.replace(/_/g, " ") + '</div>').appendTo(root_elt_selector);
+  jQuery('<canvas class="tji-chart-canvas" height="1" width="1"/>').attr('id', canvas_id).appendTo(root_elt_selector);
 
   var that = this;
   var grouped = this.get_sorted_group_counts(data);
@@ -65,7 +65,7 @@ TJIGroupByBarChart.prototype.create = function(data) {
   this.ordered_keys = grouped.keys
 
   // Build the chart
-  this.chart = new Chart(document.getElementById(this.canvas_elt_id).getContext('2d'), {
+  this.chart = new Chart(document.getElementById(canvas_id).getContext('2d'), {
     type: this.type,
     data: {
       labels: grouped.keys,
@@ -166,13 +166,6 @@ TJIGroupByDoughnutChart.prototype.color_palette = [
 TJIGroupByDoughnutChart.prototype.get_options_overrides = function() {
   return {
     scales: {},
-    legend: {
-      display: false,
-      // position: 'bottom',
-      // labels: {
-      //   fontSize: 12,
-      // }
-    },
     pieceLabel: {
       mode: function (args) {
         return args.percentage + '%';
