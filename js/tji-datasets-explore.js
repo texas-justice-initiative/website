@@ -27,7 +27,11 @@ var COLOR_TJI_DEEPPURPLE = '#2D1752';
 
 var TJIGroupByBarChart = function(elt_id, groupBy, data, missing_data_label) {
   this.elt_id = elt_id;
+  this.title_elt_id = elt_id + "-title";
+  this.canvas_elt_id = elt_id + "-canvas";
+  this.legend_elt_id = elt_id + "-legend";
   this.groupBy = groupBy;
+  this.colors = null;
   this.chart = null;
   this.missing_data_label = missing_data_label || '(not given)';
   this.ordered_keys = null;
@@ -41,10 +45,14 @@ TJIGroupByBarChart.prototype.color_palette = [COLOR_TJI_BLUE];
 // Create the chart for the first time.
 // This also permanently sets the legend and color mapping.
 TJIGroupByBarChart.prototype.create = function(data) {
+  var root_elt_selector = '#' + this.elt_id;
+  jQuery('<div class="tji-chart-title">' + this.groupBy.replace(/_/g, " ") + '</div>').attr('id', this.title_elt_id).appendTo(root_elt_selector);
+  jQuery('<canvas class="tji-chart-canvas" height="1" width="1"/>').attr('id', this.canvas_elt_id).appendTo(root_elt_selector);
+
   var that = this;
   var grouped = this.get_sorted_group_counts(data);
 
-  var colors = _.map(grouped.keys, function(k, i) {
+  this.colors = _.map(grouped.keys, function(k, i) {
     return that.color_palette[i % that.color_palette.length];
   })
 
@@ -57,7 +65,7 @@ TJIGroupByBarChart.prototype.create = function(data) {
   this.ordered_keys = grouped.keys
 
   // Build the chart
-  this.chart = new Chart(document.getElementById(this.elt_id).getContext('2d'), {
+  this.chart = new Chart(document.getElementById(this.canvas_elt_id).getContext('2d'), {
     type: this.type,
     data: {
       labels: grouped.keys,
@@ -65,13 +73,19 @@ TJIGroupByBarChart.prototype.create = function(data) {
         {
           data: grouped.counts,
           fill: false,
-          backgroundColor: colors,
+          backgroundColor: this.colors,
           lineTension: 0.1
         }
       ]
     },
     options: this.get_options()
   });
+
+  // Build our (custom) legend.
+  this.buildLegend(grouped.keys);
+}
+
+TJIGroupByBarChart.prototype.buildLegend = function(keys) {
 }
 
 // Update the chart with a new (filtered) dataset
@@ -85,9 +99,7 @@ TJIGroupByBarChart.prototype.update = function(data) {
 TJIGroupByBarChart.prototype.get_options = function() {
   var options = {
     title: {
-      display: true,
-      text: "By " + this.groupBy.replace(/_/g, " "),  // Convert underscores to spaces
-      fontSize: 36,
+      display: false,
     },
     legend: {
       display: false
@@ -155,11 +167,11 @@ TJIGroupByDoughnutChart.prototype.get_options_overrides = function() {
   return {
     scales: {},
     legend: {
-      display: true,
-      position: 'bottom',
-      labels: {
-        fontSize: 12,
-      }
+      display: false,
+      // position: 'bottom',
+      // labels: {
+      //   fontSize: 12,
+      // }
     },
     pieceLabel: {
       mode: function (args) {
@@ -173,6 +185,14 @@ TJIGroupByDoughnutChart.prototype.get_options_overrides = function() {
       position: 'default'
     }
   };
+}
+
+TJIGroupByDoughnutChart.prototype.buildLegend = function(keys) {
+  var legend = jQuery('<div class="tji-chart-legend"/>').attr('id', this.legend_elt_id).appendTo('#' + this.elt_id);
+  var that = this;
+  _.each(keys, function(k, idx) {
+    jQuery('<span class="tji-legend-item" style="background-color:' + that.colors[idx] + '">' + k + '</div>').appendTo(legend);
+  })
 }
 
 
@@ -342,8 +362,8 @@ TJIChartView.prototype.create_charts = function() {
   var that = this;
   this.update_record_count(this.state.data);
   _.each(this.chart_configs, function(config, i){
-    var id = 'tjichart_' + i;
-    jQuery(that.chart_wrapper).append('<canvas id="'+id+'" height="1" width="1"/>').appendTo(that.charts_elt_id);
+    var id = 'tji-chart-wrapper-' + i;
+    $wrapper = jQuery(that.chart_wrapper).attr("id", id).appendTo(that.charts_elt_id);
     
     var chart_constructor;
     switch(config.type) {
