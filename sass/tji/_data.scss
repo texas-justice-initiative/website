@@ -54,8 +54,14 @@ max-width: 33.33%;
 }
 
 #js-TJIfilters {
-  
+  fieldset {
+    margin-bottom: 1em;
+  }
   legend {
+    text-transform: uppercase;
+  }
+  label {
     text-transform: capitalize;
+    padding-left: 0.5em;
   }
 }
