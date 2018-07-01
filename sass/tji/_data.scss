@@ -59,9 +59,33 @@ max-width: 33.33%;
   }
   legend {
     text-transform: uppercase;
+
+    .fa-caret-down { margin-left: 0.5em; }
   }
-  label {
-    text-transform: capitalize;
+  legend:after {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    content: '\f0d7'; /* Unicode character for "down" caret (+) */
     padding-left: 0.5em;
   }
+  legend:hover {
+    color: #F1AB32;
+  }
+  .filter-set {
+    display: none;
+
+    .filter {
+      label {
+        text-transform: capitalize;
+        padding-left: 0.5em;
+      }
+    }
+  }
+  .active:after {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    content: '\f0d8'; /* Unicode character for "up" caret (+) */
+
+  }
+
 }

@@ -321,7 +321,9 @@ TJIChartView.prototype.create_filter_panel = function() {
 
   var $filters = jQuery('<form id="js-TJIfilters" />');
   _.each(this.filters, function(f) {
-    var fieldset = jQuery('<fieldset><legend>' + f.key.replace(/_/g, " ") + '</legend></fieldset>');
+    var fieldset = jQuery('<fieldset><legend class="legend">' + f.key.replace(/_/g, " ") + '</legend></fieldset>');
+    var filterset = jQuery('<div class="filter-set"></div>');
+    fieldset.append(filterset);
     _.each(f.values, function(v) {
       var input = jQuery('<input/>', {
         type: "checkbox",
@@ -332,13 +334,25 @@ TJIChartView.prototype.create_filter_panel = function() {
       });
       var label = jQuery('<label/>', {
         for: v,
-      }).text(v);
-      fieldset.append(jQuery('<div></div>').append(input, label));
+      }).text(v.toLowerCase());
+      filterset.append(jQuery('<div class="filter"></div>').append(input, label));
     });
     $filters.append(fieldset);
   });
   jQuery(this.filters_elt_id).append($filters);
-  this.state.active_filters = jQuery(this).serializeArray();  
+  this.state.active_filters = jQuery(this).serializeArray();
+
+  // Make filter sections collapsible
+
+  var accordion = document.getElementsByClassName("legend");
+  var i;
+  for (i = 0; i < accordion.length; i++) {
+    accordion[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var content = this.nextElementSibling;
+      jQuery(content).toggle(); 
+    });
+  }
 }
 
 TJIChartView.prototype.create_charts = function() {
