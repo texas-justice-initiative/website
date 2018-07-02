@@ -1812,6 +1812,17 @@ blockquote {
   text-transform: uppercase; }
 .main-navigation a {
   font-family: "museo", Arial, sans-serif; }
+@media (min-width: 37.5em) {
+  .main-navigation #primary-menu > li:last-of-type a {
+    background-color: #CE2727;
+    padding: 10px 30px;
+    border-radius: 5px;
+    margin-top: -10px;
+    color: #fff;
+    box-shadow: 1px 1px 3px rgba(64, 64, 64, 0.5);
+    transition: all 0.35s; }
+    .main-navigation #primary-menu > li:last-of-type a:hover {
+      background-color: #1D9B41; } }
 
 /* Mobile Navigation */
 @media (max-width: 37.5em) {
