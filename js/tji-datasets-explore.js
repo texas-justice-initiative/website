@@ -98,7 +98,7 @@ TJIGroupByBarChart.prototype.get_options = function() {
           beginAtZero:true
         }
       }]
-    }
+		}
   }
   return _.extend(options, this.get_options_overrides());
 }
