@@ -2221,52 +2221,6 @@ hr.story-divider {
   border-bottom: 1px solid #fff; }
 
 /*--------------------------------------------------------------
-## Explore the Data Styles
---------------------------------------------------------------*/
-/*--------------------------------------------------------------
->>> EXPLORE THE DATA TABLE OF CONTENTS:
-----------------------------------------------------------------
-# GENERAL
-# CHARTS
-
-/*--------------------------------------------------------------
-## CHARTS
---------------------------------------------------------------*/
-#js-TJIChartView {
-  width: 100%;
-  padding: 2em;
-  background-color: #fbfbfb;
-  box-shadow: 2px 3px 6px rgba(64, 64, 64, 0.5);
-  margin-left: 1em; }
-  #js-TJIChartView h2 {
-    display: block;
-    width: 100%;
-    text-transform: uppercase;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-    margin-bottom: 0.5em;
-    margin-top: 0; }
-  @media (max-width: 992px) {
-    #js-TJIChartView {
-      margin-left: 0; } }
-
-.tji-data-count {
-  font-size: 18px;
-  margin-bottom: 1em; }
-
-.tji-chart {
-  border: 1px solid #ebebeb;
-  transition: all 0.25s; }
-  .tji-chart:hover {
-    box-shadow: 0px 0px 20px rgba(64, 64, 64, 0.15);
-    background-color: #fff; }
-  @media (min-width: 1500px) {
-    .tji-chart {
-      -ms-flex-preferred-size: 33.33%;
-      flex-basis: 33.33%;
-      max-width: 33.33%; } }
-
-/*--------------------------------------------------------------
 ## Helpers
 --------------------------------------------------------------*/
 .record-count {

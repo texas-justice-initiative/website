@@ -98,10 +98,7 @@ TJIGroupByBarChart.prototype.get_options = function() {
           beginAtZero:true
         }
       }]
-    },
-    layout: {
-	    padding: 20
-    }
+		}
   }
   return _.extend(options, this.get_options_overrides());
 }

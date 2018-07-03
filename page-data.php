@@ -52,8 +52,8 @@ get_header();
       ],
       '#js-TJIChartView',  // Element to build the charts into
       '#secondary',  // Element to put the filter panel inside
-      '<div class="col-xs-12 col-sm-12 col-md-6 col-xlg-4 tji-chart" />',  // Wrapper for chart canvases
-      '<div class="col-sm-12 tji-data-count">{count} records</div>'  // Template for record count element
+			'<div class="col-sm-12 col-lg-6" />',  // Wrapper for chart canvases
+      '<div class="col-sm-12 record-count">{count} records</div>',  // Template for record count element
 
     );
   })
