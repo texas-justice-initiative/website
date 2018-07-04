@@ -25,9 +25,8 @@ var COLOR_TJI_DEEPPURPLE = '#2D1752';
 // *******************************************************************
 
 
-var TJIGroupByBarChart = function(elt_id, groupBy, data, missing_data_label) {
-  this.elt_id = elt_id;
-  this.$root = $(elt_id);
+var TJIGroupByBarChart = function($container, groupBy, data, missing_data_label) {
+  this.$container = $container;
   this.groupBy = groupBy;
   this.colors = null;
   this.chart = null;
@@ -43,19 +42,13 @@ TJIGroupByBarChart.prototype.color_palette = [COLOR_TJI_BLUE];
 // Create the chart for the first time.
 // This also permanently sets the legend and color mapping.
 TJIGroupByBarChart.prototype.create = function(data) {
-  var root_elt_selector = '#' + this.elt_id;
-  var canvas_id = this.elt_id + '-canvas'
-  var components = []
-  jQuery('<div class="tji-chart-title">' + this.groupBy.replace(/_/g, " ") + '</div>').appendTo(root_elt_selector);
-  jQuery('<canvas class="tji-chart-canvas" height="1" width="1"/>').attr('id', canvas_id).appendTo(root_elt_selector);
-
   var that = this;
+
   var grouped = this.get_sorted_group_counts(data);
 
   this.colors = _.map(grouped.keys, function(k, i) {
     return that.color_palette[i % that.color_palette.length];
   })
-
   // 'create' is only run with the full data set.
   // While the user may later filter out certain values
   // (e.g. a particular race or gender), we want to continue
@@ -64,8 +57,15 @@ TJIGroupByBarChart.prototype.create = function(data) {
   // of groupBy keys now, in their sorted order.
   this.ordered_keys = grouped.keys
 
+  var $canvas = jQuery('<canvas class="tji-chart-canvas" height="1" width="1"/>');
+  // Build our (custom) legend.
+  var $legend = this.create_legend(grouped.keys);
+  var $title = jQuery('<div class="tji-chart-title">' + this.groupBy.replace(/_/g, " ") + '</div>');
+
+  this.$container.append([$title, $canvas, $legend]);
+
   // Build the chart
-  this.chart = new Chart(document.getElementById(canvas_id).getContext('2d'), {
+  this.chart = new Chart($canvas, {
     type: this.type,
     data: {
       labels: grouped.keys,
@@ -80,12 +80,9 @@ TJIGroupByBarChart.prototype.create = function(data) {
     },
     options: this.get_options()
   });
-
-  // Build our (custom) legend.
-  this.buildLegend(grouped.keys);
 }
 
-TJIGroupByBarChart.prototype.buildLegend = function(keys) {
+TJIGroupByBarChart.prototype.create_legend = function(keys) {
 }
 
 // Update the chart with a new (filtered) dataset
@@ -180,12 +177,14 @@ TJIGroupByDoughnutChart.prototype.get_options_overrides = function() {
   };
 }
 
-TJIGroupByDoughnutChart.prototype.buildLegend = function(keys) {
-  var legend = jQuery('<div class="tji-chart-legend"/>').attr('id', this.legend_elt_id).appendTo('#' + this.elt_id);
+TJIGroupByDoughnutChart.prototype.create_legend = function(keys) {
   var that = this;
+  var $legend = jQuery('<div class="tji-chart-legend"/>');
+  var legend_items = [];
   _.each(keys, function(k, idx) {
-    jQuery('<span class="tji-legend-item" style="background-color:' + that.colors[idx] + '">' + k + '</div>').appendTo(legend);
+    legend_items.push(jQuery('<span class="tji-legend-item" style="background-color:' + that.colors[idx] + '">' + k + '</div>'));
   })
+  return $legend.append(legend_items);
 }
 
 
@@ -197,7 +196,7 @@ TJIGroupByDoughnutChart.prototype.buildLegend = function(keys) {
 // *                  e.g. [{type: 'bar', group_by:'year'}, ...]
 // *   charts_elt_id: id of HTML element to put charts in
 // *   filters_elt_id: id of HTML element to put filter checkboxes in
-// *   chart_wrapper: HTML to wrap around each chart's canvas object
+// *   chart_wrapper_template: HTML to wrap around each chart's canvas object
 // *   record_count_template: HTML for the "showing this man records" element
 // *       at the top, containing a "{count}" placeholder somewhere
 // *       (which TJIChartView will replace with the record count).
@@ -205,7 +204,7 @@ TJIGroupByDoughnutChart.prototype.buildLegend = function(keys) {
 
 
 var TJIChartView = function(chart_configs, charts_elt_id, filters_elt_id,
-                            chart_wrapper, record_count_template){
+                            chart_wrapper_template, record_count_template){
 
   this.state = {
     data: null,
@@ -217,9 +216,9 @@ var TJIChartView = function(chart_configs, charts_elt_id, filters_elt_id,
   this.chart_configs = chart_configs;
   this.charts_elt_id = charts_elt_id;
   this.filters_elt_id = filters_elt_id;
-  this.chart_wrapper = chart_wrapper;
+  this.chart_wrapper_template = chart_wrapper_template;
   this.record_count_template = record_count_template;
-  this.filters = null;
+  this.$form = null;
 
   this.get_data();
 }
@@ -308,12 +307,11 @@ TJIChartView.prototype.transform_data = function() {
 }
 
 TJIChartView.prototype.create_filter_panel = function() {
-
-  // Generate filter values
-
-  this.filters = []
   var that = this
-
+  
+  // Generate filter values
+  var filters = []
+  
   // Get a sorted list of all the unique values for each column
   _.each(this.filter_columns, function(column) {
     values = _.filter(_.sortBy(_.uniq(_.map(that.state.data, column))), _.identity);
@@ -321,16 +319,15 @@ TJIChartView.prototype.create_filter_panel = function() {
       values.splice(values.indexOf(that.missing_data_label), 1);
       values.push(that.missing_data_label);
     }
-    that.filters.push({
+    filters.push({
       key: column,
       values: values
     });
   });
 
   // Build out checkboxes n stuff
-
-  var $filters = jQuery('<form id="js-TJIfilters" />');
-  _.each(this.filters, function(f) {
+  var fieldsets = [];
+  _.each(filters, function(f) {
     var fieldset = jQuery('<fieldset><legend>' + f.key.replace(/_/g, " ") + '</legend></fieldset>');
     _.each(f.values, function(v) {
       var input = jQuery('<input/>', {
@@ -345,19 +342,21 @@ TJIChartView.prototype.create_filter_panel = function() {
       }).text(v);
       fieldset.append(jQuery('<div></div>').append(input, label));
     });
-    $filters.append(fieldset);
+    fieldsets.push(fieldset);
   });
-  jQuery(this.filters_elt_id).append($filters);
-  this.state.active_filters = jQuery(this).serializeArray();  
+  
+  this.$form = jQuery('<form />').append(fieldsets);
+  this.state.active_filters = this.$form.serializeArray();  
+  jQuery(this.filters_elt_id).append(this.$form);
+  
 }
 
 TJIChartView.prototype.create_charts = function() {
   var that = this;
+
   this.update_record_count(this.state.data);
-  _.each(this.chart_configs, function(config, i){
-    var id = 'tji-chart-wrapper-' + i;
-    $wrapper = jQuery(that.chart_wrapper).attr("id", id).appendTo(that.charts_elt_id);
-    
+  _.each(this.chart_configs, function(config){
+    var $wrapper = jQuery(that.chart_wrapper_template).appendTo(that.charts_elt_id);
     var chart_constructor;
     switch(config.type) {
       case 'doughnut': 
@@ -369,15 +368,15 @@ TJIChartView.prototype.create_charts = function() {
         break;
     }
     that.state.charts.push(
-      new chart_constructor(id, config.group_by, that.state.data, that.missing_data_label)
-    );
+      new chart_constructor($wrapper, config.group_by, that.state.data, that.missing_data_label)
+    );    
   });
 }
 
 TJIChartView.prototype.attach_events = function() {
   var that = this;
-  jQuery('#js-TJIfilters').on('change', function(e) {
-    that.state.active_filters = jQuery(this).serializeArray();
+  this.$form.on('change', function(e) {
+    that.state.active_filters = that.$form.serializeArray();
     that.filter_data();
   })
 }

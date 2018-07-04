@@ -2681,5 +2681,20 @@ hr.story-divider {
     transform: rotate(360deg);
   }
 }
+/*--------------------------------------------------------------
+## Charts
+--------------------------------------------------------------*/
+/*--------------------------------------------------------------
+## CHARTS
+--------------------------------------------------------------*/
+.tji-legend-item {
+  display: inline-block;
+  color: white;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 5px;
+  font-size: 1rem;
+  line-height: 1rem;
+}
 
 /*# sourceMappingURL=style.css.map */
