@@ -1,13 +1,24 @@
 /*--------------------------------------------------------------
 ## CHARTS
 --------------------------------------------------------------*/
+.tji-chart-title {
+  @include font-size(2);
+}
 
-.tji-legend-item {
-  display: inline-block;
-  color: white;
-  border-radius: 5px;
-  padding: 5px;
-  margin: 5px;
-  font-size: 1rem;
-  line-height: 1rem;
+.tji-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+}
+.tji-chart-legend__item {
+  align-items: center;
+  display: flex;
+  margin: 0 $tji-spacing-xs;
+  text-transform: lowercase;
+  white-space: nowrap;
+
+  span {
+    height: $tji-chart-legend-size;
+    margin-right: $tji-spacing-xs;
+    width: $tji-chart-legend-size;
+  }
 }
