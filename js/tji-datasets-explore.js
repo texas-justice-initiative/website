@@ -328,7 +328,7 @@ TJIChartView.prototype.create_filter_panel = function() {
   // Build out checkboxes n stuff
   var fieldsets = [];
   _.each(filters, function(f) {
-    var fieldset = jQuery('<fieldset><legend>' + f.key.replace(/_/g, " ") + '</legend></fieldset>');
+    var fieldset = jQuery('<fieldset><legend>' + f.key.replace(/_/g, " ") + '<i class="fas fa-caret-down"></i></legend></fieldset>');
     _.each(f.values, function(v) {
       var input = jQuery('<input/>', {
         type: "checkbox",
