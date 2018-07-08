@@ -1,15 +1,15 @@
 /*--------------------------------------------------------------
 ## CHARTS
 --------------------------------------------------------------*/
-.tji-chart-title {
+.tji-chart__title {
   @include font-size(2);
 }
 
-.tji-chart-legend {
+.tji-char__legend {
   display: flex;
   flex-wrap: wrap;
 }
-.tji-chart-legend__item {
+.tji-chart__legend-item {
   align-items: center;
   display: flex;
   margin: 0 $tji-spacing-xs;

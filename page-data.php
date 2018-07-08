@@ -64,7 +64,7 @@ get_header();
       ],
       charts_elt_selector: '#js-TJIChartView',  
       filters_elt_selector: '#js-TJIChartViewFilters',  
-      chart_wrapper_template: '<div class="col-sm-12 col-lg-6" />',  
+      chart_wrapper_template: '<div class="tji-chart col-sm-12 col-lg-6" />',  
       record_count_template: '<div class="col-sm-12 record-count">{count} records</div>',  
     });
   })
