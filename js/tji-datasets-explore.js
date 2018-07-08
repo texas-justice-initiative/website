@@ -384,45 +384,48 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
   var input = jQuery('<input/>', {
     class: "tji-chart-filters__text",
     type: "text",
-  })
-  .data({filter: filter.name})
+  });
   fieldset.append(jQuery('<div/>',{
     class: "tji-chart-filters__autocomplete",
   }).append(input));
+  
   var $auto_complete = jQuery('<div />', {
     class: "tji-chart-filters__autocomplete-list"
   }).insertAfter(input);
+  
+  var onSelect = function(event, term) {
+    event.preventDefault();
+    event.stopPropagation();
+    var id = 'TJIChartView__filtercontainer-' + filter.name + '-' + term;
+    $auto_complete.find('#'+id).remove();
+    $auto_complete.prepend(that.create_filter_checkbox(filter.name, term, id));
+    input.val('');
+    that.$form.trigger('change');
+  }
+  
   var auto_complete = new autoComplete({
       selector: input[0],
       minChars: 1,
       delay: 150, 
       source: function(term, suggest){
-          term = term.toLowerCase();
+          term = term.toUpperCase();
           suggest(_.filter(filter.values, function(v){
-            return ~v.toLowerCase().indexOf(term);
+            return ~v.toUpperCase().indexOf(term);
           }));
       },
       onSelect: function(event, term, item) {
-        event.preventDefault();
-        event.stopPropagation();
-        var id = 'TJIChartView__filtercontainer-' + filter.name + '-' + term;
-        $auto_complete.find('#'+id).remove();
-        $auto_complete.prepend(that.create_filter_checkbox(filter.name, term, id));
-        input.val('');
-        that.$form.trigger('change');
+        onSelect(event, term);
       }
   });
-  input.on('keypress', function(e){
-    if(e.which !== 13) return;
-    var $target = jQuery(this);
-    var filter_name = $target.data('filter');
-    var term = $target.val().toUpperCase();
-    var filter_config = _.find(that.filter_configs, {name: filter_name});
-    var isMatch = ~_.indexOf(filter_config.values, term);
+
+  input.on('keypress', function(event){
+    if(event.which !== 13) return;
+    var term = input.val().toUpperCase();
+    var isMatch = ~filter.values.indexOf(term);
     if(!isMatch) return; //TODO: maybe offer some user-affordance that the value they searched doesn't match
-    debugger;//TODO: make on select a function or some such so we can share behavior
+    onSelect(event, term);
   });
-  
+
   this.autocompletes.push({
     widget: auto_complete,
     jquery: $auto_complete,
