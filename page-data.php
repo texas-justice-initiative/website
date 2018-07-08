@@ -33,13 +33,14 @@ get_header();
   <div id="js-TJIChartViewFilters"></div>
 </aside>
 
+<!-- JS Dependencies to build charts -->
+<!-- Any dependencies added here should be added to the Dependencies comment block of the appropriate JS file -->
 <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 <script src="https://cdn.rawgit.com/emn178/Chart.PieceLabel.js/master/build/Chart.PieceLabel.min.js"></script>
 <script src="/wp-content/themes/tji/js/auto-complete.min.js"></script>
 <script>
   // See js/tji-datasets-explore.js
-  //chart_configs, charts_elt_id, filters_elt_id, chart_wrapper_template, record_count_template
   jQuery(function(){
     var chartView = new TJIChartView({
       chart_configs: [

@@ -16,25 +16,25 @@ var COLOR_TJI_DEEPPURPLE = '#2D1752';
 // *
 // * Shows counts of records grouped by a particular column.
 // *
-// * Constructor arguments:
-// *   elt_id: id of HTML canvas element to build Chart on
+// * Constructor arguments as properties of props object:
+// *   $container: jQuery object to contain chart
 // *   groupBy: column to group by
-// *   data: list of objects representing records
 // *   missing_data_label: stand-in label for records missing
 // *                       the groupBy column.
+// *   data: list of objects representing records
 // *
 // * Dependencies: chart.js, Chart.PieceLabel, jQuery, lodash
 // *******************************************************************
 
 
-var TJIGroupByBarChart = function($container, groupBy, data, missing_data_label) {
-  this.$container = $container;
-  this.groupBy = groupBy;
+var TJIGroupByBarChart = function(props) {
+  this.$container = props.$container;
+  this.groupBy = props.groupBy;
+  this.missing_data_label = props.missing_data_label || '(not given)';
   this.colors = null;
   this.chart = null;
-  this.missing_data_label = missing_data_label || '(not given)';
   this.ordered_keys = null;
-  this.create(data);
+  this.create(props.data);
 }
 
 TJIGroupByBarChart.prototype.type = 'bar';
@@ -152,8 +152,8 @@ TJIGroupByBarChart.prototype.get_sorted_group_counts = function(data) {
 // ********************************************************************
 
 
-var TJIGroupByDoughnutChart = function(elt_id, groupBy, data, missing_data_label) {
-  TJIGroupByBarChart.call(this, elt_id, groupBy, data, missing_data_label);
+var TJIGroupByDoughnutChart = function(props) {
+  TJIGroupByBarChart.call(this, props);
 }
 TJIGroupByDoughnutChart.prototype = Object.create(TJIGroupByBarChart.prototype);
 TJIGroupByDoughnutChart.prototype.constructor = TJIGroupByDoughnutChart;
@@ -193,13 +193,15 @@ TJIGroupByDoughnutChart.prototype.create_legend = function(keys) {
 // ********************************************************************
 // * "Class" that creates and manages all charts and the filter panel.
 // *
-// * Constructor arguments:
+// * Constructor arguments as properties of props object:
 // *   chart_configs: array of chart config objects,
 // *                  e.g. [{type: 'bar', group_by:'year'}, ...]
-// *   charts_elt_selector: id of HTML element to put charts in
-// *   filters_elt_selector: id of HTML element to put filter checkboxes in
+// *   filter_configs: array of chart filters config objects,
+// *                  e.g. [{'name': 'agency_county', 'type': 'autocomplete'}, ...]
+// *   charts_elt_selector: selector of HTML element to put charts in
+// *   filters_elt_selector: selector of HTML element to put filters in
 // *   chart_wrapper_template: HTML to wrap around each chart's canvas object
-// *   record_count_template: HTML for the "showing this man records" element
+// *   record_count_template: HTML for the "showing this many records" element
 // *       at the top, containing a "{count}" placeholder somewhere
 // *       (which TJIChartView will replace with the record count).
 // *
@@ -357,19 +359,20 @@ TJIChartView.prototype.create_filter_checkboxes = function(filter) {
   return fieldset;
 }
 
-TJIChartView.prototype.create_filter_checkbox = function(name, value) {
+TJIChartView.prototype.create_filter_checkbox = function(name, value, id) {
   var input = jQuery('<input/>', {
       class: "tji-chart-filters__checkbox",
       type: "checkbox",
       checked: "checked",
-      id: 'TJIChartView__filter-' + value,
+      id: 'TJIChartView__filter-' + name + '-' + value,
       name: name,
       value: value,
     });
   var label = jQuery('<label/>', {
-    for: 'TJIChartView__filter-' + value,
+    for: 'TJIChartView__filter-' + name + '-' + value,
   }).text(value);
   var container = jQuery('<div/>', {
+      id: id,
       class: "tji-chart-filters__filter",
   }).append(input, label);
   return container;
@@ -401,7 +404,9 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
       onSelect: function(event, term, item) {
         event.preventDefault();
         event.stopPropagation();
-        $auto_complete.append(that.create_filter_checkbox(filter.name, term));
+        var id = 'TJIChartView__filtercontainer-' + filter.name + '-' + term;
+        $auto_complete.find('#'+id).remove();
+        $auto_complete.append(that.create_filter_checkbox(filter.name, term, id));
         input.val('');
         that.$form.trigger('change');
       }
@@ -418,7 +423,7 @@ TJIChartView.prototype.create_charts = function() {
 
   this.update_record_count(this.state.data);
   _.each(this.chart_configs, function(config){
-    var $wrapper = jQuery(that.chart_wrapper_template).appendTo(that.charts_elt_selector);
+    var $container = jQuery(that.chart_wrapper_template).appendTo(that.charts_elt_selector);
     var chart_constructor;
     switch(config.type) {
       case 'doughnut': 
@@ -430,10 +435,23 @@ TJIChartView.prototype.create_charts = function() {
         break;
     }
     that.state.charts.push(
-      new chart_constructor($wrapper, config.group_by, that.state.data, that.missing_data_label)
+      new chart_constructor({
+        $container: $container, 
+        groupBy: config.group_by, 
+        missing_data_label: that.missing_data_label,
+        data: that.state.data,
+      })
     );    
   });
 }
+
+
+// $container: jQuery object to contain chart
+// *   groupBy: column to group by
+// *   missing_data_label: stand-in label for records missing
+// *                       the groupBy column.
+// *   data: list of objects representing records
+
 
 TJIChartView.prototype.attach_events = function() {
   var that = this;
