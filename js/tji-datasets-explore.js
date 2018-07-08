@@ -334,7 +334,7 @@ TJIChartView.prototype.create_filter_panel = function() {
         break;
       case 'checkbox':
       default:
-        fieldset = that.create_filter_checkbox(filter_config);
+        fieldset = that.create_filter_checkboxes(filter_config);
         break;
     }
     fieldsets.push(fieldset);
@@ -348,25 +348,31 @@ TJIChartView.prototype.create_filter_panel = function() {
   
 }
 
-TJIChartView.prototype.create_filter_checkbox = function(filter) {
+TJIChartView.prototype.create_filter_checkboxes = function(filter) {
+  var that = this;
   var fieldset = jQuery('<fieldset><legend>' + filter.name.replace(/_/g, " ") + '<i class="fas fa-caret-down"></i></legend></fieldset>');
   _.each(filter.values, function(v) {
-    var input = jQuery('<input/>', {
+    fieldset.append(that.create_filter_checkbox(filter.name, v));
+  });
+  return fieldset;
+}
+
+TJIChartView.prototype.create_filter_checkbox = function(name, value) {
+  var input = jQuery('<input/>', {
       class: "tji-chart-filters__checkbox",
       type: "checkbox",
       checked: "checked",
-      id: 'TJIChartView__filter-' + v,
-      name: filter.name,
-      value: v,
+      id: 'TJIChartView__filter-' + value,
+      name: name,
+      value: value,
     });
-    var label = jQuery('<label/>', {
-      for: 'TJIChartView__filter-' + v,
-    }).text(v);
-    fieldset.append(jQuery('<div/>', {
+  var label = jQuery('<label/>', {
+    for: 'TJIChartView__filter-' + value,
+  }).text(value);
+  var container = jQuery('<div/>', {
       class: "tji-chart-filters__filter",
-    }).append(input, label));
-  });
-  return fieldset;
+  }).append(input, label);
+  return container;
 }
 
 TJIChartView.prototype.create_filter_autocomplete = function(filter) {
@@ -378,8 +384,11 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
     name: filter.name,
   });
   fieldset.append(jQuery('<div/>',{
-    class: "tji-chart-filters__filter",
+    class: "tji-chart-filters__autocomplete",
   }).append(input));
+  var $auto_complete = jQuery('<div />', {
+    class: "tji-chart-filters__autocomplete-list"
+  }).insertAfter(input);
   var auto_complete = new autoComplete({
       selector: input[0],
       minChars: 1,
@@ -393,12 +402,11 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
       onSelect: function(event, term, item) {
         event.preventDefault();
         event.stopPropagation();
+        $auto_complete.append(that.create_filter_checkbox(filter.name, term));
+        input.val('');
         that.$form.trigger('change');
       }
   });
-  var $auto_complete = jQuery('<div />', {
-    class: "tji-chart-filters__autocomplete-list"
-  }).insertAfter(input);
   this.autocompletes.push({
     widget: auto_complete,
     jquery: $auto_complete,
