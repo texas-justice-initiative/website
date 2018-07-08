@@ -379,9 +379,8 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
   var that = this;
   var fieldset = jQuery('<fieldset><legend>' + filter.name.replace(/_/g, " ") + '<i class="fas fa-caret-down"></i></legend></fieldset>');
   var input = jQuery('<input/>', {
-    class: "tji-chart-filters__autocomplete",
+    class: "tji-chart-filters__text",
     type: "text",
-    name: filter.name,
   });
   fieldset.append(jQuery('<div/>',{
     class: "tji-chart-filters__autocomplete",
@@ -441,7 +440,9 @@ TJIChartView.prototype.attach_events = function() {
   this.$form.on('change', function(e) {
     that.state.active_filters = that.$form.serializeArray();
     that.filter_data();
-  })
+  }).on('submit', function(e){
+    e.preventDefault();
+  });
 }
 
 // Called when the user changes any data filters.
