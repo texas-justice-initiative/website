@@ -406,7 +406,7 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
         event.stopPropagation();
         var id = 'TJIChartView__filtercontainer-' + filter.name + '-' + term;
         $auto_complete.find('#'+id).remove();
-        $auto_complete.append(that.create_filter_checkbox(filter.name, term, id));
+        $auto_complete.prepend(that.create_filter_checkbox(filter.name, term, id));
         input.val('');
         that.$form.trigger('change');
       }
