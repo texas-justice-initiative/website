@@ -1,5 +1,6 @@
-.record-count {
-    font-size: 2em;
+.tji-record-count {
+    font-size: 24px;
+    margin-bottom: 40px;
 }
 
 .loader {
@@ -14,4 +15,18 @@
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.download-button {
+    @extend %bootstrap-button-secondary;
+    font-size: 18px;
+    margin-left: 20px;
+    opacity: 0.1;
+    &:disabled {
+        cursor: wait;
+    }
+}
+
+.tji-above-charts {
+    margin-bottom: 30px;
 }

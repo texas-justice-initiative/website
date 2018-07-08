@@ -222,12 +222,19 @@ TJIGroupByDoughnutChart.prototype.create_legend = function() {
 // * "Class" that creates and manages all charts and the filter panel.
 // *
 // * Constructor arguments as properties of props object:
+// *   compressed_data_json_url: URL location of the abridged,
+// *       compressed dataset. This dataset has only the subset
+// *       of columns that we use in drawing charts.
+// *       See the comments in this notebook for the expected format:
+// *       https://github.com/texas-justice-initiative/data-processing/blob/master/data_cleaning/create_datasets_for_website.ipynb
 // *   chart_configs: array of chart config objects,
 // *                  e.g. [{type: 'bar', group_by:'year'}, ...]
 // *   filter_configs: array of chart filters config objects,
 // *                  e.g. [{'name': 'agency_county', 'type': 'autocomplete'}, ...]
 // *   charts_elt_selector: selector of HTML element to put charts in
 // *   filters_elt_selector: selector of HTML element to put filters in
+// *   above_charts_template: HTML to wrap the area above the rendered charts,
+// *       where we'll put the record count and download button.
 // *   chart_wrapper_template: HTML to wrap around each chart's canvas object
 // *   record_count_template: HTML for the "showing this many records" element
 // *       at the top, containing a "{count}" placeholder somewhere
@@ -239,11 +246,15 @@ TJIGroupByDoughnutChart.prototype.create_legend = function() {
 
 
 var TJIChartView = function(props){
-
   this.state = {
     data: null,
+    record_id_field: null,
+    filtered_data: null,
+    complete_data: null,
     active_filters: [],
     charts: [],
+    $above_charts_area: null,
+    $download: null,
     $record_count: null
   }
 
@@ -252,51 +263,86 @@ var TJIChartView = function(props){
   this.charts_elt_selector = props.charts_elt_selector;
   this.filters_elt_selector = props.filters_elt_selector;
   this.chart_wrapper_template = props.chart_wrapper_template;
+  this.above_charts_template = props.above_charts_template;
   this.record_count_template = props.record_count_template;
   this.$form = null;
   this.autocompletes = [];
 
-  this.get_data();
+  this.get_data(props.compressed_data_json_url, props.complete_data_csv_url);
 }
 
 TJIChartView.prototype.missing_data_label = '(not given)';
 
 // Fetch CDR data from server and trigger the construction
 // of the charts, filter panel, etc.
-TJIChartView.prototype.get_data = function() {
+TJIChartView.prototype.get_data = function(compressed_data_json_url, complete_data_csv_url) {
   var that = this;
-  var url = '/cdr_compressed.json';
-  jQuery.getJSON(url)
+  jQuery.getJSON(compressed_data_json_url)
     .done(function(data){
       jQuery(that.charts_elt_selector).empty();
       that.state.data = data;
       that.decompress_data();
       that.transform_data();
+      that.state.filtered_data = that.state.data;
+
+      // Prepare HTML contents
+      jQuery(that.charts_elt_id).empty();
+      that.create_above_charts_area();
       that.create_charts();
       that.create_filter_panel();
       that.attach_events();
+      that.get_complete_data(complete_data_csv_url);
     })
     .fail(function(jqxhr, textStatus, error){
-      console.log('error fetching data from: ' + url, error);
+      console.log('Error fetching data from: ' + compressed_data_json_url, error);
     })
+}
+
+
+TJIChartView.prototype.get_complete_data = function(url) {
+  var that = this;
+  Papa.parse(url, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: function(results) {
+      that.state.complete_data = results.data;
+      // The download button stays disabled and faded until this data is ready.
+      // Let's enable and fade it back into view now.
+      that.state.$download.prop("disabled", false);
+      that.state.$download.animate({
+        opacity: 1.0,
+      }, 1000);
+    },
+    error: function(error) {
+      console.log('Error fetching data from: ' + url, error);
+    }
+  });
 }
 
 /* The data is compressed into a small json object for fast page loading,
  * which we decompress here for convenient manipulation in this app.
  * 
  * Currently, the data is compressed by this script in our data-processing repo:
- * https://github.com/texas-justice-initiative/data-processing/blob/master/data_cleaning/create_compressed_data_for_website.ipynb 
+ * https://github.com/texas-justice-initiative/data-processing/blob/master/data_cleaning/create_datasets_for_website.ipynb
  * 
  * See that file for an explanation of the compression and examples.
  */
 TJIChartView.prototype.decompress_data = function() {
   var that = this;
-  var meta = this.state.data.meta;
-  var records = this.state.data.records;
+  var data = this.state.data;
+  var meta = data.meta;
+  var records = data.records;
   // We want a list of json objects, one per record. We will build these
   // out incrementally.
   var new_data = [];
-  _.times(this.state.data['meta']['num_records'], function(){ new_data.push({}); });
+  _.times(data['meta']['num_records'], function(){ new_data.push({}); });
+  // Unique IDs for each record are stored in the 'meta' area
+  this.state.record_id_field = data['meta']['record_ids']['field_name'];
+  _.each(data['meta']['record_ids']['values'], function(value, idx) {
+    new_data[idx][that.state.record_id_field] = value;
+  });
+  // Build up records, column by column.
   _.each(records, function(values, column) {
       var lookup  = meta.lookups[column] || {};
       _.each(values, function(v, idx) {
@@ -337,6 +383,15 @@ TJIChartView.prototype.transform_data = function() {
     });
   });
 }
+
+
+TJIChartView.prototype.create_above_charts_area = function() {
+  this.state.$above_charts_area = jQuery(this.above_charts_template).prependTo(this.charts_elt_selector)
+  this.update_record_count();
+  this.state.$download = jQuery(' <button class="download-button" disabled> <i class="fas fa-download"></i> Download</button>');
+  this.state.$download.appendTo(this.state.$above_charts_area)
+}
+
 
 TJIChartView.prototype.create_filter_panel = function() {
   var that = this;
@@ -505,8 +560,13 @@ TJIChartView.prototype.attach_events = function() {
   this.$form.on('change', function(e) {
     that.state.active_filters = that.$form.serializeArray();
     that.filter_data();
+    that.update_charts();
+    that.update_record_count();
   }).on('submit', function(e){
     e.preventDefault();
+  })
+  this.state.$download.on('click', function() {
+    that.download();
   });
 }
 
@@ -532,17 +592,63 @@ TJIChartView.prototype.filter_data = function() {
     return false;
   })
 
-  this.update_charts(data);
+  this.state.filtered_data = data;
 }
 
-TJIChartView.prototype.update_charts = function(data) {
-  this.update_record_count(data);
+TJIChartView.prototype.update_charts = function() {
+  var that = this;
   _.each(this.state.charts, function(chart){
-    chart.update(data);
+    chart.update(that.state.filtered_data);
   })
 }
 
-TJIChartView.prototype.update_record_count = function(data) {
+TJIChartView.prototype.update_record_count = function() {
   if (this.state.$record_count) jQuery(this.state.$record_count).remove();
-  this.state.$record_count = jQuery(this.record_count_template.replace('{count}', data.length)).prependTo(this.charts_elt_selector);
+  this.state.$record_count = jQuery(this.record_count_template.replace('{count}', this.state.filtered_data.length)).prependTo(this.state.$above_charts_area);
+}
+
+TJIChartView.prototype.download = function() {
+  // Download all the data the user is currently viewing (that is,
+  // with their current filters applied).
+
+  // Note: This gets tricky because we want to download
+  // not only the fields available in the charts, but ALL
+  // fields (columns) in the complete dataset.
+
+  // Make note of the ids of our current (filtered) records.
+  var ids_to_keep = {}
+  var that = this;
+  _.each(this.state.filtered_data, function(record) {
+    ids_to_keep[record[that.state.record_id_field]] = true;
+  });
+
+  // Pull out the matching complete-dataset records.
+  var filtered_complete_records = _.filter(this.state.complete_data, function(record) {
+    return ids_to_keep[record[that.state.record_id_field]] !== undefined;
+  });
+  
+  // Convert these JSON records into CSV text using Papa
+  var csvData = Papa.unparse(filtered_complete_records);
+  var filename = filtered_complete_records.length == this.state.complete_data.length ? "tji_data.csv" : "tji_data_filtered.csv";
+
+  // Start the download.
+  // Note: this solution is taken from https://stackoverflow.com/a/24922761
+  // (after trying many different ways to accomplish this)
+
+  var blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+  if (navigator.msSaveBlob) {  // IE 10+
+      navigator.msSaveBlob(blob, filename);
+  } else {
+      var link = document.createElement("a");
+      if (link.download !== undefined) {  // feature detection
+          // Browsers that support HTML5 download attribute
+          var url = URL.createObjectURL(blob);
+          link.setAttribute("href", url);
+          link.setAttribute("download", filename);
+          link.style.visibility = "hidden";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+      }
+  }
 }

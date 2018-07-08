@@ -35,6 +35,7 @@ get_header();
 
 <!-- JS Dependencies to build charts -->
 <!-- Any dependencies added here should be added to the Dependencies comment block of the appropriate JS file -->
+<script src="/wp-content/themes/tji/js/papaparse.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 <script src="https://cdn.rawgit.com/emn178/Chart.PieceLabel.js/master/build/Chart.PieceLabel.min.js"></script>
@@ -43,6 +44,8 @@ get_header();
   // See js/tji-datasets-explore.js
   jQuery(function(){
     var chartView = new TJIChartView({
+      compressed_data_json_url: '/cdr_compressed.json',
+      complete_data_csv_url: '/cdr_full.csv',
       chart_configs: [
         {type: 'bar', group_by: 'year'},
         {type: 'doughnut', group_by: 'race'},
@@ -68,7 +71,8 @@ get_header();
       charts_elt_selector: '#js-TJIChartView',  
       filters_elt_selector: '#js-TJIChartViewFilters',  
       chart_wrapper_template: '<div class="tji-chart col-sm-12 col-lg-6" />',  
-      record_count_template: '<div class="col-sm-12 record-count">{count} records</div>',  
+      above_charts_template: '<div class="col-sm-12 tji-above-charts"></div>',
+      record_count_template: '<span class="tji-record-count">{count} records</div>',  
     });
   })
 </script>
