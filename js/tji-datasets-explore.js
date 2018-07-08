@@ -384,7 +384,8 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
   var input = jQuery('<input/>', {
     class: "tji-chart-filters__text",
     type: "text",
-  });
+  })
+  .data({filter: filter.name})
   fieldset.append(jQuery('<div/>',{
     class: "tji-chart-filters__autocomplete",
   }).append(input));
@@ -411,6 +412,17 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
         that.$form.trigger('change');
       }
   });
+  input.on('keypress', function(e){
+    if(e.which !== 13) return;
+    var $target = jQuery(this);
+    var filter_name = $target.data('filter');
+    var term = $target.val().toUpperCase();
+    var filter_config = _.find(that.filter_configs, {name: filter_name});
+    var isMatch = ~_.indexOf(filter_config.values, term);
+    if(!isMatch) return; //TODO: maybe offer some user-affordance that the value they searched doesn't match
+    debugger;//TODO: make on select a function or some such so we can share behavior
+  });
+  
   this.autocompletes.push({
     widget: auto_complete,
     jquery: $auto_complete,
