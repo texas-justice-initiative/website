@@ -9,6 +9,21 @@ jQuery(document).ready(function($) {
 	//Setup scroll functions for homepage	
 	$(window).scroll(function() {
 		var height = $(window).scrollTop();
+
+		//Toggle header
+		/*
+		if ( height > taglineHeight ) {
+			$("header").addClass("fixed");
+			$(".custom-logo-link img").css("opacity", "1");
+			$(".main-navigation li").css("float","left");
+			$(".main-navigation li").css("margin-top","35px");
+		} else {
+			$("header").removeClass("fixed");
+			$(".custom-logo-link img").css("opacity", "0");
+			$(".main-navigation li").css("float","none");
+			$(".main-navigation li").css("margin-top","0");
+		}
+		*/		
 		
 		//Display or show nav panel
 		if ( height > storyStart - 100) {

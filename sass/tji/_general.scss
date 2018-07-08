@@ -225,26 +225,6 @@ blockquote {
 	a {
 		font-family: $headingFont;
 	}
-	
-	@media (min-width: 37.5em) {
-		#primary-menu {
-			>li:last-of-type {
-				a {
-			    background-color: $primaryRed;
-			    padding: 10px 30px;
-			    border-radius: 5px;
-			    margin-top: -10px;
-			    color: #fff;
-			    box-shadow: 1px 1px 3px rgba(64,64,64,0.5);
-			    transition: all 0.35s;
-			    
-			    &:hover {
-				    background-color: $primaryGreen;
-			    }
-				}
-			}
-		}
-	}
 }
 
 /* Mobile Navigation */
