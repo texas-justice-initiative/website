@@ -410,7 +410,7 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
       source: function(term, suggest){
           term = term.toUpperCase();
           suggest(_.filter(filter.values, function(v){
-            return ~v.toUpperCase().indexOf(term);
+            return v.toUpperCase().indexOf(term) != -1;
           }));
       },
       onSelect: function(event, term, item) {
@@ -419,11 +419,13 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
   });
 
   input.on('keypress', function(event){
+    // If the user hits ENTER key after typing a valid item, add it to the filter.
     if(event.which !== 13) return;
     var term = input.val().toUpperCase();
-    var isMatch = ~filter.values.indexOf(term);
+    var isMatch = filter.values.indexOf(term) != -1;
     if(!isMatch) return; //TODO: maybe offer some user-affordance that the value they searched doesn't match
     onSelect(event, term);
+    jQuery('.autocomplete-suggestions').hide();
   });
 
   this.autocompletes.push({
