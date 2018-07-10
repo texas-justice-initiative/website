@@ -1,0 +1,17 @@
+@media (min-width: 37.5em) {
+	.tji-btn {
+		a {
+	    background-color: $primaryRed;
+	    padding: .6em 1em .4em;
+	    border-radius: 3px;
+	    margin-top: -10px;
+	    color: #fff;
+	    box-shadow: 1px 1px 3px rgba(64,64,64,0.5);
+	    transition: all 0.35s;
+	    
+	    &:hover {
+		    background-color: $secondaryRed;
+	    }
+		}
+	}
+}
