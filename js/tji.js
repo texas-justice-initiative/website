@@ -23,7 +23,7 @@ jQuery(document).ready(function($) {
 			$(".main-navigation li").css("float","none");
 			$(".main-navigation li").css("margin-top","0");
 		}
-		*/
+		*/		
 		
 		//Display or show nav panel
 		if ( height > storyStart - 100) {

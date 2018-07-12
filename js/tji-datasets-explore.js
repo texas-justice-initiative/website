@@ -319,7 +319,7 @@ TJIChartView.prototype.create_filter_panel = function() {
   var $filters = jQuery('<form id="js-TJIfilters" />');
   _.each(this.filters, function(f) {
     var fieldset = jQuery('<fieldset><legend class="js-legend">' + f.key.replace(/_/g, " ") + '</legend></fieldset>');
-    var filterset = jQuery('<div class="js-filter-set"><div class="filter"><input type="checkbox" class="toggle" name="toggle"><label for="toggle">Select/Unselect All</label></div></div>');
+    var filterset = jQuery('<div class="js-filter-set"><a id="js-toggle-select">Select All</a> / <a id="js-toggle-unselect">Unselect All</a></div>');
     fieldset.append(filterset);
     _.each(f.values, function(v) {
       var input = jQuery('<input/>', {
@@ -390,7 +390,7 @@ TJIChartView.prototype.attach_events = function() {
     that.filter_data();
   })
   .on('click', '.js-legend', function(e){
-    jQuery(this).closest('.js-filter-set').toggleClass('is-collapsed')
+    jQuery(this).siblings('.js-filter-set').toggleClass('is-collapsed')
   });
 }
 

@@ -28,13 +28,15 @@
     cursor: pointer;
   }
   .js-filter-set {
-
     .filter {
       label {
         text-transform: capitalize;
         padding-left: 0.5em;
       }
     }
+  }
+  .js-filter-set.is-collapsed {
+    display: none;
   }
   .active:after {
     font-family: 'Font Awesome 5 Free';

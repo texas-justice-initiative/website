@@ -1,1 +1,3 @@
 ignore/
+.sass-cache/*
+*.DS_Store
