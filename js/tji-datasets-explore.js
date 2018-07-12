@@ -318,7 +318,9 @@ TJIChartView.prototype.create_filter_panel = function() {
 
   var $filters = jQuery('<form id="js-TJIfilters" />');
   _.each(this.filters, function(f) {
-    var fieldset = jQuery('<fieldset><legend>' + f.key.replace(/_/g, " ") + ' <i class="fas fa-caret-down"></i></legend></fieldset>');
+    var fieldset = jQuery('<fieldset><legend class="js-legend">' + f.key.replace(/_/g, " ") + '</legend></fieldset>');
+    var filterset = jQuery('<div class="js-filter-set"><div class="filter"><input type="checkbox" class="toggle" name="toggle"><label for="toggle">Select/Unselect All</label></div></div>');
+    fieldset.append(filterset);
     _.each(f.values, function(v) {
       var input = jQuery('<input/>', {
         type: "checkbox",
@@ -329,13 +331,32 @@ TJIChartView.prototype.create_filter_panel = function() {
       });
       var label = jQuery('<label/>', {
         for: v,
-      }).text(v);
-      fieldset.append(jQuery('<div></div>').append(input, label));
+      }).text(v.toLowerCase());
+      filterset.append(jQuery('<div class="filter"></div>').append(input, label));
     });
     $filters.append(fieldset);
   });
   jQuery(this.filters_elt_id).append($filters);
-  this.state.active_filters = jQuery(this).serializeArray();  
+  this.state.active_filters = jQuery(this).serializeArray();
+
+  // Make filter sections collapsible
+
+  // var accordion = document.getElementsByClassName("js-legend");
+  // var i;
+  // for (i = 0; i < accordion.length; i++) {
+  //   accordion[i].addEventListener("click", function() {
+  //     this.classList.toggle("active");
+  //     var content = this.nextElementSibling;
+  //     jQuery(content).toggle(); 
+  //   });
+  // }
+
+  //Toggle checkboxes in each filter section
+  
+    jQuery('.toggle').click(function() {
+      var $checkboxes = jQuery(this).parent().parent().find('input[type=checkbox]');
+      $checkboxes.prop('checked', jQuery(this).is(':checked'));
+  }); 
 }
 
 TJIChartView.prototype.create_charts = function() {
@@ -363,10 +384,14 @@ TJIChartView.prototype.create_charts = function() {
 
 TJIChartView.prototype.attach_events = function() {
   var that = this;
-  jQuery('#js-TJIfilters').on('change', function(e) {
+  jQuery('#js-TJIfilters')
+  .on('change', function(e) {
     that.state.active_filters = jQuery(this).serializeArray();
     that.filter_data();
   })
+  .on('click', '.js-legend', function(e){
+    jQuery(this).closest('.js-filter-set').toggleClass('is-collapsed')
+  });
 }
 
 // Called when the user changes any data filters.

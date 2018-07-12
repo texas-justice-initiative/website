@@ -35,6 +35,8 @@
 	<script src="<?php echo get_template_directory_uri(); ?>/swiper-4.3.0/dist/js/swiper.min.js"></script>
 	<script src="<?php echo get_template_directory_uri(); ?>/swiper-4.3.0/dist/js/swiper.esm.bundle.js"></script>
 
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+
 	<?php wp_head(); ?>
 </head>
 
