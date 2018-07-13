@@ -44,7 +44,7 @@ get_header();
   jQuery(function(){
     var chartView = new TJIChartView({
       chart_configs: [
-        {type: 'bar', group_by: 'year', sort_by: {column: 'key', direction: 'asc'}},
+        {type: 'bar', group_by: 'year'},
         {type: 'doughnut', group_by: 'race'},
         {type: 'doughnut', group_by: 'sex'},
         {type: 'doughnut', group_by: 'manner_of_death'},
