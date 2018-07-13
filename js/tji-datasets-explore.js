@@ -29,7 +29,8 @@ var COLOR_TJI_DEEPPURPLE = '#2D1752';
 
 var TJIGroupByBarChart = function(props) {
   this.$container = props.$container;
-  this.groupBy = props.groupBy;
+  this.group_by = props.group_by;
+  this.sort_by = props.sort_by || {column: 'key', direction: 'asc'};
   this.missing_data_label = props.missing_data_label || '(not given)';
   this.colors = null;
   this.chart = null;
@@ -48,21 +49,18 @@ TJIGroupByBarChart.prototype.create = function(data) {
 
   var grouped = this.get_sorted_group_counts(data);
 
+  // Persist key order on initial render with full data set
+  // so legend always includes all values and the colors stay consistent
+  // after filters have been selected
+  this.ordered_keys = grouped.keys;
   this.colors = _.map(grouped.keys, function(k, i) {
     return that.color_palette[i % that.color_palette.length];
   })
-  // 'create' is only run with the full data set.
-  // While the user may later filter out certain values
-  // (e.g. a particular race or gender), we want to continue
-  // to show every possible value in the legend, and keep
-  // the color mapping the same. Hence we store the full set
-  // of groupBy keys now, in their sorted order.
-  this.ordered_keys = grouped.keys
 
   var $canvas = jQuery('<canvas class="tji-chart__canvas" height="1" width="1"/>');
   // Build our (custom) legend.
   var $legend = this.create_legend(grouped.keys);
-  var $title = jQuery('<div class="tji-chart__title">' + this.groupBy.replace(/_/g, " ") + '</div>');
+  var $title = jQuery('<div class="tji-chart__title">' + this.group_by.replace(/_/g, " ") + '</div>');
 
   this.$container.append([$title, $canvas, $legend]);
 
@@ -80,7 +78,7 @@ TJIGroupByBarChart.prototype.create = function(data) {
         }
       ]
     },
-    options: this.get_options()
+    options: this.get_options(grouped.counts)
   });
 }
 
@@ -95,7 +93,7 @@ TJIGroupByBarChart.prototype.update = function(data) {
 }
 
 // Return an 'options' object for the ChartJS constructor
-TJIGroupByBarChart.prototype.get_options = function() {
+TJIGroupByBarChart.prototype.get_options = function(counts) {
   var options = {
     title: {
       display: false,
@@ -106,7 +104,8 @@ TJIGroupByBarChart.prototype.get_options = function() {
     scales: {
       yAxes: [{
         ticks: {
-          beginAtZero:true
+          suggestedMax: _.max(counts),
+          min: 0,
         }
       }]
     }
@@ -119,31 +118,38 @@ TJIGroupByBarChart.prototype.get_options_overrides = function() {
   return {};
 }
 
-// Group the data by the groupBy key, and count how many records
-// have each key. Returns an object with two lists:
+// Group the data by the groupBy key, 
+// and create collection of key and record count for each group
+// sort this collection by this.sort_by -- this impacts the colors for each group
+// Returns an object with two lists:
 //   {
 //     keys: [list of sorted, unique groupby keys],
 //     counts: [list of number of records for each key]
 //   }
 TJIGroupByBarChart.prototype.get_sorted_group_counts = function(data) {
-  data = _.filter(data, this.groupBy);
-  var grouped = _.groupBy(data, this.groupBy);
-  var keys;
-  if (this.ordered_keys) {
-    keys = this.ordered_keys
-  } else {
-    var keys = _.sortBy(_.keys(grouped));
-    // Move the special "missing data" label to the last position
-    if (keys.indexOf(this.missing_data_label) !== -1) {
-      keys.splice(keys.indexOf(this.missing_data_label), 1);
-      keys.push(this.missing_data_label);
-    }
+  data = _.filter(data, this.group_by);
+  var collection = [];
+  var grouped = _
+    .chain(data)
+    .groupBy(this.group_by)
+    .forIn(function(v,k){
+      collection.push({
+        key: k,
+        count: v.length,
+      });
+    })
+    .value();
+
+  if (!this.ordered_keys) {
+    collection = _.orderBy(collection, [this.sort_by.column], [this.sort_by.direction]);
   }
-  var counts = _.map(keys, function(k){ return (grouped[k] || []).length});
+
+  var keys = this.ordered_keys || _.map(collection, 'key');
   return {
     keys: keys,
-    counts: counts
+    counts: _.map(keys, function(k){ return (grouped[k]||[]).length; }),
   };
+  
 }
 
 
@@ -153,6 +159,7 @@ TJIGroupByBarChart.prototype.get_sorted_group_counts = function(data) {
 
 
 var TJIGroupByDoughnutChart = function(props) {
+  props.sort_by = props.sort_by || {column: 'count', direction: 'desc'};
   TJIGroupByBarChart.call(this, props);
 }
 TJIGroupByDoughnutChart.prototype = Object.create(TJIGroupByBarChart.prototype);
@@ -181,11 +188,22 @@ TJIGroupByDoughnutChart.prototype.get_options_overrides = function() {
 
 TJIGroupByDoughnutChart.prototype.create_legend = function(keys) {
   var that = this;
+  var colormap = {};
+  _.map(keys, function(key, i) { colormap[key] = that.colors[i] });
+  var keys_sorted = _.sortBy(keys);
+
+  // Move the special "missing data" label to the last position
+  var missing_data_index = keys_sorted.indexOf(this.missing_data_label);
+  if(~missing_data_index){
+    keys_sorted.splice(missing_data_index, 1);
+    keys_sorted.push(this.missing_data_label);
+  }  
+
   var $legend = jQuery('<div class="tji-chart__legend"/>');
   var legend_items = [];
-  _.each(keys, function(k, idx) {
-    legend_items.push(jQuery('<div class="tji-chart__legend-item"><span style="background-color:' + that.colors[idx] + '"></span>' + k + '</div>'));
-  })
+  _.map(keys_sorted, function(key){
+    legend_items.push(jQuery('<div class="tji-chart__legend-item"><span style="background-color:' + colormap[key] + '"></span>' + key + '</div>'));
+  });
   return $legend.append(legend_items);
 }
 
@@ -319,7 +337,8 @@ TJIChartView.prototype.create_filter_panel = function() {
   // Get a sorted list of all the unique values for each column
   _.each(this.filter_configs, function(filter_config) {
     var values = _.filter(_.sortBy(_.uniq(_.map(that.state.data, filter_config.name))), _.identity);
-    if (values.indexOf(that.missing_data_label) !== -1) {
+    // Move the special "missing data" label to the last position
+    if (~values.indexOf(that.missing_data_label)) {
       values.splice(values.indexOf(that.missing_data_label), 1);
       values.push(that.missing_data_label);
     }
@@ -454,7 +473,8 @@ TJIChartView.prototype.create_charts = function() {
     that.state.charts.push(
       new chart_constructor({
         $container: $container, 
-        groupBy: config.group_by, 
+        group_by: config.group_by, 
+        sort_by: config.sort_by,
         missing_data_label: that.missing_data_label,
         data: that.state.data,
       })
