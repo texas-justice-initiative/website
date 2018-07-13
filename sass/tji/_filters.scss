@@ -28,6 +28,7 @@
     cursor: pointer;
   }
   .js-filter-set {
+    a { cursor: pointer; }
     .filter {
       label {
         text-transform: capitalize;

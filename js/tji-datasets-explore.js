@@ -319,7 +319,7 @@ TJIChartView.prototype.create_filter_panel = function() {
   var $filters = jQuery('<form id="js-TJIfilters" />');
   _.each(this.filters, function(f) {
     var fieldset = jQuery('<fieldset><legend class="js-legend">' + f.key.replace(/_/g, " ") + '</legend></fieldset>');
-    var filterset = jQuery('<div class="js-filter-set"><a id="js-toggle-select">Select All</a> / <a id="js-toggle-unselect">Unselect All</a></div>');
+    var filterset = jQuery('<div class="js-filter-set"><a class="js-toggle-select">Select All</a> / <a class="js-toggle-unselect">Unselect All</a></div>');
     fieldset.append(filterset);
     _.each(f.values, function(v) {
       var input = jQuery('<input/>', {
@@ -339,24 +339,16 @@ TJIChartView.prototype.create_filter_panel = function() {
   jQuery(this.filters_elt_id).append($filters);
   this.state.active_filters = jQuery(this).serializeArray();
 
-  // Make filter sections collapsible
-
-  // var accordion = document.getElementsByClassName("js-legend");
-  // var i;
-  // for (i = 0; i < accordion.length; i++) {
-  //   accordion[i].addEventListener("click", function() {
-  //     this.classList.toggle("active");
-  //     var content = this.nextElementSibling;
-  //     jQuery(content).toggle(); 
-  //   });
-  // }
-
   //Toggle checkboxes in each filter section
   
-    jQuery('.toggle').click(function() {
-      var $checkboxes = jQuery(this).parent().parent().find('input[type=checkbox]');
-      $checkboxes.prop('checked', jQuery(this).is(':checked'));
-  }); 
+  jQuery('.js-toggle-select').click(function() {
+      var $checkboxes = jQuery(this).parent().find('input[type=checkbox]');
+      $checkboxes.prop('checked', true);
+  });
+   jQuery('.js-toggle-unselect').click(function() {
+      var $checkboxes = jQuery(this).parent().find('input[type=checkbox]');
+      $checkboxes.prop('checked', false);
+  });  
 }
 
 TJIChartView.prototype.create_charts = function() {
@@ -389,6 +381,7 @@ TJIChartView.prototype.attach_events = function() {
     that.state.active_filters = jQuery(this).serializeArray();
     that.filter_data();
   })
+  // Make filter sections collapsible
   .on('click', '.js-legend', function(e){
     jQuery(this).siblings('.js-filter-set').toggleClass('is-collapsed')
   });
