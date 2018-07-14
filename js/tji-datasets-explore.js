@@ -241,15 +241,15 @@ TJIGroupByDoughnutChart.prototype.create_legend = function() {
 // *       (which TJIChartView will replace with the record count).
 // *
 // * Dependencies: TJIGroupByBarChart, TJIGroupByDoughnutChart
-// *       jQuery, lodash, auto-complete.min.js - https://github.com/Pixabay/JavaScript-autoComplete
+// *       jQuery, lodash, papaparse,
+// *       auto-complete.min.js - https://github.com/Pixabay/JavaScript-autoComplete
 // ********************************************************************
 
 
 var TJIChartView = function(props){
   this.state = {
-    data: null,
-    record_id_field: null,
-    filtered_data: null,
+    chart_data: null,
+    filtered_record_indices: null,
     complete_data: null,
     active_filters: [],
     charts: [],
@@ -278,12 +278,13 @@ TJIChartView.prototype.missing_data_label = '(not given)';
 TJIChartView.prototype.get_data = function(compressed_data_json_url, complete_data_csv_url) {
   var that = this;
   jQuery.getJSON(compressed_data_json_url)
-    .done(function(data){
+    .done(function(chart_data){
       jQuery(that.charts_elt_selector).empty();
-      that.state.data = data;
+      that.state.chart_data = chart_data;
       that.decompress_data();
       that.transform_data();
-      that.state.filtered_data = that.state.data;
+      // On the initial load, include all data.
+      that.state.filtered_record_indices = _.times(that.state.chart_data.length);
 
       // Prepare HTML contents
       jQuery(that.charts_elt_id).empty();
@@ -306,9 +307,16 @@ TJIChartView.prototype.get_complete_data = function(url) {
     skipEmptyLines: true,
     complete: function(results) {
       that.state.complete_data = results.data;
-      // The download button stays disabled and until this data is ready.
-      // Let's bring her back online now.
-      that.state.$download.prop("disabled", false);
+      if (that.state.complete_data.length != that.state.chart_data.length) {
+        console.log(
+          "Error: complete dataset does not have the same number of records "
+          + "as the abdridged dataset. Disabling download."
+        );
+      } else {
+        // The download button stays disabled and until this data is ready.
+        // Let's bring her back online now.
+        that.state.$download.prop("disabled", false);
+      }
     },
     error: function(error) {
       console.log('Error fetching data from: ' + url, error);
@@ -326,26 +334,20 @@ TJIChartView.prototype.get_complete_data = function(url) {
  */
 TJIChartView.prototype.decompress_data = function() {
   var that = this;
-  var data = this.state.data;
+  var data = this.state.chart_data;
   var meta = data.meta;
-  var records = data.records;
   // We want a list of json objects, one per record. We will build these
   // out incrementally.
   var new_data = [];
-  _.times(data['meta']['num_records'], function(){ new_data.push({}); });
-  // Unique IDs for each record are stored in the 'meta' area
-  this.state.record_id_field = data['meta']['record_ids']['field_name'];
-  _.each(data['meta']['record_ids']['values'], function(value, idx) {
-    new_data[idx][that.state.record_id_field] = value;
-  });
+  _.times(meta.num_records, function(){ new_data.push({}); });
   // Build up records, column by column.
-  _.each(records, function(values, column) {
+  _.each(data.records, function(values, column) {
       var lookup  = meta.lookups[column] || {};
       _.each(values, function(v, idx) {
           new_data[idx][column] = lookup[v];
       });
   });
-  this.state.data = new_data;
+  this.state.chart_data = new_data;
 }
 
 // Apply any data transformations necessary before beginning to build
@@ -354,28 +356,28 @@ TJIChartView.prototype.transform_data = function() {
 
   var that = this;
 
-  _.each(this.state.data, function(data_row, i) {
+  _.each(this.state.chart_data, function(record, id) {
     // Create age group buckets
-    if (data_row['age_at_time_of_death'] < 0 ||
-        data_row['age_at_time_of_death'] === undefined ||
-        data_row['age_at_time_of_death'] === null) {
-      data_row['age_group'] = null;
+    if (record['age_at_time_of_death'] < 0 ||
+        record['age_at_time_of_death'] === undefined ||
+        record['age_at_time_of_death'] === null) {
+      record['age_group'] = null;
     } else {
-      age_decade = Math.floor(data_row['age_at_time_of_death'] / 10) * 10
+      age_decade = Math.floor(record['age_at_time_of_death'] / 10) * 10
       if (age_decade > 59) {
-        data_row['age_group'] = '60+'
+        record['age_group'] = '60+'
       } else {
-        data_row['age_group'] = age_decade + '-' + (age_decade + 9)
+        record['age_group'] = age_decade + '-' + (age_decade + 9)
       }
     }
 
-    _.each(data_row, function(value, key) {
+    _.each(record, function(value, key) {
       // Replace missing values with a special label value
       if (value === undefined || value === null || value === '') {
-        data_row[key] = that.missing_data_label;
+        record[key] = that.missing_data_label;
       }
       // Convert everything to string, so the filters can match correctly.
-      data_row[key] = '' + data_row[key];
+      record[key] = '' + record[key];
     });
   });
 }
@@ -397,8 +399,7 @@ TJIChartView.prototype.create_filter_panel = function() {
   
   // Get a sorted list of all the unique values for each column
   _.each(this.filter_configs, function(filter_config) {
-    var values = _.filter(_.sortBy(_.uniq(_.map(that.state.data, filter_config.name))), _.identity);
-    // Move the special "missing data" label to the last position
+    var values = _.filter(_.sortBy(_.uniq(_.map(that.state.chart_data, filter_config.name))));
     if (~values.indexOf(that.missing_data_label)) {
       values.splice(values.indexOf(that.missing_data_label), 1);
       values.push(that.missing_data_label);
@@ -519,7 +520,7 @@ TJIChartView.prototype.create_charts = function() {
   this.create_above_charts_area();
   var that = this;
 
-  this.update_record_count(this.state.data);
+  this.update_record_count(this.state.chart_data);
   _.each(this.chart_configs, function(config){
     var $container = jQuery(that.chart_wrapper_template).appendTo(that.charts_elt_selector);
     var chart_constructor;
@@ -538,7 +539,7 @@ TJIChartView.prototype.create_charts = function() {
         group_by: config.group_by, 
         sort_by: config.sort_by,
         missing_data_label: that.missing_data_label,
-        data: that.state.data,
+        data: that.state.chart_data,
       })
     );    
   });
@@ -580,48 +581,39 @@ TJIChartView.prototype.filter_data = function() {
     }
   });
 
-  //if value doesn't match any selected filters reject it
-  var data = _.reject(this.state.data, function(val){
+  var filtered_indices = [];
+  var data = _.each(this.state.chart_data, function(record, idx) {
     for (filter in grouped_filters) {
-      if (!~grouped_filters[filter].indexOf(val[filter])) return true;
+      if (record[filter] && ~grouped_filters[filter].indexOf(record[filter])) return;
     }
-    return false;
-  })
+    filtered_indices.push(idx);
+  });
 
-  this.state.filtered_data = data;
+  this.state.filtered_record_indices = filtered_indices;
 }
 
 TJIChartView.prototype.update_charts = function() {
   this.update_record_count();
   var that = this;
+  var filtered_data = _.map(that.state.filtered_record_indices, function(idx) {
+    return that.state.chart_data[idx];
+  })
   _.each(this.state.charts, function(chart){
-    chart.update(that.state.filtered_data);
+    chart.update(filtered_data);
   })
 }
 
 TJIChartView.prototype.update_record_count = function() {
   if (this.state.$record_count) jQuery(this.state.$record_count).remove();
-  this.state.$record_count = jQuery(this.record_count_template.replace('{count}', this.state.filtered_data.length)).prependTo(this.state.$above_charts_area);
+  this.state.$record_count = jQuery(this.record_count_template.replace('{count}', this.state.filtered_record_indices.length)).prependTo(this.state.$above_charts_area);
 }
 
 TJIChartView.prototype.download = function() {
-  // Download all the data the user is currently viewing (that is,
-  // with their current filters applied).
-
-  // Note: This gets tricky because we want to download
-  // not only the fields available in the charts, but ALL
-  // fields (columns) in the complete dataset.
-
-  // Make note of the ids of our current (filtered) records.
-  var ids_to_keep = {}
+  // Download complete records for the data the user is currently viewing.
   var that = this;
-  _.each(this.state.filtered_data, function(record) {
-    ids_to_keep[record[that.state.record_id_field]] = true;
-  });
-
-  // Pull out the matching complete-dataset records.
-  var filtered_complete_records = _.filter(this.state.complete_data, function(record) {
-    return ids_to_keep[record[that.state.record_id_field]] !== undefined;
+  var filtered_complete_records = [];
+  _.each(this.state.filtered_record_indices, function(idx) {
+    filtered_complete_records.push(that.state.complete_data[idx]);
   });
   
   // Convert these JSON records into CSV text using Papa
