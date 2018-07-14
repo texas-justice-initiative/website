@@ -72,7 +72,7 @@ get_header();
       filters_elt_selector: '#js-TJIChartViewFilters',  
       chart_wrapper_template: '<div class="tji-chart col-sm-12 col-lg-6" />',  
       above_charts_template: '<div class="col-sm-12 tji-above-charts"></div>',
-      record_count_template: '<span class="tji-record-count">{count} records</div>',  
+      record_count_template: '<span class="tji-chart-record-count">{count} records</div>',  
     });
   })
 </script>

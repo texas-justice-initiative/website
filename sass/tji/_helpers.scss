@@ -1,6 +1,5 @@
-.tji-record-count {
-    font-size: 24px;
-    margin-bottom: 40px;
+.tji-chart-record-count {
+    font-size: $tji-font-size-sm;
 }
 
 .loader {
@@ -17,16 +16,28 @@
     100% { transform: rotate(360deg); }
 }
 
-.download-button {
+@mixin transition($duration) {
+  -webkit-transition: $duration;
+  -moz-transition: $duration;
+  -ms-transition: $duration;
+  -o-transition: $duration;
+  transition: $duration;
+}
+
+.tji-charts-download-button {
     @extend %bootstrap-button-secondary;
-    font-size: 18px;
-    margin-left: 20px;
+    font-size: $tji-font-size-xs;
+    margin-left: $tji-spacing-lg;
     opacity: 0.1;
     &:disabled {
         cursor: wait;
     }
+    &:enabled {
+        @include transition(1s);
+        opacity: 1.0;
+    }
 }
 
 .tji-above-charts {
-    margin-bottom: 30px;
+    margin-bottom: $tji-spacing-lg;
 }
