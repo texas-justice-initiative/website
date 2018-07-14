@@ -6632,7 +6632,7 @@ object {
 /* spacing */
 /* typography */
 /* classes for extension */
-.download-button {
+.tji-charts-download-button {
   border-radius: 0.25rem;
   cursor: pointer;
   display: inline-block;
@@ -6640,11 +6640,11 @@ object {
   background-color: #6c757d;
   border-color: # #6c757d;
 }
-.download-button:hover {
+.tji-charts-download-button:hover {
   background-color: #5a6268;
   border-color: #545b62;
 }
-.download-button:active {
+.tji-charts-download-button:active {
   background-color: #545b62;
   border-color: #4e555b;
 }
@@ -7411,9 +7411,8 @@ hr.story-divider {
 /*--------------------------------------------------------------
 ## Helpers
 --------------------------------------------------------------*/
-.tji-record-count {
-  font-size: 24px;
-  margin-bottom: 40px;
+.tji-chart-record-count {
+  font-size: 1.7rem;
 }
 
 .loader {
@@ -7434,17 +7433,25 @@ hr.story-divider {
     transform: rotate(360deg);
   }
 }
-.download-button {
-  font-size: 18px;
-  margin-left: 20px;
+.tji-charts-download-button {
+  font-size: 1.4rem;
+  margin-left: 2rem;
   opacity: 0.1;
 }
-.download-button:disabled {
+.tji-charts-download-button:disabled {
   cursor: wait;
+}
+.tji-charts-download-button:enabled {
+  -webkit-transition: 1s;
+  -moz-transition: 1s;
+  -ms-transition: 1s;
+  -o-transition: 1s;
+  transition: 1s;
+  opacity: 1;
 }
 
 .tji-above-charts {
-  margin-bottom: 30px;
+  margin-bottom: 2rem;
 }
 
 /*--------------------------------------------------------------

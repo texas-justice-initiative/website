@@ -39,22 +39,6 @@ $tji-chart-legend-size: 1rem;
   display: inline-block;
 }
 
-
-%bootstrap-button-light {
-  @include bootstrap-button();
-  color: #212529;
-  background-color: #f8f9fa;
-  border-color: #f8f9fa;
-  &:hover {
-      background-color: #e2e6ea;
-      border-color: #dae0e5;
-  }
-  &:active {
-    background-color: #dae0e5;
-    border-color: #d3d9df
-  }
-}
-
 %bootstrap-button-secondary {
   @include bootstrap-button();
   color: white;

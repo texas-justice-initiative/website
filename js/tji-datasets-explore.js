@@ -287,7 +287,6 @@ TJIChartView.prototype.get_data = function(compressed_data_json_url, complete_da
 
       // Prepare HTML contents
       jQuery(that.charts_elt_id).empty();
-      that.create_above_charts_area();
       that.create_charts();
       that.create_filter_panel();
       that.attach_events();
@@ -307,12 +306,9 @@ TJIChartView.prototype.get_complete_data = function(url) {
     skipEmptyLines: true,
     complete: function(results) {
       that.state.complete_data = results.data;
-      // The download button stays disabled and faded until this data is ready.
-      // Let's enable and fade it back into view now.
+      // The download button stays disabled and until this data is ready.
+      // Let's bring her back online now.
       that.state.$download.prop("disabled", false);
-      that.state.$download.animate({
-        opacity: 1.0,
-      }, 1000);
     },
     error: function(error) {
       console.log('Error fetching data from: ' + url, error);
@@ -388,7 +384,7 @@ TJIChartView.prototype.transform_data = function() {
 TJIChartView.prototype.create_above_charts_area = function() {
   this.state.$above_charts_area = jQuery(this.above_charts_template).prependTo(this.charts_elt_selector)
   this.update_record_count();
-  this.state.$download = jQuery(' <button class="download-button" disabled> <i class="fas fa-download"></i> Download</button>');
+  this.state.$download = jQuery(' <button class="tji-charts-download-button" disabled> <i class="fas fa-download"></i> Download</button>');
   this.state.$download.appendTo(this.state.$above_charts_area)
 }
 
@@ -520,6 +516,7 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
 }
 
 TJIChartView.prototype.create_charts = function() {
+  this.create_above_charts_area();
   var that = this;
 
   this.update_record_count(this.state.data);
@@ -561,7 +558,6 @@ TJIChartView.prototype.attach_events = function() {
     that.state.active_filters = that.$form.serializeArray();
     that.filter_data();
     that.update_charts();
-    that.update_record_count();
   }).on('submit', function(e){
     e.preventDefault();
   })
@@ -596,6 +592,7 @@ TJIChartView.prototype.filter_data = function() {
 }
 
 TJIChartView.prototype.update_charts = function() {
+  this.update_record_count();
   var that = this;
   _.each(this.state.charts, function(chart){
     chart.update(that.state.filtered_data);
