@@ -23,7 +23,6 @@ get_header();
     ?>
 
 <div id="js-TJIChartView" class="row">
-	<h2>Current Data Set: <span class="tji-current-dataset"></span></h2>
   <!-- Loader will be cleared out when the data fetch completes -->
   <div class="loader"></div>
 </div>
@@ -69,7 +68,7 @@ get_header();
       ],
       charts_elt_selector: '#js-TJIChartView',  
       filters_elt_selector: '#js-TJIChartViewFilters',  
-      chart_wrapper_template: '<div class="tji-chart col-sm-12 col-lg-6" />',  
+      chart_wrapper_template: '<div class="tji-chart col-xs-12 col-md-6 col-lg-4" />',  
       record_count_template: '<div class="col-sm-12 record-count">{count} records</div>',  
     });
   })

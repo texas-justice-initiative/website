@@ -187,7 +187,7 @@ TJIGroupByDoughnutChart.prototype.create_legend = function(keys) {
   var $legend = jQuery('<div class="tji-chart__legend"/>');
   var legend_items = [];
   _.each(keys, function(k, idx) {
-    legend_items.push(jQuery('<div class="tji-chart__legend-item"><span style="background-color:' + that.colors[idx] + '"></span>' + k + '</div>'));
+    legend_items.push(jQuery('<div class="tji-chart__legend-item"><span style="background-color:' + that.colors[idx] + '" class="tji-chart__legend-item__item-marker"></span><span class="tji-chart__legend-item__item-description">' + k + '</span></div>'));
   })
   return $legend.append(legend_items);
 }
