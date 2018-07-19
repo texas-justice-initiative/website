@@ -27,3 +27,12 @@
 @mixin column-width($numberColumns: 3) {
 	width: map-get( $columns, $numberColumns ) - ( ( $columns__margin * ( $numberColumns - 1 ) ) / $numberColumns );
 }
+
+/* transitions */
+@mixin transition($attr, $duration) {
+    -webkit-transition: $attr $duration;
+    -moz-transition: $attr $duration;
+    -ms-transition: $attr $duration;
+    -o-transition: $attr $duration;
+    transition: $attr $duration;
+}

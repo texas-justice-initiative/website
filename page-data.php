@@ -22,9 +22,9 @@ get_header();
       endwhile;
     ?>
 
-<div id="js-TJIChartView" class="row">
+<div id="js-TJIChartView" class="row tji-chartview">
   <!-- Loader will be cleared out when the data fetch completes -->
-  <div class="loader"></div>
+  <div class="tji-chartview__loader"></div>
 </div>
 
 </main></div>
@@ -71,8 +71,8 @@ get_header();
       charts_elt_selector: '#js-TJIChartView',  
       filters_elt_selector: '#js-TJIChartViewFilters',  
       chart_wrapper_template: '<div class="tji-chart col-sm-12 col-lg-6" />',  
-      above_charts_template: '<div class="col-sm-12 tji-above-charts"></div>',
-      record_count_template: '<span class="tji-chart-record-count">{count} records</div>',  
+      above_charts_template: '<div class="col-sm-12 tji-chartview__above-charts"></div>',
+      record_count_template: '<span class="tji-chartview__record-count">{count} records</div>',  
     });
   })
 </script>

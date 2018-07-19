@@ -386,7 +386,7 @@ TJIChartView.prototype.transform_data = function() {
 TJIChartView.prototype.create_above_charts_area = function() {
   this.state.$above_charts_area = jQuery(this.above_charts_template).prependTo(this.charts_elt_selector)
   this.update_record_count();
-  this.state.$download = jQuery(' <button class="tji-charts-download-button" disabled> <i class="fas fa-download"></i> Download</button>');
+  this.state.$download = jQuery('<button class="tji-btn-primary tji-chartview__download-button" disabled> <i class="fas fa-download"></i> Download</button>');
   this.state.$download.appendTo(this.state.$above_charts_area)
 }
 

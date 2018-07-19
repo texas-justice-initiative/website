@@ -30,26 +30,3 @@ $tji-line-height-lg: 4.6rem;
 $tji-line-height-xl: 5.4rem;
 
 $tji-chart-legend-size: 1rem;
-
-/* classes for extension */
-
-@mixin bootstrap-button() {
-  border-radius: .25rem;
-  cursor: pointer;
-  display: inline-block;
-}
-
-%bootstrap-button-secondary {
-  @include bootstrap-button();
-  color: white;
-  background-color: #6c757d;
-  border-color: ##6c757d;
-  &:hover {
-      background-color: #5a6268;
-      border-color: #545b62;
-  }
-  &:active {
-    background-color: #545b62;
-    border-color: #4e555b;
-  }
-}

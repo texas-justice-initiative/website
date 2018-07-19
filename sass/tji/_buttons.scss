@@ -15,3 +15,23 @@
 		}
 	}
 }
+
+.tji-btn-primary {
+  border-radius: .25rem;
+  cursor: pointer;
+  display: inline-block;
+  font-size: $tji-font-size-xs;
+  color: white;
+  background-color: $primaryBlue;
+  &:hover {
+    background-color: lighten($primaryBlue, 3%);
+  }
+  &:disabled {
+    opacity: 0.1;
+    cursor: wait;
+  }
+  &:enabled {
+    opacity: 1.0;
+    @include transition(opacity, 1s);
+  }
+}

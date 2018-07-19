@@ -1,8 +1,4 @@
-.tji-chart-record-count {
-    font-size: $tji-font-size-sm;
-}
-
-.loader {
+.tji-chartview__loader {
     border: 16px solid #f3f3f3; /* Light grey */
     border-top: 16px solid $primaryBlue;
     border-radius: 50%;
@@ -16,28 +12,11 @@
     100% { transform: rotate(360deg); }
 }
 
-@mixin transition($duration) {
-  -webkit-transition: $duration;
-  -moz-transition: $duration;
-  -ms-transition: $duration;
-  -o-transition: $duration;
-  transition: $duration;
-}
-
-.tji-charts-download-button {
-    @extend %bootstrap-button-secondary;
-    font-size: $tji-font-size-xs;
-    margin-left: $tji-spacing-lg;
-    opacity: 0.1;
-    &:disabled {
-        cursor: wait;
-    }
-    &:enabled {
-        @include transition(1s);
-        opacity: 1.0;
-    }
-}
-
-.tji-above-charts {
+.tji-chartview__above-charts {
     margin-bottom: $tji-spacing-lg;
+}
+
+.tji-chartview__record-count {
+    font-size: $tji-font-size-sm;
+    margin-right: $tji-spacing-lg;
 }
