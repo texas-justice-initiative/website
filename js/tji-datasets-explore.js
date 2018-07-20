@@ -233,12 +233,9 @@ TJIGroupByDoughnutChart.prototype.create_legend = function() {
 // *                  e.g. [{'name': 'agency_county', 'type': 'autocomplete'}, ...]
 // *   charts_elt_selector: selector of HTML element to put charts in
 // *   filters_elt_selector: selector of HTML element to put filters in
-// *   above_charts_template: HTML to wrap the area above the rendered charts,
-// *       where we'll put the record count and download button.
+// *   chartview_description_template: HTML to wrap the area where the data set description shows
+// *       where we'll put the record count and download button
 // *   chart_wrapper_template: HTML to wrap around each chart's canvas object
-// *   record_count_template: HTML for the "showing this many records" element
-// *       at the top, containing a "{count}" placeholder somewhere
-// *       (which TJIChartView will replace with the record count).
 // *
 // * Dependencies: TJIGroupByBarChart, TJIGroupByDoughnutChart
 // *       jQuery, lodash, papaparse,
@@ -252,21 +249,28 @@ var TJIChartView = function(props){
     filtered_record_indices: null,
     complete_data: null,
     active_filters: [],
-    charts: [],
-    $above_charts_area: null,
+  }
+
+  this.ui = {
+    $charts: jQuery(props.charts_elt_selector),
+    $filters: jQuery(props.filters_elt_selector),
+    $form: null,
     $download: null,
-    $record_count: null
+    $record_count: null,
+  }
+
+  this.templates = {
+    chart_wrapper_template: props.chart_wrapper_template,
+    chartview_description_template: props.chartview_description_template,
+  }
+
+  this.components = {
+    charts: [],
+    autocompletes: [],
   }
 
   this.chart_configs = props.chart_configs;
   this.filter_configs = props.filter_configs;
-  this.charts_elt_selector = props.charts_elt_selector;
-  this.filters_elt_selector = props.filters_elt_selector;
-  this.chart_wrapper_template = props.chart_wrapper_template;
-  this.above_charts_template = props.above_charts_template;
-  this.record_count_template = props.record_count_template;
-  this.$form = null;
-  this.autocompletes = [];
 
   this.get_data(props.compressed_data_json_url, props.complete_data_csv_url);
 }
@@ -279,7 +283,7 @@ TJIChartView.prototype.get_data = function(compressed_data_json_url, complete_da
   var that = this;
   jQuery.getJSON(compressed_data_json_url)
     .done(function(chart_data){
-      jQuery(that.charts_elt_selector).empty();
+      jQuery(that.ui.$charts).empty();
       that.state.chart_data = chart_data;
       that.decompress_data();
       that.transform_data();
@@ -315,7 +319,7 @@ TJIChartView.prototype.get_complete_data = function(url) {
       } else {
         // The download button stays disabled and until this data is ready.
         // Let's bring her back online now.
-        that.state.$download.prop("disabled", false);
+        that.ui.$download.prop("disabled", false);
       }
     },
     error: function(error) {
@@ -383,11 +387,15 @@ TJIChartView.prototype.transform_data = function() {
 }
 
 
-TJIChartView.prototype.create_above_charts_area = function() {
-  this.state.$above_charts_area = jQuery(this.above_charts_template).prependTo(this.charts_elt_selector)
-  this.update_record_count();
-  this.state.$download = jQuery('<button class="tji-btn-primary tji-chartview__download-button" disabled> <i class="fas fa-download"></i> Download</button>');
-  this.state.$download.appendTo(this.state.$above_charts_area)
+TJIChartView.prototype.create_chartview_description = function() {
+  this.ui.$record_count = jQuery('<span />', {
+    class: 'tji-chartview__record-count'
+  });
+  this.ui.$download = jQuery('<button class="tji-btn-primary tji-chartview__download-button" disabled> <i class="fas fa-download"></i> Download</button>');
+  jQuery(this.templates.chartview_description_template)
+    .addClass('tji-chartview__description')
+    .append(this.ui.$record_count, this.ui.$download)
+    .prependTo(this.ui.$charts);
 }
 
 
@@ -423,11 +431,11 @@ TJIChartView.prototype.create_filter_panel = function() {
     fieldsets.push(fieldset);
   });
   
-  this.$form = jQuery('<form />', {
+  this.ui.$form = jQuery('<form />', {
     class: 'tji-chart-filters',
   }).append(fieldsets);
-  this.state.active_filters = this.$form.serializeArray();  
-  jQuery(this.filters_elt_selector).append(this.$form);
+  this.state.active_filters = this.ui.$form.serializeArray();  
+  jQuery(this.ui.$filters).append(this.ui.$form);
   
 }
 
@@ -481,7 +489,7 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
     $auto_complete.find('#'+id).remove();
     $auto_complete.prepend(that.create_filter_checkbox(filter.name, term, id));
     input.val('');
-    that.$form.trigger('change');
+    that.ui.$form.trigger('change');
   }
   
   var auto_complete = new autoComplete({
@@ -509,7 +517,7 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
     jQuery('.autocomplete-suggestions').hide();
   });
 
-  this.autocompletes.push({
+  this.components.autocompletes.push({
     widget: auto_complete,
     jquery: $auto_complete,
   });
@@ -517,12 +525,15 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
 }
 
 TJIChartView.prototype.create_charts = function() {
-  this.create_above_charts_area();
   var that = this;
 
-  this.update_record_count(this.state.chart_data);
+  this.create_chartview_description();
+
+  this.update_record_count();
   _.each(this.chart_configs, function(config){
-    var $container = jQuery(that.chart_wrapper_template).appendTo(that.charts_elt_selector);
+    var $container = jQuery(that.templates.chart_wrapper_template)
+      .addClass('tji-chart')
+      .appendTo(that.ui.$charts);
     var chart_constructor;
     switch(config.type) {
       case 'doughnut': 
@@ -533,7 +544,7 @@ TJIChartView.prototype.create_charts = function() {
         chart_constructor = TJIGroupByBarChart;
         break;
     }
-    that.state.charts.push(
+    that.components.charts.push(
       new chart_constructor({
         $container: $container, 
         group_by: config.group_by, 
@@ -545,7 +556,6 @@ TJIChartView.prototype.create_charts = function() {
   });
 }
 
-
 // $container: jQuery object to contain chart
 // *   groupBy: column to group by
 // *   missing_data_label: stand-in label for records missing
@@ -555,14 +565,14 @@ TJIChartView.prototype.create_charts = function() {
 
 TJIChartView.prototype.attach_events = function() {
   var that = this;
-  this.$form.on('change', function(e) {
-    that.state.active_filters = that.$form.serializeArray();
+  this.ui.$form.on('change', function(e) {
+    that.state.active_filters = that.ui.$form.serializeArray();
     that.filter_data();
     that.update_charts();
   }).on('submit', function(e){
     e.preventDefault();
   })
-  this.state.$download.on('click', function() {
+  this.ui.$download.on('click', function() {
     that.download();
   });
 }
@@ -584,7 +594,7 @@ TJIChartView.prototype.filter_data = function() {
   var filtered_indices = [];
   var data = _.each(this.state.chart_data, function(record, idx) {
     for (filter in grouped_filters) {
-      if (record[filter] && ~grouped_filters[filter].indexOf(record[filter])) return;
+      if (record[filter] && !~grouped_filters[filter].indexOf(record[filter])) return;
     }
     filtered_indices.push(idx);
   });
@@ -598,14 +608,13 @@ TJIChartView.prototype.update_charts = function() {
   var filtered_data = _.map(that.state.filtered_record_indices, function(idx) {
     return that.state.chart_data[idx];
   })
-  _.each(this.state.charts, function(chart){
+  _.each(this.components.charts, function(chart){
     chart.update(filtered_data);
   })
 }
 
 TJIChartView.prototype.update_record_count = function() {
-  if (this.state.$record_count) jQuery(this.state.$record_count).remove();
-  this.state.$record_count = jQuery(this.record_count_template.replace('{count}', this.state.filtered_record_indices.length)).prependTo(this.state.$above_charts_area);
+  this.ui.$record_count.text(this.state.filtered_record_indices.length + ' records');
 }
 
 TJIChartView.prototype.download = function() {
