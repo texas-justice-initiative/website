@@ -233,8 +233,8 @@ TJIGroupByDoughnutChart.prototype.create_legend = function() {
 // *                  e.g. [{'name': 'agency_county', 'type': 'autocomplete'}, ...]
 // *   charts_elt_selector: selector of HTML element to put charts in
 // *   filters_elt_selector: selector of HTML element to put filters in
-// *   chartview_description_template: HTML to wrap the area where the data set description shows
-// *       where we'll put the record count and download button
+// *   chartview_summary_template: HTML to wrap the area where the data set summary shows
+// *       where we'll put the record count, download button, data set selector and data set description
 // *   chart_wrapper_template: HTML to wrap around each chart's canvas object
 // *
 // * Dependencies: TJIGroupByBarChart, TJIGroupByDoughnutChart
@@ -261,7 +261,7 @@ var TJIChartView = function(props){
 
   this.templates = {
     chart_wrapper_template: props.chart_wrapper_template,
-    chartview_description_template: props.chartview_description_template,
+    chartview_summary_template: props.chartview_summary_template,
   }
 
   this.components = {
@@ -387,13 +387,13 @@ TJIChartView.prototype.transform_data = function() {
 }
 
 
-TJIChartView.prototype.create_chartview_description = function() {
+TJIChartView.prototype.create_chartview_summary = function() {
   this.ui.$record_count = jQuery('<span />', {
     class: 'tji-chartview__record-count'
   });
   this.ui.$download = jQuery('<button class="tji-btn-primary tji-chartview__download-button" disabled> <i class="fas fa-download"></i> Download</button>');
-  jQuery(this.templates.chartview_description_template)
-    .addClass('tji-chartview__description')
+  jQuery(this.templates.chartview_summary_template)
+    .addClass('tji-chartview__summary')
     .append(this.ui.$record_count, this.ui.$download)
     .prependTo(this.ui.$charts);
 }
@@ -527,7 +527,7 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
 TJIChartView.prototype.create_charts = function() {
   var that = this;
 
-  this.create_chartview_description();
+  this.create_chartview_summary();
 
   this.update_record_count();
   _.each(this.chart_configs, function(config){

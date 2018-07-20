@@ -71,7 +71,7 @@ get_header();
       charts_elt_selector: '#js-TJIChartView',  
       filters_elt_selector: '#js-TJIChartViewFilters',  
       chart_wrapper_template: '<div class="col-sm-12 col-lg-6" />',  
-      chartview_description_template: '<div class="col-sm-12" />',
+      chartview_summary_template: '<div class="col-sm-12" />',
     });
   })
 </script>
