@@ -22,9 +22,9 @@ get_header();
       endwhile;
     ?>
 
-<div id="js-TJIChartView" class="row">
+<div id="js-TJIChartView" class="row tji-chartview">
   <!-- Loader will be cleared out when the data fetch completes -->
-  <div class="loader"></div>
+  <div class="tji-chartview__loader"></div>
 </div>
 
 </main></div>
@@ -35,6 +35,7 @@ get_header();
 
 <!-- JS Dependencies to build charts -->
 <!-- Any dependencies added here should be added to the Dependencies comment block of the appropriate JS file -->
+<script src="/wp-content/themes/tji/js/papaparse.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 <script src="https://cdn.rawgit.com/emn178/Chart.PieceLabel.js/master/build/Chart.PieceLabel.min.js"></script>
@@ -43,12 +44,14 @@ get_header();
   // See js/tji-datasets-explore.js
   jQuery(function(){
     var chartView = new TJIChartView({
+      compressed_data_json_url: '/cdr_compressed.json',
+      complete_data_csv_url: '/cdr_full.csv',
       chart_configs: [
-        {type: 'bar',      group_by: 'year'},
+        {type: 'bar', group_by: 'year'},
         {type: 'doughnut', group_by: 'race'},
         {type: 'doughnut', group_by: 'sex'},
         {type: 'doughnut', group_by: 'manner_of_death'},
-        {type: 'doughnut', group_by: 'age_group'},
+        {type: 'doughnut', group_by: 'age_group', sort_by: {column: 'key', direction: 'asc'}},
         {type: 'doughnut', group_by: 'type_of_custody'},
         {type: 'doughnut', group_by: 'death_location_type'},
         {type: 'doughnut', group_by: 'means_of_death'},
