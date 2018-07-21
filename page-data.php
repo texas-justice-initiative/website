@@ -43,6 +43,7 @@ get_header();
   jQuery(function(){
     var chartView = new TJIChartView({
       datasets: [{
+        name: 'deaths in custody',
         urls: {
           compressed: '/cdr_compressed.json',
           full: '/cdr_full.csv',
@@ -69,6 +70,28 @@ get_header();
           {'name': 'agency_county', 'type': 'autocomplete'},
           {'name': 'death_location_county', 'type': 'autocomplete'},
         ],
+      }, {
+        name: 'officer involved shootings',
+        urls: {
+          compressed: '/ois_compressed.json',
+          full: '/ois_full.csv',
+        },
+        chart_configs: [
+          {type: 'bar', group_by: 'year'},
+          {type: 'doughnut', group_by: 'civilian_race'},
+          {type: 'doughnut', group_by: 'civilian_gender'},
+          {type: 'doughnut', group_by: 'civilian_died'},
+          {type: 'doughnut', group_by: 'deadly_weapon'},
+        ],
+        filter_configs: [
+          {'name': 'year'},
+          {'name': 'civilian_race'},
+          {'name': 'civilian_gender'},
+          {'name': 'civilian_died'},
+          {'name': 'deadly_weapon'},
+          {'name': 'agency_county', 'type': 'autocomplete'},
+          {'name': 'incident_county', 'type': 'autocomplete'},
+        ],
       }],
       charts_elt_selector: '#js-TJIChartView',  
       filters_elt_selector: '#js-TJIChartViewFilters',  
@@ -77,35 +100,6 @@ get_header();
       chartview_summary_template: '<div />',
     });
   })
-</script>
-<script>
-  // // See js/tji-datasets-explore.js
-  // jQuery(function(){
-  //   var chartView = new TJIChartView({
-  //     compressed_data_json_url: '/ois_compressed.json',
-  //     complete_data_csv_url: '/ois_full.csv',
-  //     chart_configs: [
-  //       {type: 'bar', group_by: 'year'},
-  //       {type: 'doughnut', group_by: 'civilian_race'},
-  //       {type: 'doughnut', group_by: 'civilian_gender'},
-  //       {type: 'doughnut', group_by: 'civilian_died'},
-  //       {type: 'doughnut', group_by: 'deadly_weapon'},
-  //     ],
-  //     filter_configs: [
-  //       {'name': 'year'},
-  //       {'name': 'civilian_race'},
-  //       {'name': 'civilian_gender'},
-  //       {'name': 'civilian_died'},
-  //       {'name': 'deadly_weapon'},
-  //       {'name': 'agency_county', 'type': 'autocomplete'},
-  //       {'name': 'incident_county', 'type': 'autocomplete'},
-  //     ],
-  //     charts_elt_selector: '#js-TJIChartView2',  
-  //     filters_elt_selector: '#js-TJIChartViewFilters2',  
-  //     chart_wrapper_template: '<div class="col-sm-12 col-lg-6" />',  
-  //     chartview_summary_template: '<div class="col-sm-12" />',
-  //   });
-  // })
 </script>
 
 <?php

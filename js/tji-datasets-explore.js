@@ -266,6 +266,7 @@ var TJIChartView = function(props){
     $chartview_filters: jQuery(props.filters_elt_selector),
     $form: null,
     $summary: null,
+    $select_dataset: null,
     $download: null,
     $record_count: null,
     $loader: null,
@@ -572,6 +573,7 @@ TJIChartView.prototype.create_charts = function() {
 }
 
 TJIChartView.prototype.create_chartview_DOM = function() {
+  var that = this;
 
   this.ui.$loader = jQuery('<div />', {
     class: 'tji-chartview__loader'
@@ -585,15 +587,23 @@ TJIChartView.prototype.create_chartview_DOM = function() {
     .addClass('tji-chartview__charts')
     .appendTo(this.ui.$chartview_charts);
 
+  this.ui.$select_dataset = jQuery('<select />', {
+    class: 'tji-chartview__dataset-selet'
+  });
+
+  _.each(this.datasets, function(dataset, index) {
+    jQuery('<option value="'+index+'">'+dataset.name+'</option>').appendTo(that.ui.$select_dataset)
+  });
+
   this.ui.$record_count = jQuery('<span />', {
     class: 'tji-chartview__record-count'
   });
-  
+
   this.ui.$download = jQuery('<button class="tji-btn-primary tji-chartview__download-button" disabled> <i class="fas fa-download"></i> Download</button>');
-  
+
   this.ui.$summary = jQuery(this.templates.chartview_summary_template)
     .addClass('tji-chartview__summary')
-    .append(this.ui.$record_count, this.ui.$download)
+    .append(this.ui.$select_dataset, this.ui.$record_count, this.ui.$download)
 }
 
 TJIChartView.prototype.attach_events = function() {
@@ -605,8 +615,12 @@ TJIChartView.prototype.attach_events = function() {
   }).on('submit', function(e){
     e.preventDefault();
   })
-  this.ui.$download.on('click', function() {
+  this.ui.$download.on('click', function(e) {
+    e.preventDefault();
     that.download();
+  });
+  this.ui.$select_dataset.on('change', function(e) {
+    that.set_active_dataset(that.ui.$select_dataset.val());
   });
 }
 
@@ -684,7 +698,8 @@ TJIChartView.prototype.download = function() {
   
   // Convert these JSON records into CSV text using Papa
   var csvData = Papa.unparse(filtered_complete_records);
-  var filename = filtered_complete_records.length == dataset.complete_data.length ? "tji_data.csv" : "tji_data_filtered.csv";
+  var filename = "tji_data_" + this.datasets[this.state.active_dataset_index].name.replace(/\s/g, '_');
+  filename = filtered_complete_records.length !== dataset.complete_data.length ? filename + '_filtered' : filename;
 
   // Start the download.
   // Note: this solution is taken from https://stackoverflow.com/a/24922761
