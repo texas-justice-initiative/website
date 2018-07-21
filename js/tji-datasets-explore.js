@@ -295,66 +295,6 @@ var TJIChartView = function(props){
 
 TJIChartView.prototype.missing_data_label = '(not given)';
 
-TJIChartView.prototype.create_chartview_DOM = function() {
-
-  this.ui.$loader = jQuery('<div />', {
-    class: 'tji-chartview__loader'
-  }).appendTo(this.ui.$chartview_charts);
-
-  this.ui.$form = jQuery('<form />', {
-    class: 'tji-chart-filters',
-  }).appendTo(this.ui.$chartview_filters);
-
-  this.ui.$charts = jQuery(this.templates.chartview_charts_template)
-    .addClass('tji-chartview__charts')
-    .appendTo(this.ui.$chartview_charts);
-
-  this.ui.$record_count = jQuery('<span />', {
-    class: 'tji-chartview__record-count'
-  });
-  
-  this.ui.$download = jQuery('<button class="tji-btn-primary tji-chartview__download-button" disabled> <i class="fas fa-download"></i> Download</button>');
-  
-  this.ui.$summary = jQuery(this.templates.chartview_summary_template)
-    .addClass('tji-chartview__summary')
-    .append(this.ui.$record_count, this.ui.$download)
-}
-
-TJIChartView.prototype.attach_events = function() {
-  var that = this;
-  this.ui.$form.on('change', function(e) {
-    that.state.active_filters = that.ui.$form.serializeArray();
-    that.filter_data();
-    that.update_charts();
-  }).on('submit', function(e){
-    e.preventDefault();
-  })
-  this.ui.$download.on('click', function() {
-    that.download();
-  });
-}
-
-TJIChartView.prototype.set_active_dataset = function(index) {
-  var that = this;
-  this.state.active_dataset_index = index;
-  
-  this.ui.$loader.show();
-
-  if(!this.datasets[index].fetch_data) {
-    this.get_data(this.datasets[index]);
-  }
-  this.datasets[index].fetch_data
-    .done(function(){
-      // When a data set is selected, include all data in initial rendering.
-      that.state.filtered_record_indices = _.times(that.datasets[index].chart_data.length);
-      that.state.active_filters = [];
-      that.ui.$loader.hide(); 
-      that.create_filters();
-      that.create_charts();
-      that.update_chartview_summary();
-    });
-}
-
 // Returns a promise such that synchronis functionality can be 
 // triggered once compressed data download is completed and transformed
 // also triggers fetch of full csv data set 
@@ -624,6 +564,66 @@ TJIChartView.prototype.create_charts = function() {
       })
     );    
   });
+}
+
+TJIChartView.prototype.create_chartview_DOM = function() {
+
+  this.ui.$loader = jQuery('<div />', {
+    class: 'tji-chartview__loader'
+  }).appendTo(this.ui.$chartview_charts);
+
+  this.ui.$form = jQuery('<form />', {
+    class: 'tji-chart-filters',
+  }).appendTo(this.ui.$chartview_filters);
+
+  this.ui.$charts = jQuery(this.templates.chartview_charts_template)
+    .addClass('tji-chartview__charts')
+    .appendTo(this.ui.$chartview_charts);
+
+  this.ui.$record_count = jQuery('<span />', {
+    class: 'tji-chartview__record-count'
+  });
+  
+  this.ui.$download = jQuery('<button class="tji-btn-primary tji-chartview__download-button" disabled> <i class="fas fa-download"></i> Download</button>');
+  
+  this.ui.$summary = jQuery(this.templates.chartview_summary_template)
+    .addClass('tji-chartview__summary')
+    .append(this.ui.$record_count, this.ui.$download)
+}
+
+TJIChartView.prototype.attach_events = function() {
+  var that = this;
+  this.ui.$form.on('change', function(e) {
+    that.state.active_filters = that.ui.$form.serializeArray();
+    that.filter_data();
+    that.update_charts();
+  }).on('submit', function(e){
+    e.preventDefault();
+  })
+  this.ui.$download.on('click', function() {
+    that.download();
+  });
+}
+
+TJIChartView.prototype.set_active_dataset = function(index) {
+  var that = this;
+  this.state.active_dataset_index = index;
+  
+  this.ui.$loader.show();
+
+  if(!this.datasets[index].fetch_data) {
+    this.get_data(this.datasets[index]);
+  }
+  this.datasets[index].fetch_data
+    .done(function(){
+      // When a data set is selected, include all data in initial rendering.
+      that.state.filtered_record_indices = _.times(that.datasets[index].chart_data.length);
+      that.state.active_filters = [];
+      that.ui.$loader.hide(); 
+      that.create_filters();
+      that.create_charts();
+      that.update_chartview_summary();
+    });
 }
 
 // Called when the user changes any data filters.
