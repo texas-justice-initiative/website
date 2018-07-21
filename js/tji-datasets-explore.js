@@ -87,6 +87,11 @@ TJIGroupByBarChart.prototype.create = function(data) {
   });
 }
 
+TJIGroupByBarChart.prototype.destroy = function() {
+  this.chart.destroy();
+  this.$container.remove();
+}
+
 TJIGroupByBarChart.prototype.create_legend = function() {
 }
 
@@ -256,15 +261,19 @@ var TJIChartView = function(props){
   this.datasets = props.datasets;
 
   this.ui = {
-    $charts: jQuery(props.charts_elt_selector),
-    $filters: jQuery(props.filters_elt_selector),
+    $chartview_charts: jQuery(props.charts_elt_selector),
+    $charts: null,
+    $chartview_filters: jQuery(props.filters_elt_selector),
     $form: null,
+    $summary: null,
     $download: null,
     $record_count: null,
+    $loader: null,
   }
 
   this.templates = {
     chart_wrapper_template: props.chart_wrapper_template,
+    chartview_charts_template: props.chartview_charts_template,
     chartview_summary_template: props.chartview_summary_template,
   }
 
@@ -272,30 +281,65 @@ var TJIChartView = function(props){
     charts: [],
     autocompletes: [],
   }
-//!!!!!!!!!!!!!!!!!!!!!!!!TODO: maybe we can have an initialize DOM function, that all gets appended at once
-//IT COULD BUILD THE FORM, THE DOWNLOAD, RECORD COUNT, MAYBE WE NEED A CONTAINER FOR THE CHARTS (THIS COULD HELP THE flexbox row THING)
-//AND ATTACH IT TO THE DOM AT ONCE
-//THIS WAY THE LOADER ISN'T WEIRD
 
-  this.create_chartview_summary();
+  this.create_chartview_DOM();
 
   this.set_active_dataset(0);
 
   this.datasets[this.state.active_dataset_index].fetch_data
     .done(function(){
+      that.ui.$summary.prependTo(that.ui.$chartview_charts);
       that.attach_events();
     });
 }
 
 TJIChartView.prototype.missing_data_label = '(not given)';
 
+TJIChartView.prototype.create_chartview_DOM = function() {
+
+  this.ui.$loader = jQuery('<div />', {
+    class: 'tji-chartview__loader'
+  }).appendTo(this.ui.$chartview_charts);
+
+  this.ui.$form = jQuery('<form />', {
+    class: 'tji-chart-filters',
+  }).appendTo(this.ui.$chartview_filters);
+
+  this.ui.$charts = jQuery(this.templates.chartview_charts_template)
+    .addClass('tji-chartview__charts')
+    .appendTo(this.ui.$chartview_charts);
+
+  this.ui.$record_count = jQuery('<span />', {
+    class: 'tji-chartview__record-count'
+  });
+  
+  this.ui.$download = jQuery('<button class="tji-btn-primary tji-chartview__download-button" disabled> <i class="fas fa-download"></i> Download</button>');
+  
+  this.ui.$summary = jQuery(this.templates.chartview_summary_template)
+    .addClass('tji-chartview__summary')
+    .append(this.ui.$record_count, this.ui.$download)
+}
+
+TJIChartView.prototype.attach_events = function() {
+  var that = this;
+  this.ui.$form.on('change', function(e) {
+    that.state.active_filters = that.ui.$form.serializeArray();
+    that.filter_data();
+    that.update_charts();
+  }).on('submit', function(e){
+    e.preventDefault();
+  })
+  this.ui.$download.on('click', function() {
+    that.download();
+  });
+}
+
 TJIChartView.prototype.set_active_dataset = function(index) {
   var that = this;
   this.state.active_dataset_index = index;
   
-  this.ui.$charts.find('.tji-chartview__loader').show(); //!!!!!!!!!!!!!!!!!!!!!!!!TODO: this is clunky
+  this.ui.$loader.show();
 
-  //destroy all components (charts, autocompletes)
   if(!this.datasets[index].fetch_data) {
     this.get_data(this.datasets[index]);
   }
@@ -304,12 +348,10 @@ TJIChartView.prototype.set_active_dataset = function(index) {
       // When a data set is selected, include all data in initial rendering.
       that.state.filtered_record_indices = _.times(that.datasets[index].chart_data.length);
       that.state.active_filters = [];
-      that.ui.$charts.find('.tji-chartview__loader').hide(); //!!!!!!!!!!!!!!!!!!!!!!!!TODO: this is clunky
+      that.ui.$loader.hide(); 
       that.create_filters();
       that.create_charts();
       that.update_chartview_summary();
-      //!!!!!!!!!!!!!!!!!!!!!!!!TODO: WHEN YOU MAKE ^^^^ THOSE UPDATES YOU'LL HAVE TO NOT 
-      //CREATE CHARTS, CREATE FILTERS, ETC WHEN THE APP FIRST LOADS LINE 285, 286
     });
 }
 
@@ -415,18 +457,19 @@ TJIChartView.prototype.transform_data = function(dataset) {
   });
 }
 
+TJIChartView.prototype.destroy_filters = function() {
+  _.each(this.components.autocompletes, function(autocomplete){
+    autocomplete.destroy();
+  });
+  this.components.autocompletes.length = 0;
+  this.ui.$form.empty();
+}
+
 TJIChartView.prototype.create_filters = function() {
   var that = this;
   
-  //!!!!!!!!!!!!!!!!!!!!!!!TODO: MAYBE WE DON'T NEED TO DO THIS WHEN THERE'S A SEPARATE METHOD THAT BUILDS THIS FORM
-  if (this.ui.$form) {
-    this.destroy_filters();
-  } else {
-    this.ui.$form = jQuery('<form />', {
-      class: 'tji-chart-filters',
-    }).appendTo(this.ui.$filters);
-  }
-
+  this.destroy_filters();
+  
   // Generate filter values
   var dataset = this.datasets[this.state.active_dataset_index];
   var filters = []
@@ -459,11 +502,6 @@ TJIChartView.prototype.create_filters = function() {
   this.ui.$form.append(fieldsets);
 
   this.state.active_filters = this.ui.$form.serializeArray();    
-}
-
-TJIChartView.prototype.destroy_filters = function() {
-  //!!!!!!!!!!!!!!!!!!!!!!!!TODO: DESTROY AUTOCOMPLETES
-  this.ui.$form.empty() 
 }
 
 TJIChartView.prototype.create_filter_checkboxes = function(filter) {
@@ -501,20 +539,20 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
     class: "tji-chart-filters__text",
     type: "text",
   });
-  fieldset.append(jQuery('<div/>',{
-    class: "tji-chart-filters__autocomplete",
-  }).append(input));
-  
-  var $auto_complete = jQuery('<div />', {
+  var auto_complete_list = jQuery('<div />', {
     class: "tji-chart-filters__autocomplete-list"
-  }).insertAfter(input);
+  });
+
+  jQuery('<div/>',{
+    class: "tji-chart-filters__autocomplete",
+  }).append(input, auto_complete_list).appendTo(fieldset);
   
   var onSelect = function(event, term) {
     event.preventDefault();
     event.stopPropagation();
     var id = 'TJIChartView__filtercontainer-' + filter.name + '-' + term;
-    $auto_complete.find('#'+id).remove();
-    $auto_complete.prepend(that.create_filter_checkbox(filter.name, term, id));
+    auto_complete_list.find('#'+id).remove();
+    auto_complete_list.prepend(that.create_filter_checkbox(filter.name, term, id));
     input.val('');
     that.ui.$form.trigger('change');
   }
@@ -544,11 +582,16 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
     jQuery('.autocomplete-suggestions').hide();
   });
 
-  this.components.autocompletes.push({
-    widget: auto_complete,
-    jquery: $auto_complete,
-  });
+  this.components.autocompletes.push(auto_complete);
   return fieldset;
+}
+
+TJIChartView.prototype.destroy_charts = function() {
+  _.each(this.components.charts, function(chart){
+    chart.destroy();
+  });
+  this.components.charts.length = 0;
+  this.ui.$charts.empty();
 }
 
 TJIChartView.prototype.create_charts = function() {
@@ -580,37 +623,6 @@ TJIChartView.prototype.create_charts = function() {
         data: dataset.chart_data,
       })
     );    
-  });
-}
-
-TJIChartView.prototype.destroy_charts = function() {
-  //!!!!!!!!!!!!!!!!!!!!!!!!TODO: DESTROY CHART OBJECTS
-  //MAYBE WE WIPE OUT CHARTS FROM It'S CONTAINER ONCE IT HAS A CONTAINER
-  this.ui.$charts.find('.tji-chart').remove();
-}
-
-TJIChartView.prototype.create_chartview_summary = function() {
-  this.ui.$record_count = jQuery('<span />', {
-    class: 'tji-chartview__record-count'
-  });
-  this.ui.$download = jQuery('<button class="tji-btn-primary tji-chartview__download-button" disabled> <i class="fas fa-download"></i> Download</button>');
-  jQuery(this.templates.chartview_summary_template)
-    .addClass('tji-chartview__summary')
-    .append(this.ui.$record_count, this.ui.$download)
-    .prependTo(this.ui.$charts);
-}
-
-TJIChartView.prototype.attach_events = function() {
-  var that = this;
-  this.ui.$form.on('change', function(e) {
-    that.state.active_filters = that.ui.$form.serializeArray();
-    that.filter_data();
-    that.update_charts();
-  }).on('submit', function(e){
-    e.preventDefault();
-  })
-  this.ui.$download.on('click', function() {
-    that.download();
   });
 }
 
