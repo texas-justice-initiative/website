@@ -266,6 +266,7 @@ var TJIChartView = function(props){
     $chartview_filters: jQuery(props.filters_elt_selector),
     $form: null,
     $summary: null,
+    $description: null,
     $select_dataset: null,
     $download: null,
     $record_count: null,
@@ -306,6 +307,7 @@ TJIChartView.prototype.get_data = function(dataset) {
       dataset.chart_data = chart_data;
       that.decompress_data(dataset);
       that.transform_data(dataset);
+      that.ui.$download.prop('disabled', true);
       that.get_complete_data(dataset);
     })
     .fail(function(jqxhr, textStatus, error){
@@ -595,7 +597,11 @@ TJIChartView.prototype.create_chartview_DOM = function() {
     jQuery('<option value="'+index+'">'+dataset.name+'</option>').appendTo(that.ui.$select_dataset)
   });
 
-  this.ui.$record_count = jQuery('<span />', {
+  this.ui.$description = jQuery('<div />', {
+    class: 'tji-chartview__description'
+  });
+
+  this.ui.$record_count = jQuery('<div />', {
     class: 'tji-chartview__record-count'
   });
 
@@ -603,7 +609,7 @@ TJIChartView.prototype.create_chartview_DOM = function() {
 
   this.ui.$summary = jQuery(this.templates.chartview_summary_template)
     .addClass('tji-chartview__summary')
-    .append(this.ui.$select_dataset, this.ui.$record_count, this.ui.$download)
+    .append(this.ui.$select_dataset, this.ui.$description, this.ui.$record_count, this.ui.$download)
 }
 
 TJIChartView.prototype.attach_events = function() {
@@ -638,7 +644,8 @@ TJIChartView.prototype.set_active_dataset = function(index) {
       // When a data set is selected, include all data in initial rendering.
       that.state.filtered_record_indices = _.times(that.datasets[index].chart_data.length);
       that.state.active_filters = [];
-      that.ui.$loader.hide(); 
+      that.ui.$loader.hide();
+      that.ui.$description.text(that.datasets[index].description); 
       that.create_filters();
       that.create_charts();
       that.update_chartview_summary();
