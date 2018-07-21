@@ -8,14 +8,14 @@
 ## FILTERS
 --------------------------------------------------------------*/
 
-#js-TJIfilters {
+.tji-chart-filters {
   fieldset {
-    margin-bottom: 1em;
+    margin-bottom: $tji-spacing-xs;
+      a { cursor: pointer; }
   }
   legend {
     text-transform: uppercase;
-
-    .fa-caret-down { margin-left: 0.5em; }
+    .fa-caret-down { margin-left: $tji-spacing-xs; }
   }
   legend:after {
     font-family: 'Font Awesome 5 Free';
@@ -24,19 +24,16 @@
     padding-left: 0.5em;
   }
   legend:hover {
-    color: #F1AB32;
+    color: $primaryYellow;
     cursor: pointer;
   }
-  .js-filter-set {
-    a { cursor: pointer; }
-    .filter {
-      label {
-        text-transform: capitalize;
-        padding-left: 0.5em;
-      }
+  .tji-chart-filters__filter {
+    label {
+      text-transform: capitalize;
+      padding-left: 0.5em;
     }
   }
-  .js-filter-set.is-collapsed {
+  .is-collapsed {
     display: none;
   }
   .active:after {

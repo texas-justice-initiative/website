@@ -43,6 +43,7 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 	## Captions
 	## Galleries
 --------------------------------------------------------------*/
+/* transitions */
 /*--------------------------------------------------------------
 # Normalize
 --------------------------------------------------------------*/
@@ -1340,6 +1341,46 @@ template {
     order: 1;
   }
 }
+/*--------------------------------------------------------------
+# Autocomplete - https://github.com/Pixabay/JavaScript-autoComplete
+--------------------------------------------------------------*/
+.autocomplete-suggestions {
+  text-align: left;
+  cursor: default;
+  border: 1px solid #ccc;
+  border-top: 0;
+  background: #fff;
+  box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.1);
+  /* core styles should not be changed */
+  position: absolute;
+  display: none;
+  z-index: 9999;
+  max-height: 254px;
+  overflow: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.autocomplete-suggestion {
+  position: relative;
+  padding: 0 0.6em;
+  line-height: 23px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1.02em;
+  color: #333;
+}
+
+.autocomplete-suggestion b {
+  font-weight: normal;
+  color: #1f8dd6;
+}
+
+.autocomplete-suggestion.selected {
+  background: #f0f0f0;
+}
+
 /*--------------------------------------------------------------
 # Font Awesome
 --------------------------------------------------------------*/
@@ -6109,6 +6150,18 @@ hr {
   margin-bottom: 1.5em;
 }
 
+img {
+  height: auto;
+  /* Make sure images are scaled correctly. */
+  max-width: 100%;
+  /* Adhere to container width. */
+}
+
+figure {
+  margin: 1em 0;
+  /* Extra wide images within figure tags don't overflow the content area. */
+}
+
 ul, ol {
   margin: 0 0 1.5em 3em;
 }
@@ -6133,18 +6186,6 @@ dt {
 
 dd {
   margin: 0 1.5em 1.5em;
-}
-
-img {
-  height: auto;
-  /* Make sure images are scaled correctly. */
-  max-width: 100%;
-  /* Adhere to container width. */
-}
-
-figure {
-  margin: 1em 0;
-  /* Extra wide images within figure tags don't overflow the content area. */
 }
 
 table {
@@ -6590,6 +6631,8 @@ object {
 --------------------------------------------------------------*/
 /* colors */
 /* fonts */
+/* spacing */
+/* typography */
 /*--------------------------------------------------------------
 ## Fonts
 --------------------------------------------------------------*/
@@ -7250,7 +7293,6 @@ hr.story-divider {
     width: 25%;
     box-shadow: -2px 0 3px rgba(65, 65, 65, 0.5);
     min-height: calc(100vh - 100px);
-    min-width: 300px;
   }
 }
 
@@ -7345,47 +7387,54 @@ hr.story-divider {
 /*--------------------------------------------------------------
 ## CHARTS
 --------------------------------------------------------------*/
-#js-TJIChartView {
-  width: 100%;
-  padding: 2em;
-  background-color: #fbfbfb;
-  box-shadow: 2px 3px 6px rgba(64, 64, 64, 0.5);
-  margin-left: 1em;
-}
-#js-TJIChartView h2 {
-  display: block;
-  width: 100%;
-  text-transform: uppercase;
-  padding-left: 0.5em;
-  padding-right: 0.5em;
-  margin-bottom: 0.5em;
-  margin-top: 0;
-}
-@media (max-width: 992px) {
-  #js-TJIChartView {
-    margin-left: 0;
-  }
+.tji-chartview__loader {
+  border: 16px solid #f3f3f3;
+  /* Light grey */
+  border-top: 16px solid #0B5D93;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
 }
 
-.tji-data-count {
-  font-size: 18px;
-  margin-bottom: 1em;
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.tji-chartview__description {
+  margin-bottom: 2rem;
 }
 
-.tji-chart {
-  border: 1px solid #ebebeb;
-  transition: all 0.25s;
+.tji-chartview__record-count {
+  font-size: 1.7rem;
+  margin-right: 2rem;
 }
-.tji-chart:hover {
-  box-shadow: 0px 0px 20px rgba(64, 64, 64, 0.15);
-  background-color: #fff;
+
+.tji-chart__title {
+  font-size: 32px;
+  font-size: 2rem;
 }
-@media (min-width: 1500px) {
-  .tji-chart {
-    -ms-flex-preferred-size: 33.33%;
-    flex-basis: 33.33%;
-    max-width: 33.33%;
-  }
+
+.tji-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tji-chart__legend-item {
+  align-items: center;
+  display: flex;
+  margin: 0 0.5rem;
+  text-transform: lowercase;
+  white-space: nowrap;
+}
+.tji-chart__legend-item span {
+  height: 1rem;
+  margin-right: 0.5rem;
+  width: 1rem;
 }
 
 /*--------------------------------------------------------------
@@ -7397,37 +7446,37 @@ hr.story-divider {
 /*--------------------------------------------------------------
 ## FILTERS
 --------------------------------------------------------------*/
-#js-TJIfilters fieldset {
-  margin-bottom: 1em;
+.tji-chart-filters fieldset {
+  margin-bottom: 0.5rem;
 }
-#js-TJIfilters legend {
+.tji-chart-filters fieldset a {
+  cursor: pointer;
+}
+.tji-chart-filters legend {
   text-transform: uppercase;
 }
-#js-TJIfilters legend .fa-caret-down {
-  margin-left: 0.5em;
+.tji-chart-filters legend .fa-caret-down {
+  margin-left: 0.5rem;
 }
-#js-TJIfilters legend:after {
+.tji-chart-filters legend:after {
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
   content: "";
   /* Unicode character for "down" caret (+) */
   padding-left: 0.5em;
 }
-#js-TJIfilters legend:hover {
-  color: #F1AB32;
+.tji-chart-filters legend:hover {
+  color: #FFFD00;
   cursor: pointer;
 }
-#js-TJIfilters .js-filter-set a {
-  cursor: pointer;
-}
-#js-TJIfilters .js-filter-set .filter label {
+.tji-chart-filters .tji-chart-filters__filter label {
   text-transform: capitalize;
   padding-left: 0.5em;
 }
-#js-TJIfilters .js-filter-set.is-collapsed {
+.tji-chart-filters .is-collapsed {
   display: none;
 }
-#js-TJIfilters .active:after {
+.tji-chart-filters .active:after {
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
   content: "";
@@ -7451,14 +7500,43 @@ hr.story-divider {
     background-color: #872729;
   }
 }
-/*--------------------------------------------------------------
-## Helpers
---------------------------------------------------------------*/
-.record-count {
-  font-size: 2em;
+.tji-btn-primary {
+  border-radius: 0.25rem;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 1.4rem;
+  color: white;
+  background-color: #0B5D93;
+}
+.tji-btn-primary:hover {
+  background-color: #0c66a1;
+}
+.tji-btn-primary:disabled {
+  opacity: 0.1;
+  cursor: wait;
+}
+.tji-btn-primary:enabled {
+  opacity: 1;
+  -webkit-transition: opacity 1s;
+  -moz-transition: opacity 1s;
+  -ms-transition: opacity 1s;
+  -o-transition: opacity 1s;
+  transition: opacity 1s;
 }
 
-.loader {
+/*--------------------------------------------------------------
+## Charts
+--------------------------------------------------------------*/
+/*--------------------------------------------------------------
+>>> EXPLORE THE DATA TABLE OF CONTENTS:
+----------------------------------------------------------------
+# GENERAL
+# CHARTS
+
+/*--------------------------------------------------------------
+## CHARTS
+--------------------------------------------------------------*/
+.tji-chartview__loader {
   border: 16px solid #f3f3f3;
   /* Light grey */
   border-top: 16px solid #0B5D93;
@@ -7475,6 +7553,37 @@ hr.story-divider {
   100% {
     transform: rotate(360deg);
   }
+}
+.tji-chartview__description {
+  margin-bottom: 2rem;
+}
+
+.tji-chartview__record-count {
+  font-size: 1.7rem;
+  margin-right: 2rem;
+}
+
+.tji-chart__title {
+  font-size: 32px;
+  font-size: 2rem;
+}
+
+.tji-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tji-chart__legend-item {
+  align-items: center;
+  display: flex;
+  margin: 0 0.5rem;
+  text-transform: lowercase;
+  white-space: nowrap;
+}
+.tji-chart__legend-item span {
+  height: 1rem;
+  margin-right: 0.5rem;
+  width: 1rem;
 }
 
 /*# sourceMappingURL=style.css.map */
