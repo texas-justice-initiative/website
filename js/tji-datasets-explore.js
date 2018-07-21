@@ -554,6 +554,11 @@ TJIChartView.prototype.create_charts = function() {
         chart_constructor = TJIGroupByBarChart;
         break;
     }
+// *  $container: jQuery object to contain chart
+// *  group_by: column to group by
+// *  missing_data_label: stand-in label for records missing
+// *                       the group_by column
+// *  data: list of objects representing records
     that.components.charts.push(
       new chart_constructor({
         $container: $container, 
