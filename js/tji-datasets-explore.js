@@ -253,9 +253,6 @@ var TJIChartView = function(props){
     active_filters: [],
   }
 
-  //chart_data: null,
-  //complete_data: null,
-
   this.datasets = props.datasets;
 
   this.ui = {
@@ -275,15 +272,17 @@ var TJIChartView = function(props){
     charts: [],
     autocompletes: [],
   }
+//!!!!!!!!!!!!!!!!!!!!!!!!TODO: maybe we can have an initialize DOM function, that all gets appended at once
+//IT COULD BUILD THE FORM, THE DOWNLOAD, RECORD COUNT, MAYBE WE NEED A CONTAINER FOR THE CHARTS (THIS COULD HELP THE flexbox row THING)
+//AND ATTACH IT TO THE DOM AT ONCE
+//THIS WAY THE LOADER ISN'T WEIRD
+
+  this.create_chartview_summary();
 
   this.set_active_dataset(0);
+
   this.datasets[this.state.active_dataset_index].fetch_data
     .done(function(){
-      jQuery(that.ui.$charts).empty();
-      // Prepare HTML contents
-      that.create_chartview_summary();
-      that.create_charts();
-      that.create_filters();
       that.attach_events();
     });
 }
@@ -293,7 +292,9 @@ TJIChartView.prototype.missing_data_label = '(not given)';
 TJIChartView.prototype.set_active_dataset = function(index) {
   var that = this;
   this.state.active_dataset_index = index;
-  //!!!!!!!!!!!!!!!!!!!!!!!!TODO: show loader
+  
+  this.ui.$charts.find('.tji-chartview__loader').show(); //!!!!!!!!!!!!!!!!!!!!!!!!TODO: this is clunky
+
   //destroy all components (charts, autocompletes)
   if(!this.datasets[index].fetch_data) {
     this.get_data(this.datasets[index]);
@@ -303,9 +304,12 @@ TJIChartView.prototype.set_active_dataset = function(index) {
       // When a data set is selected, include all data in initial rendering.
       that.state.filtered_record_indices = _.times(that.datasets[index].chart_data.length);
       that.state.active_filters = [];
-      //!!!!!!!!!!!!!!!!!!!!!!!!TODO: rerender all charts
-      //!!!!!!!!!!!!!!!!!!!!!!!!TODO: rerender all filters
-      //!!!!!!!!!!!!!!!!!!!!!!!!TODO: rerender chart summary area
+      that.ui.$charts.find('.tji-chartview__loader').hide(); //!!!!!!!!!!!!!!!!!!!!!!!!TODO: this is clunky
+      that.create_filters();
+      that.create_charts();
+      that.update_chartview_summary();
+      //!!!!!!!!!!!!!!!!!!!!!!!!TODO: WHEN YOU MAKE ^^^^ THOSE UPDATES YOU'LL HAVE TO NOT 
+      //CREATE CHARTS, CREATE FILTERS, ETC WHEN THE APP FIRST LOADS LINE 285, 286
     });
 }
 
@@ -414,6 +418,7 @@ TJIChartView.prototype.transform_data = function(dataset) {
 TJIChartView.prototype.create_filters = function() {
   var that = this;
   
+  //!!!!!!!!!!!!!!!!!!!!!!!TODO: MAYBE WE DON'T NEED TO DO THIS WHEN THERE'S A SEPARATE METHOD THAT BUILDS THIS FORM
   if (this.ui.$form) {
     this.destroy_filters();
   } else {
@@ -580,6 +585,7 @@ TJIChartView.prototype.create_charts = function() {
 
 TJIChartView.prototype.destroy_charts = function() {
   //!!!!!!!!!!!!!!!!!!!!!!!!TODO: DESTROY CHART OBJECTS
+  //MAYBE WE WIPE OUT CHARTS FROM It'S CONTAINER ONCE IT HAS A CONTAINER
   this.ui.$charts.find('.tji-chart').remove();
 }
 
@@ -592,8 +598,6 @@ TJIChartView.prototype.create_chartview_summary = function() {
     .addClass('tji-chartview__summary')
     .append(this.ui.$record_count, this.ui.$download)
     .prependTo(this.ui.$charts);
-
-  this.update_record_count();
 }
 
 TJIChartView.prototype.attach_events = function() {
@@ -637,7 +641,7 @@ TJIChartView.prototype.filter_data = function() {
 }
 
 TJIChartView.prototype.update_charts = function() {
-  this.update_record_count();
+  this.update_chartview_summary();
   var that = this;
   var dataset = this.datasets[this.state.active_dataset_index];
   var filtered_data = _.map(that.state.filtered_record_indices, function(idx) {
@@ -648,7 +652,7 @@ TJIChartView.prototype.update_charts = function() {
   })
 }
 
-TJIChartView.prototype.update_record_count = function() {
+TJIChartView.prototype.update_chartview_summary = function() {
   this.ui.$record_count.text(this.state.filtered_record_indices.length + ' records');
 }
 
