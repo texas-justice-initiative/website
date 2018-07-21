@@ -1,4 +1,3 @@
-
 //TODO: make color constant object
 
 var COLOR_TJI_BLUE = '#0B5D93';
@@ -441,9 +440,12 @@ TJIChartView.prototype.create_filter_panel = function() {
 
 TJIChartView.prototype.create_filter_checkboxes = function(filter) {
   var that = this;
-  var fieldset = jQuery('<fieldset><legend>' + filter.name.replace(/_/g, " ") + '<i class="fas fa-caret-down"></i></legend></fieldset>');
+  var fieldset = jQuery('<fieldset><legend class="js-chart-legend">' + filter.name.replace(/_/g, " ") + '</legend></fieldset>');
+  var filterset = jQuery('<div class="js-filter-set"><a class="js-toggle-select">Select All</a> / <a class="js-toggle-unselect">Unselect All</a></div>');
+  fieldset.append(filterset);
+
   _.each(filter.values, function(v) {
-    fieldset.append(that.create_filter_checkbox(filter.name, v));
+    filterset.append(that.create_filter_checkbox(filter.name, v));
   });
   return fieldset;
 }
@@ -469,12 +471,14 @@ TJIChartView.prototype.create_filter_checkbox = function(name, value, id) {
 
 TJIChartView.prototype.create_filter_autocomplete = function(filter) {
   var that = this;
-  var fieldset = jQuery('<fieldset><legend>' + filter.name.replace(/_/g, " ") + '<i class="fas fa-caret-down"></i></legend></fieldset>');
+  var fieldset = jQuery('<fieldset><legend class="js-chart-legend">' + filter.name.replace(/_/g, " ") + '</legend></fieldset>');
+  var filterset = jQuery('<div class="js-filter-set"></div>');
+  fieldset.append(filterset);
   var input = jQuery('<input/>', {
     class: "tji-chart-filters__text",
     type: "text",
   });
-  fieldset.append(jQuery('<div/>',{
+  filterset.append(jQuery('<div/>',{
     class: "tji-chart-filters__autocomplete",
   }).append(input));
   
@@ -572,10 +576,34 @@ TJIChartView.prototype.attach_events = function() {
   }).on('submit', function(e){
     e.preventDefault();
   })
+  // Make filter sections collapsible
+  .on('click', '.js-chart-legend', function(e){
+    jQuery(this).siblings('.js-filter-set').toggleClass('is-collapsed')
+  })
+  //Toggle checkboxes in each filter section
+  .on('click', '.js-toggle-select', function(e){
+    e.preventDefault();
+    jQuery(this).siblings()
+      .find('input[type=checkbox]')
+      .prop('checked', true);
+    that.$form.trigger('change');
+  })
+  .on('click', '.js-toggle-unselect', function(e){
+    e.preventDefault();
+    jQuery(this).siblings()
+      .find('input[type=checkbox]')
+      .prop('checked', false);
+    that.$form.trigger('change');
+  }) 
+  this.ui.$download.on('click', function() {
+    that.download();
+  });
   this.ui.$download.on('click', function() {
     that.download();
   });
 }
+
+    
 
 // Called when the user changes any data filters.
 TJIChartView.prototype.filter_data = function() {
