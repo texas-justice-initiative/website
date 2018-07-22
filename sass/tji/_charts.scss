@@ -59,7 +59,8 @@
 
 .tji-chart__legend-item {
   display: flex;
-  margin: $tji-spacing-xs;
+  width: 100%;
+  margin: $tji-spacing-xs/2;
   text-transform: lowercase;
 }
 
