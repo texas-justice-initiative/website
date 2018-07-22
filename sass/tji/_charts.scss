@@ -1,6 +1,27 @@
 /*--------------------------------------------------------------
 ## CHARTS
 --------------------------------------------------------------*/
+
+.tji-chart {	
+	border: $tji-border;
+	padding: $tji-spacing-md $tji-spacing-sm;
+	margin: $tji-spacing-xs;
+
+	&:nth-of-type(2n) {
+		background-color: $tji-chart-bg;
+	}
+  
+  @media (min-width: $tji-break-point-md) {
+  	max-width: calc(50% - #{$tji-spacing-sm});
+	  background-color: $tji-chart-bg;
+	  
+  }
+
+  @media (min-width: $tji-break-point-lg) {
+  	max-width: calc(33.33% - #{$tji-spacing-sm});
+  }
+}
+
 .tji-chartview__loader {
     border: 16px solid #f3f3f3; /* Light grey */
     border-top: 16px solid $primaryBlue;
@@ -25,23 +46,34 @@
 }
 
 .tji-chart__title {
-  @include font-size(2);
+  @include font-size(1.5);
+  text-align: center;
+  text-transform: capitalize;
+  font-weight: 600;
 }
 
 .tji-chart__legend {
   display: flex;
   flex-wrap: wrap;
 }
-.tji-chart__legend-item {
-  align-items: center;
-  display: flex;
-  margin: 0 $tji-spacing-xs;
-  text-transform: lowercase;
-  white-space: nowrap;
 
-  span {
-    height: $tji-chart-legend-size;
-    margin-right: $tji-spacing-xs;
-    width: $tji-chart-legend-size;
-  }
+.tji-chart__legend-item {
+  display: flex;
+  width: 100%;
+  margin: $tji-spacing-xs/2;
+  text-transform: lowercase;
+}
+
+.tji-chart__legend-item__item-marker {
+  height: $tji-chart-legend-size;
+  margin-right: $tji-spacing-xs;
+  width: $tji-chart-legend-size;
+  max-width: $tji-chart-legend-size;
+  flex: 1 0 auto;
+}
+
+.tji-chart__legend-item__item-description {
+	font-size: $tji-font-size-xs;
+	line-height: $tji-line-height-xs;
+	flex: 1 1 auto;
 }

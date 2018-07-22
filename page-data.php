@@ -56,6 +56,7 @@ get_header();
         {type: 'doughnut', group_by: 'death_location_type'},
         {type: 'doughnut', group_by: 'means_of_death'},
       ],
+
       filter_configs: [
         {'name': 'year'},
         {'name': 'race'},
@@ -70,7 +71,7 @@ get_header();
       ],
       charts_elt_selector: '#js-TJIChartView',  
       filters_elt_selector: '#js-TJIChartViewFilters',  
-      chart_wrapper_template: '<div class="col-sm-12 col-lg-6" />',  
+      chart_wrapper_template: '<div class="tji-chart col-xs-12 col-md-6 col-lg-4" />',  
       chartview_description_template: '<div class="col-sm-12" />',
     });
   })

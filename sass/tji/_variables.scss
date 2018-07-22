@@ -4,6 +4,7 @@ $primaryBlue: #0B5D93;
 $primaryRed: #CE2727;
 	$secondaryRed: #872729;
 $primaryYellow: #FFFD00;
+$tji-chart-bg: #f5f5f5;
 
 /* fonts */
 $headingFont: 'museo', Arial, sans-serif;
@@ -17,16 +18,26 @@ $tji-spacing-lg: 2rem;
 $tji-spacing-xl: 3rem;
 
 /* typography */
-$tji-font-size-xs: 1.4rem;
-$tji-font-size-sm: 1.7rem;
-$tji-font-size-md: 2.6rem;
-$tji-font-size-lg: 3.6rem;
-$tji-font-size-xl: 4.4rem;
+$tji-font-size-xs: 0.8rem;
+$tji-font-size-sm: 1.4rem;
+$tji-font-size-md: 1.7rem;
+$tji-font-size-lg: 2.6rem;
+$tji-font-size-xl: 3.6rem;
 
-$tji-line-height-xs: 2.4rem;
-$tji-line-height-sm: 2.7rem;
-$tji-line-height-md: 3.6rem;
-$tji-line-height-lg: 4.6rem;
-$tji-line-height-xl: 5.4rem;
+$tji-line-height-xs: 1.0rem;
+$tji-line-height-sm: 2.4rem;
+$tji-line-height-md: 2.7rem;
+$tji-line-height-lg: 3.6rem;
+$tji-line-height-xl: 4.6rem;
 
 $tji-chart-legend-size: 1rem;
+
+/* dividers */
+$tji-border: 1px solid #ccc;
+
+/* break-points */
+$tji-break-point-xs: 37.5rem;
+$tji-break-point-sm: 48rem;
+$tji-break-point-md: 64rem;
+$tji-break-point-lg: 80rem;
+$tji-break-point-xl: 90rem;
