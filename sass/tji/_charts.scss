@@ -1,8 +1,24 @@
 /*--------------------------------------------------------------
 ## CHARTS
 --------------------------------------------------------------*/
+.tji-chartview {
+  min-height: 400px;
+  position: relative;
+}
+.tji-chartview__loader-overlay {
+  background-color: rgba(0, 0, 0, 0.1);
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left:0;
+  padding-top: 140px;
+  position: absolute;
+  right:0;
+  top:0;
+  z-index: 1;
+}
 .tji-chartview__loader {
-    border: 16px solid #f3f3f3; /* Light grey */
+    border: 16px solid $tji-color-gray-lightest;
     border-top: 16px solid $primaryBlue;
     border-radius: 50%;
     width: 120px;

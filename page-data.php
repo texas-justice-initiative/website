@@ -44,7 +44,7 @@ get_header();
     var chartView = new TJIChartView({
       datasets: [{
         name: 'deaths in custody',
-        description: "Eat half my food and ask for more meow taco cat backwards spells taco cat swat turds around the house lick master's hand at first then bite because im moody yet sleeps on my head. Refuse to leave cardboard box.",
+        description: "All deaths in custody in Texas since 2005, as reported to the Office of the Attorney General.",
         urls: {
           compressed: '/cdr_compressed.json',
           full: '/cdr_full.csv',
@@ -73,7 +73,7 @@ get_header();
         ],
       }, {
         name: 'officer involved shootings',
-        description: "Attack the dog then pretend like nothing happened chase mice ask to go outside and ask to come inside and ask to go outside and ask to come inside yet meow for food, then when human fills food dish, take a few bites of food and continue meowing lick master's hand at first then bite because im moody",
+        description: "Shootings involving Texas law enforcement since Sept. 2015, as reported to the Office of the Attorney General.",
         urls: {
           compressed: '/ois_compressed.json',
           full: '/ois_full.csv',
