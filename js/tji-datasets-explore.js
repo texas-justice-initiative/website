@@ -227,20 +227,40 @@ TJIGroupByDoughnutChart.prototype.create_legend = function() {
 // * "Class" that creates and manages all charts and the filter panel.
 // *
 // * Constructor arguments as properties of props object:
-// *   compressed_data_json_url: URL location of the abridged,
-// *       compressed dataset. This dataset has only the subset
-// *       of columns that we use in drawing charts.
-// *       See the comments in this notebook for the expected format:
-// *       https://github.com/texas-justice-initiative/data-processing/blob/master/data_cleaning/create_datasets_for_website.ipynb
-// *   chart_configs: array of chart config objects,
-// *                  e.g. [{type: 'bar', group_by:'year'}, ...]
-// *   filter_configs: array of chart filters config objects,
-// *                  e.g. [{'name': 'agency_county', 'type': 'autocomplete'}, ...]
+// *
+// * sample props object below:
+// *     datasets: [{
+// *        name: 'deaths in custody',
+// *        description: 'All deaths in custody in Texas since 2005, as reported to the Office of the Attorney General',
+// *        urls: {
+// *          compressed: '/cdr_compressed.json', //dataset that renders charts
+// *          full: '/cdr_full.csv', //dataset made available for user download
+// *        },
+// *        chart_configs: [
+// *          {type: 'bar', group_by: 'year'},
+// *          {type: 'doughnut', group_by: 'age_group', sort_by: {column: 'key', direction: 'asc'}},        
+// *        ],
+// *        filter_configs: [
+// *          {'name': 'year'},
+// *          {'name': 'race'},
+// *          {'name': 'agency_county', 'type': 'autocomplete'},
+// *        ],
+// *      }],
+// *      charts_elt_selector: '#js-TJIChartView',  
+// *      filters_elt_selector: '#js-TJIChartViewFilters',  
+// *      chart_wrapper_template: '<div class="col-sm-12 col-lg-6" />',  
+// *      chartview_charts_template: '<div class="row"/>',
+// *      chartview_summary_template: '<div />',
+// *    }
+// *
+// * argument descriptions:
+// *   datasets: array of objects describing each dataset that can be selected
 // *   charts_elt_selector: selector of HTML element to put charts in
 // *   filters_elt_selector: selector of HTML element to put filters in
+// *   chart_wrapper_template: HTML to wrap around each chart's canvas object
+// *   chartview_charts_template: HTML to wrap around area where the charts show
 // *   chartview_summary_template: HTML to wrap the area where the data set summary shows
 // *       where we'll put the record count, download button, data set selector and data set description
-// *   chart_wrapper_template: HTML to wrap around each chart's canvas object
 // *
 // * Dependencies: TJIGroupByBarChart, TJIGroupByDoughnutChart
 // *       jQuery, lodash, papaparse,
@@ -252,20 +272,24 @@ var TJIChartView = function(props){
 
   var that = this;
 
+  //properties that describe current state of app
+  //ex. selected dataset, filters
   this.state = {
     active_dataset_index: null,
     filtered_record_indices: null,
     active_filters: [],
   }
 
+  //array of dataset objects (see above class description)
   this.datasets = props.datasets;
 
+  //jquery object references to DOM elements
   this.ui = {
     $chartview_charts: jQuery(props.charts_elt_selector),
-    $charts: null,
     $chartview_filters: jQuery(props.filters_elt_selector),
     $form: null,
-    $summary: null,
+    $charts_container: null,
+    $summary_container: null,
     $description: null,
     $select_dataset: null,
     $download: null,
@@ -273,32 +297,37 @@ var TJIChartView = function(props){
     $loader: null,
   }
 
+  //strings that describe HTML wrappers for sections
   this.templates = {
     chart_wrapper_template: props.chart_wrapper_template,
     chartview_charts_template: props.chartview_charts_template,
     chartview_summary_template: props.chartview_summary_template,
   }
 
+  //references to child views that are separately instantiated and destroyed
   this.components = {
     charts: [],
     autocompletes: [],
   }
 
+  // Create DOM and attach DOM events only once
+  // since we do not destroy the DOM that has attached events
+  // between state changes. We can do this before loading data
+  // because we delegate events to parent DOM elements that are data agnostic
   this.create_chartview_DOM();
-
+  this.attach_events();
   this.set_active_dataset(0);
 
   this.datasets[this.state.active_dataset_index].fetch_data
     .done(function(){
-      that.ui.$summary.prependTo(that.ui.$chartview_charts);
-      that.attach_events();
+      that.ui.$summary_container.show();
     });
 }
 
 TJIChartView.prototype.missing_data_label = '(not given)';
 
-// Returns a promise such that synchronis functionality can be 
-// triggered once compressed data download is completed and transformed
+// Set dataset.fetch_data to a promise such that synchronis functionality can be 
+// triggered once the compressed data download is completed and transformed
 // also triggers fetch of full csv data set 
 TJIChartView.prototype.get_data = function(dataset) {
   var that = this;
@@ -340,14 +369,13 @@ TJIChartView.prototype.get_complete_data = function(dataset) {
   });
 }
 
-/* The data is compressed into a small json object for fast page loading,
- * which we decompress here for convenient manipulation in this app.
- * 
- * Currently, the data is compressed by this script in our data-processing repo:
- * https://github.com/texas-justice-initiative/data-processing/blob/master/data_cleaning/create_datasets_for_website.ipynb
- * 
- * See that file for an explanation of the compression and examples.
- */
+// The data is compressed into a small json object for fast page loading,
+// which we decompress here for convenient manipulation in this app.
+// 
+// Currently, the data is compressed by this script in our data-processing repo:
+// https://github.com/texas-justice-initiative/data-processing/blob/master/data_cleaning/create_datasets_for_website.ipynb
+// 
+// See that file for an explanation of the compression and examples.
 TJIChartView.prototype.decompress_data = function(dataset) {
   var that = this;
   var data = dataset.chart_data;
@@ -374,8 +402,7 @@ TJIChartView.prototype.transform_data = function(dataset) {
 
   _.each(dataset.chart_data, function(record, id) {
     // Create age group buckets 
-    //<-- NOTE FOR EVERETT - HOW DO YOU WANT TO HANDLE DATA SETS WE DON'T WANT AGE GROUPS? 
-    //OR WHERE THE AGE GROUP COLUMN NAME IS DIFFERENT
+    // TODO: make age group specific donut chart class that manages this transformation
     if (record['age_at_time_of_death'] < 0 ||
         record['age_at_time_of_death'] === undefined ||
         record['age_at_time_of_death'] === null) {
@@ -534,7 +561,7 @@ TJIChartView.prototype.destroy_charts = function() {
     chart.destroy();
   });
   this.components.charts.length = 0;
-  this.ui.$charts.empty();
+  this.ui.$charts_container.empty();
 }
 
 TJIChartView.prototype.create_charts = function() {
@@ -546,7 +573,7 @@ TJIChartView.prototype.create_charts = function() {
   _.each(dataset.chart_configs, function(config){
     var $container = jQuery(that.templates.chart_wrapper_template)
       .addClass('tji-chart')
-      .appendTo(that.ui.$charts);
+      .appendTo(that.ui.$charts_container);
     var chart_constructor;
     switch(config.type) {
       case 'doughnut': 
@@ -557,11 +584,12 @@ TJIChartView.prototype.create_charts = function() {
         chart_constructor = TJIGroupByBarChart;
         break;
     }
-// *  $container: jQuery object to contain chart
-// *  group_by: column to group by
-// *  missing_data_label: stand-in label for records missing
-// *                       the group_by column
-// *  data: list of objects representing records
+
+//  $container: jQuery object to contain chart
+//  group_by: column to group by
+//  sort_by: object that describes sort requirements ex. {column: 'key', direction: 'asc'}
+//  missing_data_label: stand-in label for records missing
+//  data: list of objects representing records
     that.components.charts.push(
       new chart_constructor({
         $container: $container, 
@@ -577,20 +605,20 @@ TJIChartView.prototype.create_charts = function() {
 TJIChartView.prototype.create_chartview_DOM = function() {
   var that = this;
 
-  this.ui.$loader = jQuery('<div />', {
-    class: 'tji-chartview__loader'
-  }).appendTo(this.ui.$chartview_charts);
+  this.ui.$loader = jQuery('<div class="tji-chartview__loader-overlay"/>')
+    .append('<div class="tji-chartview__loader" />')
+    .appendTo(this.ui.$chartview_charts);
 
   this.ui.$form = jQuery('<form />', {
     class: 'tji-chart-filters',
   }).appendTo(this.ui.$chartview_filters);
 
-  this.ui.$charts = jQuery(this.templates.chartview_charts_template)
+  this.ui.$charts_container = jQuery(this.templates.chartview_charts_template)
     .addClass('tji-chartview__charts')
     .appendTo(this.ui.$chartview_charts);
 
   this.ui.$select_dataset = jQuery('<select />', {
-    class: 'tji-chartview__dataset-selet'
+    class: 'tji-chartview__dataset-select'
   });
 
   _.each(this.datasets, function(dataset, index) {
@@ -607,11 +635,14 @@ TJIChartView.prototype.create_chartview_DOM = function() {
 
   this.ui.$download = jQuery('<button class="tji-btn-primary tji-chartview__download-button" disabled> <i class="fas fa-download"></i> Download</button>');
 
-  this.ui.$summary = jQuery(this.templates.chartview_summary_template)
+  this.ui.$summary_container = jQuery(this.templates.chartview_summary_template)
     .addClass('tji-chartview__summary')
-    .append(this.ui.$select_dataset, this.ui.$description, this.ui.$record_count, this.ui.$download)
+    .append(this.ui.$select_dataset, this.ui.$description, this.ui.$record_count, this.ui.$download)   
+    .hide()
+    .prependTo(this.ui.$chartview_charts);
 }
 
+// attach delegated event handlers to parent DOM elements that are data agnostic
 TJIChartView.prototype.attach_events = function() {
   var that = this;
   this.ui.$form.on('change', function(e) {
@@ -632,6 +663,9 @@ TJIChartView.prototype.attach_events = function() {
 
 TJIChartView.prototype.set_active_dataset = function(index) {
   var that = this;
+  
+  if (index === this.state.active_dataset_index) return;
+
   this.state.active_dataset_index = index;
   
   this.ui.$loader.show();
