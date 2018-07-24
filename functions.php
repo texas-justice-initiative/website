@@ -229,23 +229,6 @@ function load_wp_media_files() {
 }
 add_action( 'admin_enqueue_scripts', 'load_wp_media_files' );
 
-
-/**
- * Load datasets where needed
- */
-function tji_data_load() {
-	global $post;
-	
-	if ( is_front_page() ) {
-		wp_enqueue_script( 'tji-data-home', get_template_directory_uri() . '/js/tji-datasets-home.js', array('jquery'), '20180601', true );
-	}	
-
-	if ( $post->post_name == 'data') {
-		wp_enqueue_script( 'tji-data-explore', get_template_directory_uri() . '/js/tji-datasets-explore.js', array('jquery'), '20180601', true );
-	}	
-}
-add_action( 'wp_enqueue_scripts', 'tji_data_load' );
-
 /**
  * Implement the Custom Header feature.
  */
