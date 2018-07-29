@@ -35,11 +35,11 @@ get_header();
 
 <!-- JS Dependencies to build charts -->
 <!-- Any dependencies added here should be added to the Dependencies comment block of the appropriate JS file -->
-<script src="/wp-content/themes/tji/js/papaparse.min.js"></script>
+<script src="<?php echo get_template_directory_uri(); ?>/js/papaparse.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 <script src="https://cdn.rawgit.com/emn178/Chart.PieceLabel.js/master/build/Chart.PieceLabel.min.js"></script>
-<script src="/wp-content/themes/tji/js/auto-complete.min.js"></script>
+<script src="<?php echo get_template_directory_uri(); ?>/js/auto-complete.min.js"></script>
 <script>
   // See js/tji-datasets-explore.js
   jQuery(function(){
