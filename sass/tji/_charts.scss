@@ -1,18 +1,24 @@
 /*--------------------------------------------------------------
+>>> EXPLORE THE DATA TABLE OF CONTENTS:
+----------------------------------------------------------------
+# GENERAL
+# CHARTS
+
+/*--------------------------------------------------------------
 ## CHARTS
 --------------------------------------------------------------*/
 
 .tji-chart {	
-	border: $tji-border;
+	border: 1px solid $tji-color-gray-light;
 	padding: $tji-spacing-md $tji-spacing-sm;
 
 	&:nth-of-type(2n) {
-		background-color: $tji-chart-bg;
+		background-color: $tji-color-gray-lightest;
 	}
   
   @media (min-width: $tji-break-point-md) {
   	max-width: calc(50% - #{$tji-spacing-sm});
-	  background-color: $tji-chart-bg;
+	  background-color: $tji-color-gray-lightest;
 	  margin: $tji-spacing-xs;
 	  
   }
@@ -22,8 +28,24 @@
   }
 }
 
+.tji-chartview {
+  min-height: 400px;
+  position: relative;
+}
+.tji-chartview__loader-overlay {
+  background-color: rgba(0, 0, 0, 0.1);
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left:0;
+  padding-top: 140px;
+  position: absolute;
+  right:0;
+  top:0;
+  z-index: 1;
+}
 .tji-chartview__loader {
-    border: 16px solid $tji-border; /* Light grey */
+    border: 16px solid $tji-color-gray-lightest;
     border-top: 16px solid $primaryBlue;
     border-radius: 50%;
     width: 120px;
@@ -36,7 +58,7 @@
     100% { transform: rotate(360deg); }
 }
 
-.tji-chartview__description {
+.tji-chartview__summary {
     margin-bottom: $tji-spacing-lg;
 }
 

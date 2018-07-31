@@ -1,4 +1,3 @@
-
 //TODO: make color constant object
 
 var COLOR_TJI_BLUE = '#0B5D93';
@@ -85,6 +84,11 @@ TJIGroupByBarChart.prototype.create = function(data) {
     },
     options: this.get_options()
   });
+}
+
+TJIGroupByBarChart.prototype.destroy = function() {
+  this.chart.destroy();
+  this.$container.remove();
 }
 
 TJIGroupByBarChart.prototype.create_legend = function() {
@@ -225,20 +229,40 @@ TJIGroupByDoughnutChart.prototype.create_legend = function() {
 // * "Class" that creates and manages all charts and the filter panel.
 // *
 // * Constructor arguments as properties of props object:
-// *   compressed_data_json_url: URL location of the abridged,
-// *       compressed dataset. This dataset has only the subset
-// *       of columns that we use in drawing charts.
-// *       See the comments in this notebook for the expected format:
-// *       https://github.com/texas-justice-initiative/data-processing/blob/master/data_cleaning/create_datasets_for_website.ipynb
-// *   chart_configs: array of chart config objects,
-// *                  e.g. [{type: 'bar', group_by:'year'}, ...]
-// *   filter_configs: array of chart filters config objects,
-// *                  e.g. [{'name': 'agency_county', 'type': 'autocomplete'}, ...]
+// *
+// * sample props object below:
+// *     datasets: [{
+// *        name: 'deaths in custody',
+// *        description: 'All deaths in custody in Texas since 2005, as reported to the Office of the Attorney General',
+// *        urls: {
+// *          compressed: '/cdr_compressed.json', //dataset that renders charts
+// *          full: '/cdr_full.csv', //dataset made available for user download
+// *        },
+// *        chart_configs: [
+// *          {type: 'bar', group_by: 'year'},
+// *          {type: 'doughnut', group_by: 'age_group', sort_by: {column: 'key', direction: 'asc'}},        
+// *        ],
+// *        filter_configs: [
+// *          {'name': 'year'},
+// *          {'name': 'race'},
+// *          {'name': 'agency_county', 'type': 'autocomplete'},
+// *        ],
+// *      }],
+// *      charts_elt_selector: '#js-TJIChartView',  
+// *      filters_elt_selector: '#js-TJIChartViewFilters',  
+// *      chart_wrapper_template: '<div class="col-sm-12 col-lg-6" />',  
+// *      chartview_charts_template: '<div class="row"/>',
+// *      chartview_summary_template: '<div />',
+// *    }
+// *
+// * argument descriptions:
+// *   datasets: array of objects describing each dataset that can be selected
 // *   charts_elt_selector: selector of HTML element to put charts in
 // *   filters_elt_selector: selector of HTML element to put filters in
-// *   chartview_description_template: HTML to wrap the area where the data set description shows
-// *       where we'll put the record count and download button
 // *   chart_wrapper_template: HTML to wrap around each chart's canvas object
+// *   chartview_charts_template: HTML to wrap around area where the charts show
+// *   chartview_summary_template: HTML to wrap the area where the data set summary shows
+// *       where we'll put the record count, download button, data set selector and data set description
 // *
 // * Dependencies: TJIGroupByBarChart, TJIGroupByDoughnutChart
 // *       jQuery, lodash, papaparse,
@@ -247,74 +271,90 @@ TJIGroupByDoughnutChart.prototype.create_legend = function() {
 
 
 var TJIChartView = function(props){
+
+  var that = this;
+
+  //properties that describe current state of app
+  //ex. selected dataset, filters
   this.state = {
-    chart_data: null,
+    active_dataset_index: null,
     filtered_record_indices: null,
-    complete_data: null,
     active_filters: [],
   }
 
+  //array of dataset objects (see above class description)
+  this.datasets = props.datasets;
+
+  //jquery object references to DOM elements
   this.ui = {
-    $charts: jQuery(props.charts_elt_selector),
-    $filters: jQuery(props.filters_elt_selector),
+    $chartview_charts: jQuery(props.charts_elt_selector),
+    $chartview_filters: jQuery(props.filters_elt_selector),
     $form: null,
+    $charts_container: null,
+    $summary_container: null,
+    $description: null,
+    $select_dataset: null,
     $download: null,
     $record_count: null,
+    $loader: null,
   }
 
+  //strings that describe HTML wrappers for sections
   this.templates = {
     chart_wrapper_template: props.chart_wrapper_template,
-    chartview_description_template: props.chartview_description_template,
+    chartview_charts_template: props.chartview_charts_template,
+    chartview_summary_template: props.chartview_summary_template,
   }
 
+  //references to child views that are separately instantiated and destroyed
   this.components = {
     charts: [],
     autocompletes: [],
   }
 
-  this.chart_configs = props.chart_configs;
-  this.filter_configs = props.filter_configs;
+  // Create DOM and attach DOM events only once
+  // since we do not destroy the DOM that has attached events
+  // between state changes. We can do this before loading data
+  // because we delegate events to parent DOM elements that are data agnostic
+  this.create_chartview_DOM();
+  this.attach_events();
+  this.set_active_dataset(0);
 
-  this.get_data(props.compressed_data_json_url, props.complete_data_csv_url);
+  this.datasets[this.state.active_dataset_index].fetch_data
+    .done(function(){
+      that.ui.$summary_container.show();
+    });
 }
 
 TJIChartView.prototype.missing_data_label = '(not given)';
 
-// Fetch CDR data from server and trigger the construction
-// of the charts, filter panel, etc.
-TJIChartView.prototype.get_data = function(compressed_data_json_url, complete_data_csv_url) {
+// Set dataset.fetch_data to a promise such that synchronis functionality can be 
+// triggered once the compressed data download is completed and transformed
+// also triggers fetch of full csv data set 
+TJIChartView.prototype.get_data = function(dataset) {
   var that = this;
-  jQuery.getJSON(compressed_data_json_url)
-    .done(function(chart_data){
-      jQuery(that.ui.$charts).empty();
-      that.state.chart_data = chart_data;
-      that.decompress_data();
-      that.transform_data();
-      // On the initial load, include all data.
-      that.state.filtered_record_indices = _.times(that.state.chart_data.length);
-
-      // Prepare HTML contents
-      jQuery(that.charts_elt_id).empty();
-      that.create_charts();
-      that.create_filter_panel();
-      that.attach_events();
-      that.get_complete_data(complete_data_csv_url);
+  dataset.fetch_data = jQuery.getJSON(dataset.urls.compressed)
+    .done(function(chart_data) {
+      dataset.chart_data = chart_data;
+      that.decompress_data(dataset);
+      that.transform_data(dataset);
+      that.ui.$download.prop('disabled', true);
+      that.get_complete_data(dataset);
     })
     .fail(function(jqxhr, textStatus, error){
       console.log('Error fetching data from: ' + compressed_data_json_url, error);
     })
 }
 
-
-TJIChartView.prototype.get_complete_data = function(url) {
+TJIChartView.prototype.get_complete_data = function(dataset) {
   var that = this;
-  Papa.parse(url, {
+  Papa.parse(dataset.urls.full, {
     download: true,
     header: true,
     skipEmptyLines: true,
     complete: function(results) {
-      that.state.complete_data = results.data;
-      if (that.state.complete_data.length != that.state.chart_data.length) {
+      dataset.complete_data = results.data;
+      if (dataset.complete_data.length !== dataset.chart_data.length) {
         console.log(
           "Error: complete dataset does not have the same number of records "
           + "as the abdridged dataset. Disabling download."
@@ -326,22 +366,21 @@ TJIChartView.prototype.get_complete_data = function(url) {
       }
     },
     error: function(error) {
-      console.log('Error fetching data from: ' + url, error);
+      console.log('Error fetching data from: ' + dataset.urls.full, error);
     }
   });
 }
 
-/* The data is compressed into a small json object for fast page loading,
- * which we decompress here for convenient manipulation in this app.
- * 
- * Currently, the data is compressed by this script in our data-processing repo:
- * https://github.com/texas-justice-initiative/data-processing/blob/master/data_cleaning/create_datasets_for_website.ipynb
- * 
- * See that file for an explanation of the compression and examples.
- */
-TJIChartView.prototype.decompress_data = function() {
+// The data is compressed into a small json object for fast page loading,
+// which we decompress here for convenient manipulation in this app.
+// 
+// Currently, the data is compressed by this script in our data-processing repo:
+// https://github.com/texas-justice-initiative/data-processing/blob/master/data_cleaning/create_datasets_for_website.ipynb
+// 
+// See that file for an explanation of the compression and examples.
+TJIChartView.prototype.decompress_data = function(dataset) {
   var that = this;
-  var data = this.state.chart_data;
+  var data = dataset.chart_data;
   var meta = data.meta;
   // We want a list of json objects, one per record. We will build these
   // out incrementally.
@@ -354,17 +393,18 @@ TJIChartView.prototype.decompress_data = function() {
           new_data[idx][column] = lookup[v];
       });
   });
-  this.state.chart_data = new_data;
+  dataset.chart_data = new_data;
 }
 
 // Apply any data transformations necessary before beginning to build
 // out the rest of the view.
-TJIChartView.prototype.transform_data = function() {
+TJIChartView.prototype.transform_data = function(dataset) {
 
   var that = this;
 
-  _.each(this.state.chart_data, function(record, id) {
-    // Create age group buckets
+  _.each(dataset.chart_data, function(record, id) {
+    // Create age group buckets 
+    // TODO: make age group specific donut chart class that manages this transformation
     if (record['age_at_time_of_death'] < 0 ||
         record['age_at_time_of_death'] === undefined ||
         record['age_at_time_of_death'] === null) {
@@ -389,28 +429,26 @@ TJIChartView.prototype.transform_data = function() {
   });
 }
 
-
-TJIChartView.prototype.create_chartview_description = function() {
-  this.ui.$record_count = jQuery('<span />', {
-    class: 'tji-chartview__record-count'
+TJIChartView.prototype.destroy_filters = function() {
+  _.each(this.components.autocompletes, function(autocomplete){
+    autocomplete.destroy();
   });
-  this.ui.$download = jQuery('<button class="tji-btn-primary tji-chartview__download-button" disabled> <i class="fas fa-download"></i> Download</button>');
-  jQuery(this.templates.chartview_description_template)
-    .addClass('tji-chartview__description')
-    .append(this.ui.$record_count, this.ui.$download)
-    .prependTo(this.ui.$charts);
+  this.components.autocompletes.length = 0;
+  this.ui.$form.empty();
 }
 
-
-TJIChartView.prototype.create_filter_panel = function() {
+TJIChartView.prototype.create_filters = function() {
   var that = this;
   
+  this.destroy_filters();
+  
   // Generate filter values
+  var dataset = this.datasets[this.state.active_dataset_index];
   var filters = []
   
   // Get a sorted list of all the unique values for each column
-  _.each(this.filter_configs, function(filter_config) {
-    var values = _.filter(_.sortBy(_.uniq(_.map(that.state.chart_data, filter_config.name))));
+  _.each(dataset.filter_configs, function(filter_config) {
+    var values = _.filter(_.sortBy(_.uniq(_.map(dataset.chart_data, filter_config.name))));
     if (~values.indexOf(that.missing_data_label)) {
       values.splice(values.indexOf(that.missing_data_label), 1);
       values.push(that.missing_data_label);
@@ -420,7 +458,7 @@ TJIChartView.prototype.create_filter_panel = function() {
 
   // Build out filters
   var fieldsets = [];
-  _.each(that.filter_configs, function(filter_config) {
+  _.each(dataset.filter_configs, function(filter_config) {
     var fieldset;
     switch(filter_config.type) {
       case 'autocomplete': 
@@ -433,20 +471,19 @@ TJIChartView.prototype.create_filter_panel = function() {
     }
     fieldsets.push(fieldset);
   });
-  
-  this.ui.$form = jQuery('<form />', {
-    class: 'tji-chart-filters',
-  }).append(fieldsets);
-  this.state.active_filters = this.ui.$form.serializeArray();  
-  jQuery(this.ui.$filters).append(this.ui.$form);
-  
+  this.ui.$form.append(fieldsets);
+
+  this.state.active_filters = this.ui.$form.serializeArray();    
 }
 
 TJIChartView.prototype.create_filter_checkboxes = function(filter) {
   var that = this;
-  var fieldset = jQuery('<fieldset><legend>' + filter.name.replace(/_/g, " ") + '<i class="fas fa-caret-down"></i></legend></fieldset>');
+  var fieldset = jQuery('<fieldset><legend class="js-chart-legend">' + filter.name.replace(/_/g, " ") + '</legend></fieldset>');
+  var filterset = jQuery('<div class="js-filter-set"><a class="js-toggle-select">Select All</a> / <a class="js-toggle-unselect">Unselect All</a></div>');
+  fieldset.append(filterset);
+
   _.each(filter.values, function(v) {
-    fieldset.append(that.create_filter_checkbox(filter.name, v));
+    filterset.append(that.create_filter_checkbox(filter.name, v));
   });
   return fieldset;
 }
@@ -472,25 +509,27 @@ TJIChartView.prototype.create_filter_checkbox = function(name, value, id) {
 
 TJIChartView.prototype.create_filter_autocomplete = function(filter) {
   var that = this;
-  var fieldset = jQuery('<fieldset><legend>' + filter.name.replace(/_/g, " ") + '<i class="fas fa-caret-down"></i></legend></fieldset>');
+  var fieldset = jQuery('<fieldset><legend class="js-chart-legend">' + filter.name.replace(/_/g, " ") + '</legend></fieldset>');
+  var filterset = jQuery('<div class="js-filter-set"></div>');
+  fieldset.append(filterset);
   var input = jQuery('<input/>', {
     class: "tji-chart-filters__text",
     type: "text",
   });
-  fieldset.append(jQuery('<div/>',{
-    class: "tji-chart-filters__autocomplete",
-  }).append(input));
-  
-  var $auto_complete = jQuery('<div />', {
+  var auto_complete_list = jQuery('<div />', {
     class: "tji-chart-filters__autocomplete-list"
-  }).insertAfter(input);
+  });
+
+  jQuery('<div/>',{
+    class: "tji-chart-filters__autocomplete",
+  }).append(input, auto_complete_list).appendTo(fieldset);
   
   var onSelect = function(event, term) {
     event.preventDefault();
     event.stopPropagation();
     var id = 'TJIChartView__filtercontainer-' + filter.name + '-' + term;
-    $auto_complete.find('#'+id).remove();
-    $auto_complete.prepend(that.create_filter_checkbox(filter.name, term, id));
+    auto_complete_list.find('#'+id).remove();
+    auto_complete_list.prepend(that.create_filter_checkbox(filter.name, term, id));
     input.val('');
     that.ui.$form.trigger('change');
   }
@@ -520,23 +559,28 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
     jQuery('.autocomplete-suggestions').hide();
   });
 
-  this.components.autocompletes.push({
-    widget: auto_complete,
-    jquery: $auto_complete,
-  });
+  this.components.autocompletes.push(auto_complete);
   return fieldset;
+}
+
+TJIChartView.prototype.destroy_charts = function() {
+  _.each(this.components.charts, function(chart){
+    chart.destroy();
+  });
+  this.components.charts.length = 0;
+  this.ui.$charts_container.empty();
 }
 
 TJIChartView.prototype.create_charts = function() {
   var that = this;
-
-  this.create_chartview_description();
-
-  this.update_record_count();
-  _.each(this.chart_configs, function(config){
+  
+  this.destroy_charts();
+  
+  var dataset = this.datasets[this.state.active_dataset_index];
+  _.each(dataset.chart_configs, function(config){
     var $container = jQuery(that.templates.chart_wrapper_template)
       .addClass('tji-chart')
-      .appendTo(that.ui.$charts);
+      .appendTo(that.ui.$charts_container);
     var chart_constructor;
     switch(config.type) {
       case 'doughnut': 
@@ -547,25 +591,65 @@ TJIChartView.prototype.create_charts = function() {
         chart_constructor = TJIGroupByBarChart;
         break;
     }
+
+//  $container: jQuery object to contain chart
+//  group_by: column to group by
+//  sort_by: object that describes sort requirements ex. {column: 'key', direction: 'asc'}
+//  missing_data_label: stand-in label for records missing
+//  data: list of objects representing records
     that.components.charts.push(
       new chart_constructor({
         $container: $container, 
         group_by: config.group_by, 
         sort_by: config.sort_by,
         missing_data_label: that.missing_data_label,
-        data: that.state.chart_data,
+        data: dataset.chart_data,
       })
     );    
   });
 }
 
-// $container: jQuery object to contain chart
-// *   groupBy: column to group by
-// *   missing_data_label: stand-in label for records missing
-// *                       the groupBy column.
-// *   data: list of objects representing records
+TJIChartView.prototype.create_chartview_DOM = function() {
+  var that = this;
 
+  this.ui.$loader = jQuery('<div class="tji-chartview__loader-overlay"/>')
+    .append('<div class="tji-chartview__loader" />')
+    .appendTo(this.ui.$chartview_charts);
 
+  this.ui.$form = jQuery('<form />', {
+    class: 'tji-chart-filters',
+  }).appendTo(this.ui.$chartview_filters);
+
+  this.ui.$charts_container = jQuery(this.templates.chartview_charts_template)
+    .addClass('tji-chartview__charts')
+    .appendTo(this.ui.$chartview_charts);
+
+  this.ui.$select_dataset = jQuery('<select />', {
+    class: 'tji-chartview__dataset-select'
+  });
+
+  _.each(this.datasets, function(dataset, index) {
+    jQuery('<option value="'+index+'">'+dataset.name+'</option>').appendTo(that.ui.$select_dataset)
+  });
+
+  this.ui.$description = jQuery('<div />', {
+    class: 'tji-chartview__description'
+  });
+
+  this.ui.$record_count = jQuery('<div />', {
+    class: 'tji-chartview__record-count'
+  });
+
+  this.ui.$download = jQuery('<button class="tji-btn-primary tji-chartview__download-button" disabled> <i class="fas fa-download"></i> Download</button>');
+
+  this.ui.$summary_container = jQuery(this.templates.chartview_summary_template)
+    .addClass('tji-chartview__summary')
+    .append(this.ui.$select_dataset, this.ui.$description, this.ui.$record_count, this.ui.$download)   
+    .hide()
+    .prependTo(this.ui.$chartview_charts);
+}
+
+// attach delegated event handlers to parent DOM elements that are data agnostic
 TJIChartView.prototype.attach_events = function() {
   var that = this;
   this.ui.$form.on('change', function(e) {
@@ -575,10 +659,41 @@ TJIChartView.prototype.attach_events = function() {
   }).on('submit', function(e){
     e.preventDefault();
   })
-  this.ui.$download.on('click', function() {
+  this.ui.$download.on('click', function(e) {
+    e.preventDefault();
     that.download();
   });
+  this.ui.$select_dataset.on('change', function(e) {
+    that.set_active_dataset(that.ui.$select_dataset.val());
+  });
 }
+
+TJIChartView.prototype.set_active_dataset = function(index) {
+  var that = this;
+  
+  if (index === this.state.active_dataset_index) return;
+
+  this.state.active_dataset_index = index;
+  
+  this.ui.$loader.show();
+
+  if(!this.datasets[index].fetch_data) {
+    this.get_data(this.datasets[index]);
+  }
+  this.datasets[index].fetch_data
+    .done(function(){
+      // When a data set is selected, include all data in initial rendering.
+      that.state.filtered_record_indices = _.times(that.datasets[index].chart_data.length);
+      that.state.active_filters = [];
+      that.ui.$loader.hide();
+      that.ui.$description.text(that.datasets[index].description); 
+      that.create_filters();
+      that.create_charts();
+      that.update_chartview_summary();
+    });
+}
+
+    
 
 // Called when the user changes any data filters.
 TJIChartView.prototype.filter_data = function() {
@@ -594,8 +709,9 @@ TJIChartView.prototype.filter_data = function() {
     }
   });
 
+  var dataset = this.datasets[this.state.active_dataset_index];
   var filtered_indices = [];
-  var data = _.each(this.state.chart_data, function(record, idx) {
+  _.each(dataset.chart_data, function(record, idx) {
     for (filter in grouped_filters) {
       if (record[filter] && !~grouped_filters[filter].indexOf(record[filter])) return;
     }
@@ -606,31 +722,34 @@ TJIChartView.prototype.filter_data = function() {
 }
 
 TJIChartView.prototype.update_charts = function() {
-  this.update_record_count();
+  this.update_chartview_summary();
   var that = this;
+  var dataset = this.datasets[this.state.active_dataset_index];
   var filtered_data = _.map(that.state.filtered_record_indices, function(idx) {
-    return that.state.chart_data[idx];
+    return dataset.chart_data[idx];
   })
   _.each(this.components.charts, function(chart){
     chart.update(filtered_data);
   })
 }
 
-TJIChartView.prototype.update_record_count = function() {
+TJIChartView.prototype.update_chartview_summary = function() {
   this.ui.$record_count.text(this.state.filtered_record_indices.length + ' records');
 }
 
 TJIChartView.prototype.download = function() {
   // Download complete records for the data the user is currently viewing.
   var that = this;
+  var dataset = this.datasets[this.state.active_dataset_index];
   var filtered_complete_records = [];
   _.each(this.state.filtered_record_indices, function(idx) {
-    filtered_complete_records.push(that.state.complete_data[idx]);
+    filtered_complete_records.push(dataset.complete_data[idx]);
   });
   
   // Convert these JSON records into CSV text using Papa
   var csvData = Papa.unparse(filtered_complete_records);
-  var filename = filtered_complete_records.length == this.state.complete_data.length ? "tji_data.csv" : "tji_data_filtered.csv";
+  var filename = "tji_data_" + this.datasets[this.state.active_dataset_index].name.replace(/\s/g, '_');
+  filename = filtered_complete_records.length !== dataset.complete_data.length ? filename + '_filtered' : filename;
 
   // Start the download.
   // Note: this solution is taken from https://stackoverflow.com/a/24922761
