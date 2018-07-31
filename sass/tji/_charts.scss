@@ -5,7 +5,6 @@
 .tji-chart {	
 	border: $tji-border;
 	padding: $tji-spacing-md $tji-spacing-sm;
-	margin: $tji-spacing-xs;
 
 	&:nth-of-type(2n) {
 		background-color: $tji-chart-bg;
@@ -14,6 +13,7 @@
   @media (min-width: $tji-break-point-md) {
   	max-width: calc(50% - #{$tji-spacing-sm});
 	  background-color: $tji-chart-bg;
+	  margin: $tji-spacing-xs;
 	  
   }
 
@@ -23,7 +23,7 @@
 }
 
 .tji-chartview__loader {
-    border: 16px solid #f3f3f3; /* Light grey */
+    border: 16px solid $tji-border; /* Light grey */
     border-top: 16px solid $primaryBlue;
     border-radius: 50%;
     width: 120px;
@@ -49,7 +49,7 @@
   @include font-size(1.5);
   text-align: center;
   text-transform: capitalize;
-  font-weight: 600;
+  font-weight: $font__weight-bold;
 }
 
 .tji-chart__legend {
@@ -64,16 +64,13 @@
   text-transform: lowercase;
 }
 
-.tji-chart__legend-item__item-marker {
+.tji-chart__legend-item__marker {
   height: $tji-chart-legend-size;
   margin-right: $tji-spacing-xs;
   width: $tji-chart-legend-size;
-  max-width: $tji-chart-legend-size;
-  flex: 1 0 auto;
 }
 
-.tji-chart__legend-item__item-description {
+.tji-chart__legend-item__description {
 	font-size: $tji-font-size-xs;
 	line-height: $tji-line-height-xs;
-	flex: 1 1 auto;
 }

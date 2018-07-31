@@ -4,11 +4,22 @@ $primaryBlue: #0B5D93;
 $primaryRed: #CE2727;
 	$secondaryRed: #872729;
 $primaryYellow: #FFFD00;
-$tji-chart-bg: #f5f5f5;
+
+$white:    #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #6c757d !default;
+$gray-700: #495057 !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+$black: #000 !default;
 
 /* fonts */
 $headingFont: 'museo', Arial, sans-serif;
-$bodyFont: 'Raleway', sans-serif; //400, 600 weight
+$bodyFont: 'Raleway', sans-serif; //400, 700 weight
 
 /* spacing */
 $tji-spacing-xs: .5rem;
@@ -30,14 +41,18 @@ $tji-line-height-md: 2.7rem;
 $tji-line-height-lg: 3.6rem;
 $tji-line-height-xl: 4.6rem;
 
-$tji-chart-legend-size: 1rem;
+$font__weight-normal: 400;
+$font__weight-bold: 700;
 
 /* dividers */
-$tji-border: 1px solid #ccc;
+$tji-border: 1px solid $gray-400;
 
-/* break-points */
-$tji-break-point-xs: 37.5rem;
+/* break-points (to match flexbox grid breakpoints) */
 $tji-break-point-sm: 48rem;
 $tji-break-point-md: 64rem;
-$tji-break-point-lg: 80rem;
-$tji-break-point-xl: 90rem;
+$tji-break-point-lg: 75rem;
+
+/* charts */
+$tji-chart-bg: $gray-100;
+$tji-chart-legend-size: 1rem;
+
