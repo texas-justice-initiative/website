@@ -509,7 +509,7 @@ TJIChartView.prototype.create_filter_checkbox = function(name, value, id) {
   }).text(value.toLowerCase());
   var container = jQuery('<div/>', {
       id: id,
-      class: "tji-chartview-filters__filter",
+      class: "js-filter tji-chartview-filters__filter",
   }).append(input, label);
   return container;
 }
@@ -682,14 +682,14 @@ TJIChartView.prototype.attach_events = function() {
   //Toggle checkboxes in each filter section
   .on('click', '.js-toggle-select', function(e){
     e.preventDefault();
-    jQuery(this).siblings()
+    jQuery(this).siblings('.js-filter')
       .find('input[type=checkbox]')
       .prop('checked', true);
     that.ui.$form.trigger('change');
   })
   .on('click', '.js-toggle-unselect', function(e){
     e.preventDefault();
-    jQuery(this).siblings()
+    jQuery(this).siblings('.js-filter')
       .find('input[type=checkbox]')
       .prop('checked', false);
     that.ui.$form.trigger('change');
