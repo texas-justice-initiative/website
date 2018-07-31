@@ -1,0 +1,46 @@
+/*--------------------------------------------------------------
+>>> EXPLORE THE DATA TABLE OF CONTENTS:
+----------------------------------------------------------------
+# GENERAL
+# FILTERS
+
+/*--------------------------------------------------------------
+## FILTERS
+--------------------------------------------------------------*/
+
+.tji-chart-filters {
+  fieldset {
+    margin-bottom: $tji-spacing-xs;
+      a { cursor: pointer; }
+  }
+  legend {
+    text-transform: uppercase;
+    .fa-caret-down { margin-left: $tji-spacing-xs; }
+  }
+  legend:after {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    content: '\f0d7'; /* Unicode character for "down" caret (+) */
+    padding-left: 0.5em;
+  }
+  legend:hover {
+    color: $primaryYellow;
+    cursor: pointer;
+  }
+  .tji-chart-filters__filter {
+    label {
+      text-transform: capitalize;
+      padding-left: 0.5em;
+    }
+  }
+  .is-collapsed {
+    display: none;
+  }
+  .active:after {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    content: '\f0d8'; /* Unicode character for "up" caret (+) */
+
+  }
+
+}
