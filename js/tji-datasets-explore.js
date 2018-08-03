@@ -257,6 +257,7 @@ TJIGroupByDoughnutChart.prototype.create_legend = function() {
 // *
 // * argument descriptions:
 // *   datasets: array of objects describing each dataset that can be selected
+// *.  view_elt_selector: selector of HTML element that is the view wrapper (for managing collapse of filters)
 // *   charts_elt_selector: selector of HTML element to put charts in
 // *   filters_elt_selector: selector of HTML element to put filters in
 // *   chart_wrapper_template: HTML to wrap around each chart's canvas object
@@ -287,7 +288,7 @@ var TJIChartView = function(props){
 
   //jquery object references to DOM elements
   this.ui = {
-    $page: jQuery('#content'),
+    $chartview: jQuery(props.view_elt_selector),
     $chartview_charts: jQuery(props.charts_elt_selector),
     $chartview_filters: jQuery(props.filters_elt_selector),
     $form: null,
@@ -669,7 +670,7 @@ TJIChartView.prototype.create_chartview_DOM = function() {
 TJIChartView.prototype.attach_events = function() {
   var that = this;
   jQuery('#js-chartview-controls-toggle').on('click', function(e) {
-    that.ui.$page.toggleClass('tji-chartview-wrapper--controls-closed');
+    that.ui.$chartview.toggleClass('tji-chartview-wrapper--controls-expanded');
   })
 
   this.ui.$form.on('change', function(e) {

@@ -1,14 +1,37 @@
 /*--------------------------------------------------------------
 ## FILTERS
 --------------------------------------------------------------*/
-.site-content.tji-chartview-wrapper--controls-closed {
+.tji-chartview-wrapper {
+  position: relative;
+  width: 100%;
 
-    #secondary.tji-chartview-controls {
-      width: 50px;
+  .tji-chartview-content {
+    @include transition(width, .5s);
+    min-height: 100vh;
+    padding: $tji-spacing-sm;
+    width: calc(100% - 50px);
+    z-index: 1;
+    @media (min-width: $tji-break-point-md) {
+      padding: $tji-spacing-lg;
     }
+  }
+  .tji-chartview-controls {
+    @include transition(width, .5s);
+    background-color: $tji-blue-dark;
+    color: $tji-color-white;
+    bottom: 0;
+    overflow-x: hidden; 
+    position: absolute;
+    right: 0;
+    top:0;
+    width: 50px;
+    z-index: 2;
+  }
 
-    #primary.tji-chartview-content {
-      width: calc(100% - 50px);
+  &.tji-chartview-wrapper--controls-expanded {
+    .tji-chartview-controls {
+      max-width: 90%;
+      width: 325px;
     }
 
     .tji-chartview-controls__toggle {
@@ -18,17 +41,9 @@
     }
 
     .tji-chartview-filters {
-      display: none;
+      display: block;
     }
-}
-
-#primary.tji-chartview-content {
-  @include transition(width, .5s);
-}
-#secondary.tji-chartview-controls {
-  @include transition(width, .5s);
-  overflow-x: hidden;
-  padding: 0;
+  }
 }
 
 .tji-chartview-controls__toggle {
@@ -44,10 +59,12 @@
 }
 
 .tji-chartview-filters {
+  display: none;
   padding: $tji-spacing-lg;
 }
 
 .tji-chartview-filters__filter-legend {
+  cursor: pointer;
   text-transform: capitalize;
   svg {
     @include transition(transform, .5s);
@@ -66,6 +83,12 @@
 
   &.is-collapsed {
     max-height: 0;     
+  }
+
+  a {
+    color: $tji-color-white;
+    cursor: pointer;
+    text-decoration: underline;
   }
 }
 
