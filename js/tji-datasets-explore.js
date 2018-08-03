@@ -1,4 +1,3 @@
-
 //TODO: make color constant object
 
 var COLOR_TJI_BLUE = '#0B5D93';
@@ -118,6 +117,9 @@ TJIGroupByBarChart.prototype.get_options = function() {
           min: 0,
         }
       }]
+    },
+    layout: {
+	    padding: 20
     }
   }
   return _.extend(options, this.get_options_overrides());
@@ -217,7 +219,7 @@ TJIGroupByDoughnutChart.prototype.create_legend = function() {
   var $legend = jQuery('<div class="tji-chart__legend"/>');
   var legend_items = [];
   _.map(keys_sorted, function(key){
-    legend_items.push(jQuery('<div class="tji-chart__legend-item"><span style="background-color:' + colormap[key] + '"></span>' + key + '</div>'));
+    legend_items.push(jQuery('<div class="tji-chart__legend-item"><span style="background-color:' + colormap[key] + '" class="tji-chart__legend-item-marker"></span><span class="tji-chart__legend-item-description">' + key + '</span></div>'));
   });
   return $legend.append(legend_items);
 }
@@ -524,7 +526,7 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
     });
   fieldset.append(legend);
   fieldset.append(filterset);
-  
+
   var input = jQuery('<input/>', {
     class: "tji-chartview-filters__autocomplete-text",
     type: "text",
@@ -728,6 +730,8 @@ TJIChartView.prototype.set_active_dataset = function(index) {
       that.update_chartview_summary();
     });
 }
+
+    
 
 // Called when the user changes any data filters.
 TJIChartView.prototype.filter_data = function() {
