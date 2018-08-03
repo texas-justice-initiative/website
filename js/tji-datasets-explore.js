@@ -219,7 +219,7 @@ TJIGroupByDoughnutChart.prototype.create_legend = function() {
   var $legend = jQuery('<div class="tji-chart__legend"/>');
   var legend_items = [];
   _.map(keys_sorted, function(key){
-    legend_items.push(jQuery('<div class="tji-chart__legend-item"><span style="background-color:' + colormap[key] + '" class="tji-chart__legend-item__marker"></span><span class="tji-chart__legend-item__description">' + key + '</span></div>'));
+    legend_items.push(jQuery('<div class="tji-chart__legend-item"><span style="background-color:' + colormap[key] + '" class="tji-chart__legend-item-marker"></span><span class="tji-chart__legend-item-description">' + key + '</span></div>'));
   });
   return $legend.append(legend_items);
 }
