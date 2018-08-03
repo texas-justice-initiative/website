@@ -54,6 +54,7 @@
   padding-left: $tji-spacing-sm;
   span {
     @include transition(transform, .5s);
+    cursor: pointer;
   }
 
 }
