@@ -4,6 +4,7 @@
 .tji-chartview-filters {}
 
 .tji-chartview-filters__filter-legend {
+  text-transform: capitalize;
   svg {
     @include transition(transform, .5s);
   }
