@@ -11,8 +11,8 @@ get_header();
 
 ?>
 
-  <div id="primary" class="content-area">
-    <main id="main" class="site-main">
+<div id="primary" class="content-area tji-chartview-content">
+  <main id="main" class="site-main">
 
     <?php
       // Bring in data from WordPress page
@@ -22,12 +22,14 @@ get_header();
       endwhile;
     ?>
 
-<div id="js-TJIChartView" class="tji-chartview">
+  <div id="js-TJIChartView" class="tji-chartview">
+  </div>
+
+  </main>
 </div>
 
-</main></div>
-
-<aside id="secondary">
+<aside id="secondary" class="tji-chartview-controls">
+  <div id="js-chartview-controls-toggle" class="tji-chartview-controls__toggle"><span>←</span></div>
   <div id="js-TJIChartViewFilters"></div>
 </aside>
 

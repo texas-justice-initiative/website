@@ -287,6 +287,7 @@ var TJIChartView = function(props){
 
   //jquery object references to DOM elements
   this.ui = {
+    $page: jQuery('#content'),
     $chartview_charts: jQuery(props.charts_elt_selector),
     $chartview_filters: jQuery(props.filters_elt_selector),
     $form: null,
@@ -667,6 +668,10 @@ TJIChartView.prototype.create_chartview_DOM = function() {
 // attach delegated event handlers to parent DOM elements that are data agnostic
 TJIChartView.prototype.attach_events = function() {
   var that = this;
+  jQuery('#js-chartview-controls-toggle').on('click', function(e) {
+    that.ui.$page.toggleClass('tji-chartview-wrapper--controls-closed');
+  })
+
   this.ui.$form.on('change', function(e) {
     that.state.active_filters = that.ui.$form.serializeArray();
     that.filter_data();

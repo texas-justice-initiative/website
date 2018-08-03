@@ -1,7 +1,51 @@
 /*--------------------------------------------------------------
 ## FILTERS
 --------------------------------------------------------------*/
-.tji-chartview-filters {}
+.site-content.tji-chartview-wrapper--controls-closed {
+
+    #secondary.tji-chartview-controls {
+      width: 50px;
+    }
+
+    #primary.tji-chartview-content {
+      width: calc(100% - 50px);
+    }
+
+    .tji-chartview-controls__toggle {
+      span {
+        @include transform(rotate(180deg));
+      }
+    }
+
+    .tji-chartview-filters {
+      display: none;
+    }
+}
+
+#primary.tji-chartview-content {
+  @include transition(width, .5s);
+}
+#secondary.tji-chartview-controls {
+  @include transition(width, .5s);
+  overflow-x: hidden;
+  padding: 0;
+}
+
+.tji-chartview-controls__toggle {
+  align-items: center;
+  background-color: $tji-blue-darker;
+  display: flex;
+  height: 50px;
+  padding-left: $tji-spacing-sm;
+  span {
+    @include transition(transform, .5s);
+  }
+
+}
+
+.tji-chartview-filters {
+  padding: $tji-spacing-lg;
+}
 
 .tji-chartview-filters__filter-legend {
   text-transform: capitalize;
