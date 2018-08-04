@@ -119,7 +119,7 @@ TJIGroupByBarChart.prototype.get_options = function() {
       }]
     },
     layout: {
-	    padding: 20
+      padding: 20
     }
   }
   return _.extend(options, this.get_options_overrides());
@@ -486,7 +486,7 @@ TJIChartView.prototype.create_filter_legend = function(filter_name) {
 
 TJIChartView.prototype.create_filter_checkboxes = function(filter) {
   var that = this;
-  var fieldset = jQuery('<fieldset/>');
+  var fieldset = jQuery('<fieldset class="tji-chartview-filters__fieldset"/>');
   var legend = this.create_filter_legend(filter.name);
   var filterset = jQuery('<div class="js-filter-set tji-chartview-filters__filter-set"><a class="js-toggle-select">Select All</a> / <a class="js-toggle-unselect">Unselect All</a></div>');
   _.each(filter.values, function(v) {

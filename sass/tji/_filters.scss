@@ -1,12 +1,18 @@
 /*--------------------------------------------------------------
 ## FILTERS
 --------------------------------------------------------------*/
-.tji-chartview-filters {}
+#primary.fixed-width { width: calc(100% - 20rem) }
+#secondary.fixed-width { width: 20rem; }
 
 .tji-chartview-filters__filter-legend {
-  text-transform: capitalize;
+  padding: 0 $tji-spacing-xs;
+  text-transform: uppercase;
+  &:hover { color: $primaryYellow }
+  cursor: pointer;
+  
   svg {
     @include transition(transform, .5s);
+    margin: 0 $tji-spacing-xs;
   }
   &.is-collapsed {
     svg {
@@ -19,14 +25,19 @@
   @include transition(max-height, .5s);
   max-height: 500px;
   overflow-y: hidden;
+  a { cursor: pointer   }
 
   &.is-collapsed {
     max-height: 0;     
   }
 }
+.tji-chartview-filters__fieldset {
+  margin: $tji-spacing-md 0;
+}
 
 .tji-chartview-filters__filter {
   label {
     text-transform: capitalize;
+    margin: 0 $tji-spacing-xs;
   }
 }
