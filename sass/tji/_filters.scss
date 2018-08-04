@@ -20,8 +20,8 @@
   legend:after {
     font-family: 'Font Awesome 5 Free';
     font-weight: 900;
-    content: '\f0d7'; /* Unicode character for "down" caret (+) */
-    padding-left: 0.5em;
+    content: '\f107'; /* Unicode character for "down" caret (+) */
+    padding-left: $tji-spacing-xs;
   }
   legend:hover {
     color: $primaryYellow;
@@ -30,7 +30,7 @@
   .tji-chart-filters__filter {
     label {
       text-transform: capitalize;
-      padding-left: 0.5em;
+      padding-left: $tji-spacing-xs;
     }
   }
   .is-collapsed {
@@ -39,7 +39,7 @@
   .active:after {
     font-family: 'Font Awesome 5 Free';
     font-weight: 900;
-    content: '\f0d8'; /* Unicode character for "up" caret (+) */
+    content: '\f106'; /* Unicode character for "up" caret (+) */
 
   }
 

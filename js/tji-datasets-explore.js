@@ -578,7 +578,8 @@ TJIChartView.prototype.attach_events = function() {
   })
   // Make filter sections collapsible
   .on('click', '.js-chart-legend', function(e){
-    jQuery(this).siblings('.js-filter-set').toggleClass('is-collapsed')
+    jQuery(this).toggleClass('active');
+    jQuery(this).siblings('.js-filter-set').toggleClass('is-collapsed');
   })
   //Toggle checkboxes in each filter section
   .on('click', '.js-toggle-select', function(e){
@@ -586,18 +587,15 @@ TJIChartView.prototype.attach_events = function() {
     jQuery(this).siblings()
       .find('input[type=checkbox]')
       .prop('checked', true);
-    that.$form.trigger('change');
+    that.ui.$form.trigger('change');
   })
   .on('click', '.js-toggle-unselect', function(e){
     e.preventDefault();
     jQuery(this).siblings()
       .find('input[type=checkbox]')
       .prop('checked', false);
-    that.$form.trigger('change');
-  }) 
-  this.ui.$download.on('click', function() {
-    that.download();
-  });
+    that.ui.$form.trigger('change');
+  })
   this.ui.$download.on('click', function() {
     that.download();
   });
