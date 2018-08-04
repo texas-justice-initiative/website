@@ -44,6 +44,7 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 	## Galleries
 --------------------------------------------------------------*/
 /* transitions */
+/* transform */
 /*--------------------------------------------------------------
 # Normalize
 --------------------------------------------------------------*/
@@ -6669,6 +6670,9 @@ object {
 /* fonts */
 /* spacing */
 /* typography */
+/* dividers */
+/* break-points (to match flexbox grid breakpoints) */
+/* charts */
 /*--------------------------------------------------------------
 ## Fonts
 --------------------------------------------------------------*/
@@ -7323,7 +7327,6 @@ hr.story-divider {
   }
   .subpage #primary {
     width: 75%;
-    margin-right: 2em;
   }
   .subpage #secondary {
     width: 25%;
@@ -7423,9 +7426,46 @@ hr.story-divider {
 /*--------------------------------------------------------------
 ## CHARTS
 --------------------------------------------------------------*/
+.tji-chart {
+  border: 1px solid #CBCBCB;
+  padding: 1.5rem 1rem;
+}
+.tji-chart:nth-of-type(2n) {
+  background-color: #F4F4F4;
+}
+@media (min-width: 64rem) {
+  .tji-chart {
+    max-width: calc(50% - 1rem);
+    background-color: #F4F4F4;
+    margin: 0.5rem;
+  }
+}
+@media (min-width: 75rem) {
+  .tji-chart {
+    max-width: calc(33.33% - 1rem);
+  }
+}
+
+.tji-chartview {
+  min-height: 400px;
+  position: relative;
+}
+
+.tji-chartview__loader-overlay {
+  background-color: rgba(0, 0, 0, 0.1);
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  padding-top: 140px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+}
+
 .tji-chartview__loader {
-  border: 16px solid #f3f3f3;
-  /* Light grey */
+  border: 16px solid #F4F4F4;
   border-top: 16px solid #0B5D93;
   border-radius: 50%;
   width: 120px;
@@ -7441,18 +7481,21 @@ hr.story-divider {
     transform: rotate(360deg);
   }
 }
-.tji-chartview__description {
+.tji-chartview__summary {
   margin-bottom: 2rem;
 }
 
 .tji-chartview__record-count {
-  font-size: 1.7rem;
+  font-size: 1.4rem;
   margin-right: 2rem;
 }
 
 .tji-chart__title {
-  font-size: 32px;
-  font-size: 2rem;
+  font-size: 24px;
+  font-size: 1.5rem;
+  text-align: center;
+  text-transform: capitalize;
+  font-weight: 700;
 }
 
 .tji-chart__legend {
@@ -7461,23 +7504,22 @@ hr.story-divider {
 }
 
 .tji-chart__legend-item {
-  align-items: center;
   display: flex;
-  margin: 0 0.5rem;
+  width: 100%;
+  margin: 0.25rem;
   text-transform: lowercase;
-  white-space: nowrap;
 }
-.tji-chart__legend-item span {
+
+.tji-chart__legend-item-marker {
   height: 1rem;
   margin-right: 0.5rem;
   width: 1rem;
 }
 
-/*--------------------------------------------------------------
->>> EXPLORE THE DATA TABLE OF CONTENTS:
-----------------------------------------------------------------
-# GENERAL
-# FILTERS
+.tji-chart__legend-item-description {
+  font-size: 0.8rem;
+  line-height: 1rem;
+}
 
 /*--------------------------------------------------------------
 ## FILTERS
@@ -7540,7 +7582,7 @@ hr.story-divider {
   border-radius: 0.25rem;
   cursor: pointer;
   display: inline-block;
-  font-size: 1.4rem;
+  font-size: 0.8rem;
   color: white;
   background-color: #0B5D93;
 }
@@ -7572,9 +7614,46 @@ hr.story-divider {
 /*--------------------------------------------------------------
 ## CHARTS
 --------------------------------------------------------------*/
+.tji-chart {
+  border: 1px solid #CBCBCB;
+  padding: 1.5rem 1rem;
+}
+.tji-chart:nth-of-type(2n) {
+  background-color: #F4F4F4;
+}
+@media (min-width: 64rem) {
+  .tji-chart {
+    max-width: calc(50% - 1rem);
+    background-color: #F4F4F4;
+    margin: 0.5rem;
+  }
+}
+@media (min-width: 75rem) {
+  .tji-chart {
+    max-width: calc(33.33% - 1rem);
+  }
+}
+
+.tji-chartview {
+  min-height: 400px;
+  position: relative;
+}
+
+.tji-chartview__loader-overlay {
+  background-color: rgba(0, 0, 0, 0.1);
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  padding-top: 140px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+}
+
 .tji-chartview__loader {
-  border: 16px solid #f3f3f3;
-  /* Light grey */
+  border: 16px solid #F4F4F4;
   border-top: 16px solid #0B5D93;
   border-radius: 50%;
   width: 120px;
@@ -7590,18 +7669,21 @@ hr.story-divider {
     transform: rotate(360deg);
   }
 }
-.tji-chartview__description {
+.tji-chartview__summary {
   margin-bottom: 2rem;
 }
 
 .tji-chartview__record-count {
-  font-size: 1.7rem;
+  font-size: 1.4rem;
   margin-right: 2rem;
 }
 
 .tji-chart__title {
-  font-size: 32px;
-  font-size: 2rem;
+  font-size: 24px;
+  font-size: 1.5rem;
+  text-align: center;
+  text-transform: capitalize;
+  font-weight: 700;
 }
 
 .tji-chart__legend {
@@ -7610,16 +7692,64 @@ hr.story-divider {
 }
 
 .tji-chart__legend-item {
-  align-items: center;
   display: flex;
-  margin: 0 0.5rem;
+  width: 100%;
+  margin: 0.25rem;
   text-transform: lowercase;
-  white-space: nowrap;
 }
-.tji-chart__legend-item span {
+
+.tji-chart__legend-item-marker {
   height: 1rem;
   margin-right: 0.5rem;
   width: 1rem;
+}
+
+.tji-chart__legend-item-description {
+  font-size: 0.8rem;
+  line-height: 1rem;
+}
+
+/*--------------------------------------------------------------
+## Filters
+--------------------------------------------------------------*/
+/*--------------------------------------------------------------
+## FILTERS
+--------------------------------------------------------------*/
+.tji-chart-filters fieldset {
+  margin-bottom: 0.5rem;
+}
+.tji-chart-filters fieldset a {
+  cursor: pointer;
+}
+.tji-chart-filters legend {
+  text-transform: uppercase;
+}
+.tji-chart-filters legend .fa-caret-down {
+  margin-left: 0.5rem;
+}
+.tji-chart-filters legend:after {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "";
+  /* Unicode character for "down" caret (+) */
+  padding-left: 0.5rem;
+}
+.tji-chart-filters legend:hover {
+  color: #FFFD00;
+  cursor: pointer;
+}
+.tji-chart-filters .tji-chart-filters__filter label {
+  text-transform: capitalize;
+  padding-left: 0.5rem;
+}
+.tji-chart-filters .is-collapsed {
+  display: none;
+}
+.tji-chart-filters .active:after {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "";
+  /* Unicode character for "up" caret (+) */
 }
 
 /*# sourceMappingURL=style.css.map */

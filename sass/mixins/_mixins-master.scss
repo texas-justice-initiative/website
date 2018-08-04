@@ -36,3 +36,12 @@
     -o-transition: $attr $duration;
     transition: $attr $duration;
 }
+
+/* transform */
+@mixin transform($transform) {
+    -webkit-transform: $transform;
+    -moz-transform: $transform;
+    -ms-transform: $transform;
+    -o-transform: $transform;
+    transform: $transform;
+}
