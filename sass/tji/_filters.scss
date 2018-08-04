@@ -1,39 +1,43 @@
 /*--------------------------------------------------------------
 ## FILTERS
 --------------------------------------------------------------*/
+#primary.fixed-width { width: calc(100% - 20rem) }
+#secondary.fixed-width { width: 20rem; }
 
-.tji-chart-filters {
-  fieldset {
-    margin-bottom: $tji-spacing-xs;
-      a { cursor: pointer; }
+.tji-chartview-filters__filter-legend {
+  padding: 0 $tji-spacing-xs;
+  text-transform: uppercase;
+  &:hover { color: $primaryYellow }
+  cursor: pointer;
+  
+  svg {
+    @include transition(transform, .5s);
+    margin: 0 $tji-spacing-xs;
   }
-  legend {
-    text-transform: uppercase;
-    .fa-caret-down { margin-left: $tji-spacing-xs; }
-  }
-  legend:after {
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
-    content: '\f107'; /* Unicode character for "down" caret (+) */
-    padding-left: $tji-spacing-xs;
-  }
-  legend:hover {
-    color: $primaryYellow;
-    cursor: pointer;
-  }
-  .tji-chart-filters__filter {
-    label {
-      text-transform: capitalize;
-      padding-left: $tji-spacing-xs;
+  &.is-collapsed {
+    svg {
+      @include transform(rotate(180deg));
     }
   }
-  .is-collapsed {
-    display: none;
-  }
-  .active:after {
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
-    content: '\f106'; /* Unicode character for "up" caret (+) */
+}
 
+.tji-chartview-filters__filter-set {
+  @include transition(max-height, .5s);
+  max-height: 500px;
+  overflow-y: hidden;
+  a { cursor: pointer   }
+
+  &.is-collapsed {
+    max-height: 0;     
+  }
+}
+.tji-chartview-filters__fieldset {
+  margin: $tji-spacing-md 0;
+}
+
+.tji-chartview-filters__filter {
+  label {
+    text-transform: capitalize;
+    margin: 0 $tji-spacing-xs;
   }
 }

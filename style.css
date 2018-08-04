@@ -1,4 +1,3 @@
-@charset "UTF-8";
 /*!
 Theme Name: Texas Justice Initiative
 Theme URI: http://underscores.me/
@@ -7524,41 +7523,61 @@ hr.story-divider {
 /*--------------------------------------------------------------
 ## FILTERS
 --------------------------------------------------------------*/
-.tji-chart-filters fieldset {
-  margin-bottom: 0.5rem;
+#primary.fixed-width {
+  width: calc(100% - 20rem);
 }
-.tji-chart-filters fieldset a {
-  cursor: pointer;
+
+#secondary.fixed-width {
+  width: 20rem;
 }
-.tji-chart-filters legend {
+
+.tji-chartview-filters__filter-legend {
+  padding: 0 0.5rem;
   text-transform: uppercase;
-}
-.tji-chart-filters legend .fa-caret-down {
-  margin-left: 0.5rem;
-}
-.tji-chart-filters legend:after {
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  content: "";
-  /* Unicode character for "down" caret (+) */
-  padding-left: 0.5rem;
-}
-.tji-chart-filters legend:hover {
-  color: #FFFD00;
   cursor: pointer;
 }
-.tji-chart-filters .tji-chart-filters__filter label {
+.tji-chartview-filters__filter-legend:hover {
+  color: #FFFD00;
+}
+.tji-chartview-filters__filter-legend svg {
+  -webkit-transition: transform 0.5s;
+  -moz-transition: transform 0.5s;
+  -ms-transition: transform 0.5s;
+  -o-transition: transform 0.5s;
+  transition: transform 0.5s;
+  margin: 0 0.5rem;
+}
+.tji-chartview-filters__filter-legend.is-collapsed svg {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+.tji-chartview-filters__filter-set {
+  -webkit-transition: max-height 0.5s;
+  -moz-transition: max-height 0.5s;
+  -ms-transition: max-height 0.5s;
+  -o-transition: max-height 0.5s;
+  transition: max-height 0.5s;
+  max-height: 500px;
+  overflow-y: hidden;
+}
+.tji-chartview-filters__filter-set a {
+  cursor: pointer;
+}
+.tji-chartview-filters__filter-set.is-collapsed {
+  max-height: 0;
+}
+
+.tji-chartview-filters__fieldset {
+  margin: 1.5rem 0;
+}
+
+.tji-chartview-filters__filter label {
   text-transform: capitalize;
-  padding-left: 0.5rem;
-}
-.tji-chart-filters .is-collapsed {
-  display: none;
-}
-.tji-chart-filters .active:after {
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  content: "";
-  /* Unicode character for "up" caret (+) */
+  margin: 0 0.5rem;
 }
 
 /*--------------------------------------------------------------
@@ -7715,41 +7734,61 @@ hr.story-divider {
 /*--------------------------------------------------------------
 ## FILTERS
 --------------------------------------------------------------*/
-.tji-chart-filters fieldset {
-  margin-bottom: 0.5rem;
+#primary.fixed-width {
+  width: calc(100% - 20rem);
 }
-.tji-chart-filters fieldset a {
-  cursor: pointer;
+
+#secondary.fixed-width {
+  width: 20rem;
 }
-.tji-chart-filters legend {
+
+.tji-chartview-filters__filter-legend {
+  padding: 0 0.5rem;
   text-transform: uppercase;
-}
-.tji-chart-filters legend .fa-caret-down {
-  margin-left: 0.5rem;
-}
-.tji-chart-filters legend:after {
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  content: "";
-  /* Unicode character for "down" caret (+) */
-  padding-left: 0.5rem;
-}
-.tji-chart-filters legend:hover {
-  color: #FFFD00;
   cursor: pointer;
 }
-.tji-chart-filters .tji-chart-filters__filter label {
+.tji-chartview-filters__filter-legend:hover {
+  color: #FFFD00;
+}
+.tji-chartview-filters__filter-legend svg {
+  -webkit-transition: transform 0.5s;
+  -moz-transition: transform 0.5s;
+  -ms-transition: transform 0.5s;
+  -o-transition: transform 0.5s;
+  transition: transform 0.5s;
+  margin: 0 0.5rem;
+}
+.tji-chartview-filters__filter-legend.is-collapsed svg {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+.tji-chartview-filters__filter-set {
+  -webkit-transition: max-height 0.5s;
+  -moz-transition: max-height 0.5s;
+  -ms-transition: max-height 0.5s;
+  -o-transition: max-height 0.5s;
+  transition: max-height 0.5s;
+  max-height: 500px;
+  overflow-y: hidden;
+}
+.tji-chartview-filters__filter-set a {
+  cursor: pointer;
+}
+.tji-chartview-filters__filter-set.is-collapsed {
+  max-height: 0;
+}
+
+.tji-chartview-filters__fieldset {
+  margin: 1.5rem 0;
+}
+
+.tji-chartview-filters__filter label {
   text-transform: capitalize;
-  padding-left: 0.5rem;
-}
-.tji-chart-filters .is-collapsed {
-  display: none;
-}
-.tji-chart-filters .active:after {
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  content: "";
-  /* Unicode character for "up" caret (+) */
+  margin: 0 0.5rem;
 }
 
 /*# sourceMappingURL=style.css.map */
