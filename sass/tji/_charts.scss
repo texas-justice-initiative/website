@@ -7,6 +7,27 @@
 /*--------------------------------------------------------------
 ## CHARTS
 --------------------------------------------------------------*/
+
+.tji-chart {	
+	border: 1px solid $tji-color-gray-light;
+	padding: $tji-spacing-md $tji-spacing-sm;
+
+	&:nth-of-type(2n) {
+		background-color: $tji-color-gray-lightest;
+	}
+  
+  @media (min-width: $tji-break-point-md) {
+  	max-width: calc(50% - #{$tji-spacing-sm});
+	  background-color: $tji-color-gray-lightest;
+	  margin: $tji-spacing-xs;
+	  
+  }
+
+  @media (min-width: $tji-break-point-lg) {
+  	max-width: calc(33.33% - #{$tji-spacing-sm});
+  }
+}
+
 .tji-chartview {
   min-height: 400px;
   position: relative;
@@ -47,23 +68,31 @@
 }
 
 .tji-chart__title {
-  @include font-size(2);
+  @include font-size(1.5);
+  text-align: center;
+  text-transform: capitalize;
+  font-weight: $font__weight-bold;
 }
 
 .tji-chart__legend {
   display: flex;
   flex-wrap: wrap;
 }
-.tji-chart__legend-item {
-  align-items: center;
-  display: flex;
-  margin: 0 $tji-spacing-xs;
-  text-transform: lowercase;
-  white-space: nowrap;
 
-  span {
-    height: $tji-chart-legend-size;
-    margin-right: $tji-spacing-xs;
-    width: $tji-chart-legend-size;
-  }
+.tji-chart__legend-item {
+  display: flex;
+  width: 100%;
+  margin: $tji-spacing-xs/2;
+  text-transform: lowercase;
+}
+
+.tji-chart__legend-item-marker {
+  height: $tji-chart-legend-size;
+  margin-right: $tji-spacing-xs;
+  width: $tji-chart-legend-size;
+}
+
+.tji-chart__legend-item-description {
+	font-size: $tji-font-size-xs;
+	line-height: $tji-line-height-xs;
 }

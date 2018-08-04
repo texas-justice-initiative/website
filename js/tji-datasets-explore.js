@@ -117,6 +117,9 @@ TJIGroupByBarChart.prototype.get_options = function() {
           min: 0,
         }
       }]
+    },
+    layout: {
+	    padding: 20
     }
   }
   return _.extend(options, this.get_options_overrides());
@@ -216,7 +219,7 @@ TJIGroupByDoughnutChart.prototype.create_legend = function() {
   var $legend = jQuery('<div class="tji-chart__legend"/>');
   var legend_items = [];
   _.map(keys_sorted, function(key){
-    legend_items.push(jQuery('<div class="tji-chart__legend-item"><span style="background-color:' + colormap[key] + '"></span>' + key + '</div>'));
+    legend_items.push(jQuery('<div class="tji-chart__legend-item"><span style="background-color:' + colormap[key] + '" class="tji-chart__legend-item-marker"></span><span class="tji-chart__legend-item-description">' + key + '</span></div>'));
   });
   return $legend.append(legend_items);
 }
@@ -473,21 +476,30 @@ TJIChartView.prototype.create_filters = function() {
   this.state.active_filters = this.ui.$form.serializeArray();    
 }
 
+TJIChartView.prototype.create_filter_legend = function(filter_name) {
+  return jQuery('<legend />', {
+      class: 'js-filter-legend tji-chartview-filters__filter-legend'
+    })
+    .text(filter_name.replace(/_/g, " ").toLowerCase())
+    .append('<i class="fas fa-caret-down"></i>');
+}
+
 TJIChartView.prototype.create_filter_checkboxes = function(filter) {
   var that = this;
-  var fieldset = jQuery('<fieldset><legend class="js-chart-legend">' + filter.name.replace(/_/g, " ") + '</legend></fieldset>');
-  var filterset = jQuery('<div class="js-filter-set"><a class="js-toggle-select">Select All</a> / <a class="js-toggle-unselect">Unselect All</a></div>');
-  fieldset.append(filterset);
-
+  var fieldset = jQuery('<fieldset/>');
+  var legend = this.create_filter_legend(filter.name);
+  var filterset = jQuery('<div class="js-filter-set tji-chartview-filters__filter-set"><a class="js-toggle-select">Select All</a> / <a class="js-toggle-unselect">Unselect All</a></div>');
   _.each(filter.values, function(v) {
     filterset.append(that.create_filter_checkbox(filter.name, v));
   });
+  fieldset.append(legend);
+  fieldset.append(filterset);
   return fieldset;
 }
 
 TJIChartView.prototype.create_filter_checkbox = function(name, value, id) {
   var input = jQuery('<input/>', {
-      class: "tji-chart-filters__checkbox",
+      class: "tji-chartview-filters__checkbox",
       type: "checkbox",
       checked: "checked",
       id: 'TJIChartView__filter-' + name + '-' + value,
@@ -496,30 +508,36 @@ TJIChartView.prototype.create_filter_checkbox = function(name, value, id) {
     });
   var label = jQuery('<label/>', {
     for: 'TJIChartView__filter-' + name + '-' + value,
-  }).text(value);
+  }).text(value.toLowerCase());
   var container = jQuery('<div/>', {
       id: id,
-      class: "tji-chart-filters__filter",
+      class: "js-filter tji-chartview-filters__filter",
   }).append(input, label);
   return container;
 }
 
 TJIChartView.prototype.create_filter_autocomplete = function(filter) {
   var that = this;
-  var fieldset = jQuery('<fieldset><legend class="js-chart-legend">' + filter.name.replace(/_/g, " ") + '</legend></fieldset>');
-  var filterset = jQuery('<div class="js-filter-set"></div>');
+
+  var fieldset = jQuery('<fieldset/>');
+  var legend = this.create_filter_legend(filter.name);
+  var filterset = jQuery('<div/>', {
+      class: 'js-filter-set tji-chartview-filters__filter-set'
+    });
+  fieldset.append(legend);
   fieldset.append(filterset);
+
   var input = jQuery('<input/>', {
-    class: "tji-chart-filters__text",
+    class: "tji-chartview-filters__autocomplete-text",
     type: "text",
   });
   var auto_complete_list = jQuery('<div />', {
-    class: "tji-chart-filters__autocomplete-list"
+    class: "tji-chartview-filters__autocomplete-list"
   });
 
   jQuery('<div/>',{
-    class: "tji-chart-filters__autocomplete",
-  }).append(input, auto_complete_list).appendTo(fieldset);
+    class: "tji-chartview-filters__autocomplete",
+  }).append(input, auto_complete_list).appendTo(filterset);
   
   var onSelect = function(event, term) {
     event.preventDefault();
@@ -614,7 +632,7 @@ TJIChartView.prototype.create_chartview_DOM = function() {
     .appendTo(this.ui.$chartview_charts);
 
   this.ui.$form = jQuery('<form />', {
-    class: 'tji-chart-filters',
+    class: 'tji-chartview-filters',
   }).appendTo(this.ui.$chartview_filters);
 
   this.ui.$charts_container = jQuery(this.templates.chartview_charts_template)
@@ -653,9 +671,32 @@ TJIChartView.prototype.attach_events = function() {
     that.state.active_filters = that.ui.$form.serializeArray();
     that.filter_data();
     that.update_charts();
-  }).on('submit', function(e){
+  })
+  .on('submit', function(e){
     e.preventDefault();
   })
+  // Make filter sections collapsible
+  .on('click', '.js-filter-legend', function(e){
+    jQuery(this)
+      .toggleClass('is-collapsed')
+      .siblings('.js-filter-set').toggleClass('is-collapsed');
+  })
+  //Toggle checkboxes in each filter section
+  .on('click', '.js-toggle-select', function(e){
+    e.preventDefault();
+    jQuery(this).siblings('.js-filter')
+      .find('input[type=checkbox]')
+      .prop('checked', true);
+    that.ui.$form.trigger('change');
+  })
+  .on('click', '.js-toggle-unselect', function(e){
+    e.preventDefault();
+    jQuery(this).siblings('.js-filter')
+      .find('input[type=checkbox]')
+      .prop('checked', false);
+    that.ui.$form.trigger('change');
+  }) 
+
   this.ui.$download.on('click', function(e) {
     e.preventDefault();
     that.download();
