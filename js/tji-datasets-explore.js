@@ -731,8 +731,6 @@ TJIChartView.prototype.set_active_dataset = function(index) {
     });
 }
 
-    
-
 // Called when the user changes any data filters.
 TJIChartView.prototype.filter_data = function() {
   // Create a mapping from filter name to active values.
