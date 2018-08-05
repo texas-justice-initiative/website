@@ -1,14 +1,25 @@
 //TODO: make color constant object
 
-var COLOR_TJI_BLUE = '#0B5D93';
-var COLOR_TJI_RED = '#CE2727';
-var COLOR_TJI_DEEPBLUE = '#252939';
-var COLOR_TJI_PURPLE = '#4D3B6B';
-var COLOR_TJI_YELLOW = '#F1AB32';
-var COLOR_TJI_TEAL = '#50E3C2';
-var COLOR_TJI_DEEPRED = '#872729';
-var COLOR_TJI_DEEPPURPLE = '#2D1752';
+var COLOR_RED_HUE_1 = '#FF8F8F';
+var COLOR_RED_HUE_2 = '#F95858';
+var COLOR_RED_HUE_3 = '#CE2727';
+var COLOR_RED_HUE_4 = '#AA1111';
+var COLOR_RED_HUE_5 = '#721616';
+var COLOR_RED_HUE_6 = '#490B0B';
 
+var COLOR_BLUE_HUE_1 = '#83E5FF';
+var COLOR_BLUE_HUE_2 = '#64B8DD';
+var COLOR_BLUE_HUE_3 = '#348CB2';
+var COLOR_BLUE_HUE_4 = '#0B5D93';
+var COLOR_BLUE_HUE_5 = '#04405B';
+var COLOR_BLUE_HUE_6 = '#052C42';
+
+var COLOR_YELLOW_HUE_1 = '#FFFD00';
+var COLOR_YELLOW_HUE_2 = '#FFD400';
+var COLOR_YELLOW_HUE_3 = '#FFBC00';
+var COLOR_YELLOW_HUE_4 = '#E2A203';
+var COLOR_YELLOW_HUE_5 = '#BC9800';
+var COLOR_YELLOW_HUE_6 = '#A57F08';
 
 // *******************************************************************
 // * "Class" for a single-variable bar chart
@@ -42,7 +53,7 @@ var TJIGroupByBarChart = function(props) {
 
 TJIGroupByBarChart.prototype.type = 'bar';
 
-TJIGroupByBarChart.prototype.color_palette = [COLOR_TJI_BLUE];
+TJIGroupByBarChart.prototype.color_palette = [COLOR_BLUE_HUE_4];
 
 // Create the chart for the first time.
 // This also permanently sets the legend and color mapping.
@@ -183,8 +194,8 @@ TJIGroupByDoughnutChart.prototype = Object.create(TJIGroupByBarChart.prototype);
 TJIGroupByDoughnutChart.prototype.constructor = TJIGroupByDoughnutChart;
 TJIGroupByDoughnutChart.prototype.type = 'doughnut';
 TJIGroupByDoughnutChart.prototype.color_palette = [
-  COLOR_TJI_BLUE, COLOR_TJI_RED, COLOR_TJI_DEEPBLUE, COLOR_TJI_PURPLE,
-  COLOR_TJI_YELLOW, COLOR_TJI_TEAL, COLOR_TJI_DEEPRED, COLOR_TJI_DEEPPURPLE,
+  COLOR_BLUE_HUE_4, COLOR_RED_HUE_4, COLOR_YELLOW_HUE_4, COLOR_BLUE_HUE_2,
+  COLOR_RED_HUE_2, COLOR_YELLOW_HUE_2, COLOR_BLUE_HUE_6, COLOR_RED_HUE_6, COLOR_YELLOW_HUE_6,
 ];
 TJIGroupByDoughnutChart.prototype.get_options_overrides = function() {
   return {
