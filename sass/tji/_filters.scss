@@ -1,8 +1,17 @@
 /*--------------------------------------------------------------
 ## FILTERS
 --------------------------------------------------------------*/
-#primary.fixed-width { width: calc(100% - 20rem); }
-#secondary.fixed-width { width: 20rem; }
+.tji-chartview-content {
+	@media screen and (min-width: #{$tji-break-point-xs}) {
+		width: calc(100% - 20rem) !important;
+	}
+}
+
+.tji-chartview-filter {
+	@media screen and (min-width: #{$tji-break-point-xs}) {
+		width: 20rem !important;
+	}
+}
 
 .tji-chartview-filters__filter-legend {
   padding: 0 $tji-spacing-xs;
