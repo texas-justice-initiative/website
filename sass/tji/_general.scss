@@ -683,29 +683,12 @@ hr.story-divider {
 	@media (min-width: 37.5em) {
 		.site-content {
 			margin-top: 100px;
-		}
-		
-		#primary {
-			padding: 2em;
-		}
-		
-		/* Sidebar area */
-		#secondary {
-			padding: 2em;
-			
-			p {
-				font-size: 14px;
-			}
-		}
-	}
-
-	@media (min-width: 992px) {	
-		.site-content {
 			display: flex;
 			flex-flow: row nowrap;
 		}
 		
 		#primary {
+			padding: 2em;
 			width: 75%;
 		}
 		
@@ -714,6 +697,10 @@ hr.story-divider {
 			width: 25%;
 			box-shadow: -2px 0 3px rgba(65,65,65,0.5);
 			min-height: calc(100vh - 100px);
+						
+			p {
+				font-size: 14px;
+			}
 		}
 	}
 }

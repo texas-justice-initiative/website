@@ -11,7 +11,7 @@ get_header();
 
 ?>
 
-  <div id="primary" class="content-area">
+  <div id="primary" class="content-area tji-chartview-content">
     <main id="main" class="site-main">
 
     <?php
@@ -27,7 +27,7 @@ get_header();
 
 </main></div>
 
-<aside id="secondary">
+<aside id="secondary" class="tji-chartview-filter">
   <div id="js-TJIChartViewFilters"></div>
 </aside>
 

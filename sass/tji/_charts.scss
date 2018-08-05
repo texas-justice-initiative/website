@@ -16,7 +16,7 @@
 		background-color: $tji-color-gray-lightest;
 	}
   
-  @media (min-width: $tji-break-point-xs) {
+  @media (min-width: $tji-break-point-md) {
   	max-width: calc(50% - #{$tji-spacing-sm});
 	  background-color: $tji-color-gray-lightest;
 	  margin: $tji-spacing-xs;
