@@ -206,7 +206,7 @@ TJIGroupByDoughnutChart.prototype.get_options_overrides = function() {
       },
       precision: 0,
       showZero: true,
-      fontSize: 10,
+      fontSize: 14,
       fontColor: '#fff',
       // available value is 'default', 'border' and 'outside'
       position: 'default'
