@@ -62,9 +62,25 @@
     margin-bottom: $tji-spacing-lg;
 }
 
+.tji-chartview__select_set_prompt {
+  color: $primaryBlue;
+  font-weight: 900;
+}
+
+.tji-chartview__description {
+  padding-top: $tji-spacing-md;
+}
+
+.tji-chartview__download-button {
+  padding: 1rem 2rem;
+}
+
 .tji-chartview__record-count {
-    font-size: $tji-font-size-sm;
+    font-size: $tji-font-size-md;
     margin-right: $tji-spacing-lg;
+}
+.tji-chartview__count-number {
+    color: $primaryRed;
 }
 
 .tji-chart__title {

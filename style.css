@@ -7484,9 +7484,26 @@ hr.story-divider {
   margin-bottom: 2rem;
 }
 
+.tji-chartview__select_set_prompt {
+  color: #0B5D93;
+  font-weight: 900;
+}
+
+.tji-chartview__description {
+  padding-top: 1.5rem;
+}
+
+.tji-chartview__download-button {
+  padding: 1rem 2rem;
+}
+
 .tji-chartview__record-count {
-  font-size: 1rem;
+  font-size: 1.7rem;
   margin-right: 2rem;
+}
+
+.tji-chartview__count-number {
+  color: #CE2727;
 }
 
 .tji-chart__title {
@@ -7692,9 +7709,26 @@ hr.story-divider {
   margin-bottom: 2rem;
 }
 
+.tji-chartview__select_set_prompt {
+  color: #0B5D93;
+  font-weight: 900;
+}
+
+.tji-chartview__description {
+  padding-top: 1.5rem;
+}
+
+.tji-chartview__download-button {
+  padding: 1rem 2rem;
+}
+
 .tji-chartview__record-count {
-  font-size: 1rem;
+  font-size: 1.7rem;
   margin-right: 2rem;
+}
+
+.tji-chartview__count-number {
+  color: #CE2727;
 }
 
 .tji-chart__title {

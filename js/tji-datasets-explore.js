@@ -650,8 +650,13 @@ TJIChartView.prototype.create_chartview_DOM = function() {
     .addClass('tji-chartview__charts')
     .appendTo(this.ui.$chartview_charts);
 
+  this.ui.$select_set_prompt = jQuery('<span />', {
+    class: 'tji-chartview__select_set_prompt',
+    html: 'Select a Dataset:  '
+  });
+
   this.ui.$select_dataset = jQuery('<select />', {
-    class: 'tji-chartview__dataset-select'
+    class: 'tji-chartview__dataset-select',
   });
 
   _.each(this.datasets, function(dataset, index) {
@@ -670,7 +675,7 @@ TJIChartView.prototype.create_chartview_DOM = function() {
 
   this.ui.$summary_container = jQuery(this.templates.chartview_summary_template)
     .addClass('tji-chartview__summary')
-    .append(this.ui.$select_dataset, this.ui.$description, this.ui.$record_count, this.ui.$download)   
+    .append(this.ui.$select_set_prompt, this.ui.$select_dataset, this.ui.$description, this.ui.$record_count, this.ui.$download)   
     .hide()
     .prependTo(this.ui.$chartview_charts);
 }
@@ -783,7 +788,7 @@ TJIChartView.prototype.update_charts = function() {
 }
 
 TJIChartView.prototype.update_chartview_summary = function() {
-  this.ui.$record_count.text(this.state.filtered_record_indices.length + ' records');
+  this.ui.$record_count.html('Total number of filtered incidents:<span class="tji-chartview__count-number"> ' + this.state.filtered_record_indices.length) + '</span>';
 }
 
 TJIChartView.prototype.download = function() {
