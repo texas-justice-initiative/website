@@ -7493,10 +7493,6 @@ hr.story-divider {
   padding-top: 1.5rem;
 }
 
-.tji-chartview__download-button {
-  padding: 1rem 2rem;
-}
-
 .tji-chartview__record-count {
   font-size: 1.7rem;
   margin-right: 2rem;
@@ -7614,6 +7610,10 @@ hr.story-divider {
     background-color: #872729;
   }
 }
+.tji-btn-download {
+  padding: 1rem 2rem;
+}
+
 .tji-btn-primary {
   border-radius: 0.25rem;
   cursor: pointer;
@@ -7716,10 +7716,6 @@ hr.story-divider {
 
 .tji-chartview__description {
   padding-top: 1.5rem;
-}
-
-.tji-chartview__download-button {
-  padding: 1rem 2rem;
 }
 
 .tji-chartview__record-count {
