@@ -2,6 +2,48 @@
  * Donation form functionality
  */
  
+
+$(document).ready(function() {
+	
+	$('.donation-btn').on('click', function() {
+		event.preventDefault();
+		$('.donation-btn').removeClass('selected');
+		$(this).addClass('selected');
+	});
+	
+	$('.next-btn').on('click', function() {
+		event.preventDefault();
+
+	  var isValid = true;  // Set the isValid to flag true initially
+	
+    $('input.required').each(function() {   // Loop thru all the elements
+        var name = $('input.required').val();
+        console.log(name);
+        if(name != '') {  // If not empty do nothing
+				
+        } else {          
+            isValid = false; // If one loop is empty set the isValid flag to false
+            return false;    // Break out of .each loop 
+        }
+    });
+	
+    if(isValid){    // If valid submit form else show error
+	    $('.order_name').html($('#first_name').val() + ' ' + $('#last_name').val());
+      $('.order_email').html($('#email').val());
+      $('.order_amount').html($('.donation-btn.selected').val());
+    }
+    else{
+       $('.error').show();
+    return false;
+	}
+		
+	});
+	
+});
+
+let amount = '30.11';
+
+
 paypal.Button.render({
   // Configure environment
   env: 'sandbox',
@@ -21,55 +63,38 @@ paypal.Button.render({
 	  return actions.payment.create({
 	    transactions: [{
 	      amount: {
-	        total: '30.11',
+	        total: $('.donation-btn.selected').val(),
 	        currency: 'USD',
 	        details: {
-	          subtotal: '30.00',
-	          tax: '0.07',
-	          shipping: '0.03',
-	          handling_fee: '1.00',
-	          shipping_discount: '-1.00',
-	          insurance: '0.01'
+	          subtotal: $('.donation-btn.selected').val(),
+	          tax: '0.00',
+	          shipping: '0.00',
+	          handling_fee: '0.00',
+	          shipping_discount: '0.00',
+	          insurance: '0.00'
 	        }
 	      },
 	      description: 'The payment transaction description.',
-	      //custom: '90048630024435',
-	      //invoice_number: '12345', Insert a unique invoice number
 	      payment_options: {
 	        allowed_payment_method: 'INSTANT_FUNDING_SOURCE'
 	      },
-	      //soft_descriptor: 'ECHI5786786',
+		      payer_info: {
+			      first_name: $('#first_name').val(),
+			      last_name: $('#last_name').val(),
+			      email: $('#email').val()
+	      },
 	      item_list: {
 	        items: [
 	          {
-	            name: 'hat',
-	            description: 'Brown hat.',
-	            quantity: '5',
-	            price: '3',
-	            tax: '0.01',
+	            name: 'donation',
+	            description: 'Donation in support of Texas Justice Initiative.',
+	            quantity: '1',
+	            price: $('.donation-btn.selected').val(),
+	            tax: '0.00',
 	            sku: '1',
 	            currency: 'USD'
-	          },
-	          {
-	            name: 'handbag',
-	            description: 'Black handbag.',
-	            quantity: '1',
-	            price: '15',
-	            tax: '0.02',
-	            sku: 'product34',
-	            currency: 'USD'
 	          }
-	        ],
-	        shipping_address: {
-	          recipient_name: 'Brian Robinson',
-	          line1: '4th Floor',
-	          line2: 'Unit #34',
-	          city: 'San Jose',
-	          country_code: 'US',
-	          postal_code: '95131',
-	          phone: '011862212345678',
-	          state: 'CA'
-	        }
+	        ]
 	      }
 	    }],
 	    note_to_payer: 'Contact us for any questions on your order.'
