@@ -9,13 +9,15 @@ $(document).ready(function() {
 		event.preventDefault();
 		$('.donation-btn').removeClass('selected');
 		$('#other_amount').removeClass('selected');
+		$('.amount-sign').removeClass('amount-sign--focus');
 		$('#other_amount').val('');
 		$(this).addClass('selected');
 	});
 	
-	$('#other_amount').on('change', function() {
+	$("#other_amount").focus(function() {
 		$('.donation-btn').removeClass('selected');
 		$(this).addClass('selected');
+		$('.amount-sign').addClass('amount-sign--focus');
 	});
 	
 });
@@ -27,6 +29,10 @@ function checkForm() {
 			$('.order_amount').html($('.selected').val());	
 	    $('.order_name').html($('#first_name').val() + ' ' + $('#last_name').val());
 	    $('.order_email').html($('#email').val());
+	    
+	    $('.donation-confirm').show();
+	    $('.donation-confirm').get(0).scrollIntoView();
+	    
 		} else {
 			console.log('No amount selected.');
 		}
@@ -35,12 +41,11 @@ function checkForm() {
 
 let amount = '30.11';
 
-
 paypal.Button.render({
   // Configure environment
   env: 'sandbox',
   client: {
-    sandbox: 'demo_sandbox_client_id',
+    sandbox: 'AZ2LDJwEbuFjH45Izqk5pmxHtyzxtooUPBCrvrn7tjKXIbv-xGxXsflhCMGl6dy2tRBEliztwiPzCckc',
     production: 'demo_production_client_id'
   },
   // Customize button (optional)
@@ -70,11 +75,6 @@ paypal.Button.render({
 	      payment_options: {
 	        allowed_payment_method: 'INSTANT_FUNDING_SOURCE'
 	      },
-		      payer_info: {
-			      first_name: $('#first_name').val(),
-			      last_name: $('#last_name').val(),
-			      email: $('#email').val()
-	      },
 	      item_list: {
 	        items: [
 	          {
@@ -89,7 +89,7 @@ paypal.Button.render({
 	        ]
 	      }
 	    }],
-	    note_to_payer: 'Contact us for any questions on your order.'
+	    note_to_payer: 'Thank you for supporting the Texas Justice Initiative. We greatly appreciate your generous donation!'
 	  });
 	},
   // Execute the payment

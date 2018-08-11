@@ -35,3 +35,19 @@
     @include transition(opacity, 1s);
   }
 }
+
+.tji-form-submit {
+  background-color: $primaryBlue !important;
+  color: #fff !important;
+  width: 150px !important;
+  text-transform: uppercase !important;
+  transition: all 0.35s !important;
+	border: 1px solid #ddd !important;
+	font-size: 1em !important;
+	padding: 10px 15px !important; 
+	border-radius: 0 !important;
+	 
+  &:hover {
+    background-color: $secondaryBlue !important;
+  }
+}

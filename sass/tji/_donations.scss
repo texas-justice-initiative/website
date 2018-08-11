@@ -1,0 +1,126 @@
+/**
+ * Styles for the TJI Donations page
+ */
+
+.donation-form {
+	
+}
+
+.donation-form__label {
+	display: block;
+	font-size: 16px;
+	float: none;
+	font-weight: $font__weight-bold;
+	line-height: 1.3;
+	margin: 0 0 4px 0;
+	padding: 0;
+}
+
+.donation-form__row {
+	display: flex;
+	flex-flow: row wrap;
+}
+
+.donation-form__group--inline {
+	display: inline-block;
+}
+
+.donation-form__field {
+	width: 100%;
+	margin: $tji-spacing-sm 0;
+	
+	@media screen and (min-width: #{$tji-break-point-md}) {
+		padding-right: $tji-spacing-lg;
+	}
+	
+	input[type="text"],
+	input[type="email"] {
+		display: block;
+		float: none;
+		font-size: 16px;
+		border: 1px solid #ccc;
+		padding: 6px 10px;
+		height: 38px;
+		width: 100%;
+		line-height: 1.3;
+	}
+}
+
+.donation-form__field--small {
+	@media screen and (min-width: #{$tji-break-point-md}) {
+		width: 33.33%;
+	}	
+}
+
+.donation-form__field--medium {
+	@media screen and (min-width: #{$tji-break-point-md}) {
+		width: 50%;
+	}
+}
+
+.donation-form__field--large {
+	width: 100%;
+}
+
+.donation-form__error {
+	display: none;
+	color: red;
+}
+
+/* Amount buttons */
+.donation-amount {
+	display: flex;	
+}
+
+.donation-btn {
+  background: #fff;
+  border-color: $primaryBlue;
+  border-radius: 3px;
+  color: $primaryBlue;
+  font-weight: $font__weight-bold;
+  font-size: 1rem;
+  margin: 0 0.25rem;
+  box-shadow: 1px 1px 3px $tji-color-gray-light;
+  
+  &:hover {
+	  background: $tji-color-gray-lighter;
+	  border-color: $primaryBlue;
+  }
+  
+  &.selected {
+	  background: $primaryBlue;
+	  color: #fff;
+  }
+}
+
+.other-amount {
+	display: flex;
+	align-items: stretch;
+	margin-left: $tji-spacing-xs;
+	
+	input[type="text"] {
+		border-color: $tji-color-gray-light;
+		border-radius: 0 3px 3px 0;
+	}
+}
+
+.amount-sign {
+	padding-left: $tji-spacing-xs;
+	padding-right: $tji-spacing-xs;
+	border-radius: 3px 0 0 3px; 
+	border: 1px solid $tji-color-gray-light;
+	color: $primaryBlue;
+	font-weight: $font__weight-bold;
+	padding-top: 4px;
+}
+
+.amount-sign--focus {
+	background: $primaryBlue;
+	color: #fff;
+	border-color: $primaryBlue;
+}
+
+/* Confirmation page */
+.donation-confirm {
+	display: none;
+}
