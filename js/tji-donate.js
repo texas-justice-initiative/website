@@ -8,38 +8,30 @@ $(document).ready(function() {
 	$('.donation-btn').on('click', function() {
 		event.preventDefault();
 		$('.donation-btn').removeClass('selected');
+		$('#other_amount').removeClass('selected');
+		$('#other_amount').val('');
 		$(this).addClass('selected');
 	});
 	
-	$('.next-btn').on('click', function() {
-		event.preventDefault();
-
-	  var isValid = true;  // Set the isValid to flag true initially
-	
-    $('input.required').each(function() {   // Loop thru all the elements
-        var name = $('input.required').val();
-        console.log(name);
-        if(name != '') {  // If not empty do nothing
-				
-        } else {          
-            isValid = false; // If one loop is empty set the isValid flag to false
-            return false;    // Break out of .each loop 
-        }
-    });
-	
-    if(isValid){    // If valid submit form else show error
-	    $('.order_name').html($('#first_name').val() + ' ' + $('#last_name').val());
-      $('.order_email').html($('#email').val());
-      $('.order_amount').html($('.donation-btn.selected').val());
-    }
-    else{
-       $('.error').show();
-    return false;
-	}
-		
+	$('#other_amount').on('change', function() {
+		$('.donation-btn').removeClass('selected');
+		$(this).addClass('selected');
 	});
 	
 });
+
+function checkForm() {
+	event.preventDefault();		
+	
+		if ($('.selected').length) {	
+			$('.order_amount').html($('.selected').val());	
+	    $('.order_name').html($('#first_name').val() + ' ' + $('#last_name').val());
+	    $('.order_email').html($('#email').val());
+		} else {
+			console.log('No amount selected.');
+		}
+	
+};
 
 let amount = '30.11';
 

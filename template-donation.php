@@ -16,13 +16,13 @@ get_header();
 	<div id="primary" class="content-area">
 		<main id="main" class="site-main">
 
-			<form id="donation_form" name="donation_form" method="post">
+			<form id="donation_form" name="donation_form" method="post" onsubmit="checkForm()">
 				<label for="first_name">First Name <span class="error">Please enter your first name</span>
-					<input type="text" name="first_name" id="first_name" autocomplete="on" class="required"></label>
+					<input type="text" name="first_name" id="first_name" autocomplete="on" required></label>
 				<label for="last_name">Last Name <span class="error">Please enter your last name</span>
-					<input type="text" name="last_name" id="last_name" autocomplete="on" class="required"></label>
+					<input type="text" name="last_name" id="last_name" autocomplete="on" required></label>
 				<label for="email">Email Address <span class="error">Please enter your valid email address</span>
-					<input type="email" name="email" id="email" autocomplete="on" maxlength="60" class="required"></label>
+					<input type="email" name="email" id="email" autocomplete="on" maxlength="60" required></label>
 				<label for="comment">Let us know why you are contributing to TJI.
 					<textarea name="comment" id="comment"></textarea></label>
 				<div id="donation_amount" class="form-group form-inline">
@@ -31,10 +31,10 @@ get_header();
 					<button class="donation-btn" value="100">$100</button>
 					<button class="donation-btn" value="50">$50</button>
 					<button class="donation-btn" value="25">$25</button>
-				</div>
-				<div class="input-group">
-					<div class="amount_sign">$</div>
-					<input type="text" name="other_amount" id="other_amount" placeholder="Other Amount" pattern="\d+(\.\d{2})?">
+					<div class="input-group">
+						<div class="amount_sign">$</div>
+						<input type="text" name="other_amount" id="other_amount" placeholder="Other Amount" pattern="\d+(\.\d{2})?">
+					</div>
 				</div>
 				<input type="submit" class="next-btn">
 			</form>
