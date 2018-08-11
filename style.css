@@ -6666,6 +6666,24 @@ object {
 ## Variables
 --------------------------------------------------------------*/
 /* colors */
+/* lighest red */
+/* lighter red */
+/* light red */
+/* red */
+/* dark red */
+/* darkest red */
+/* lighest blue */
+/* lighter blue */
+/* light blue */
+/* blue */
+/* dark blue */
+/* darkest blue */
+/* lighest yellow */
+/* lighter yellow */
+/* light yellow */
+/* yellow */
+/* dark yellow */
+/* darkest yellow */
 /* fonts */
 /* spacing */
 /* typography */
@@ -7484,9 +7502,9 @@ hr.story-divider {
   margin-bottom: 2rem;
 }
 
-.tji-chartview__select_set_prompt {
+.tji-chartview__select-set-prompt {
   color: #0B5D93;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .tji-chartview__description {
@@ -7709,9 +7727,9 @@ hr.story-divider {
   margin-bottom: 2rem;
 }
 
-.tji-chartview__select_set_prompt {
+.tji-chartview__select-set-prompt {
   color: #0B5D93;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .tji-chartview__description {

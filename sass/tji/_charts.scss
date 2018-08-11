@@ -62,9 +62,9 @@
     margin-bottom: $tji-spacing-lg;
 }
 
-.tji-chartview__select_set_prompt {
+.tji-chartview__select-set-prompt {
   color: $primaryBlue;
-  font-weight: 900;
+  font-weight:  $font__weight-bold;
 }
 
 .tji-chartview__description {

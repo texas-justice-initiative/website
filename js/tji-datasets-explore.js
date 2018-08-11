@@ -650,8 +650,8 @@ TJIChartView.prototype.create_chartview_DOM = function() {
     .addClass('tji-chartview__charts')
     .appendTo(this.ui.$chartview_charts);
 
-  this.ui.$select_set_prompt = jQuery('<span />', {
-    class: 'tji-chartview__select_set_prompt',
+  var select_prompt = jQuery('<span />', {
+    class: 'tji-chartview__select-set-prompt',
     html: 'Select a Dataset:  '
   });
 
@@ -675,7 +675,7 @@ TJIChartView.prototype.create_chartview_DOM = function() {
 
   this.ui.$summary_container = jQuery(this.templates.chartview_summary_template)
     .addClass('tji-chartview__summary')
-    .append(this.ui.$select_set_prompt, this.ui.$select_dataset, this.ui.$description, this.ui.$record_count, this.ui.$download)   
+    .append(select_prompt, this.ui.$select_dataset, this.ui.$description, this.ui.$record_count, this.ui.$download)   
     .hide()
     .prependTo(this.ui.$chartview_charts);
 }
