@@ -11,7 +11,7 @@
     padding: $tji-spacing-sm;
     width: calc(100% - 50px);
     z-index: 1;
-    @media (min-width: $tji-break-point-md) {
+    @media (min-width: $tji-break-point-sm) {
       padding: $tji-spacing-lg;
     }
   }
@@ -67,7 +67,7 @@
 
 .tji-chartview-controls__filters {
   display: none;
-  padding: $tji-spacing-lg;
+  padding: 0 $tji-spacing-lg $tji-spacing-lg;
 }
 
 .tji-chartview-filters__filter-legend {
