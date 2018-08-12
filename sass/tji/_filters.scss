@@ -66,10 +66,16 @@
 
 .tji-chartview-filters__filter-legend {
   cursor: pointer;
+  padding: 0 $tji-spacing-xs;
   text-transform: capitalize;
+
   svg {
     @include transition(transform, .5s);
+    margin: 0 $tji-spacing-xs;
   }
+
+  &:hover { color: $primaryYellow }
+
   &.is-collapsed {
     svg {
       @include transform(rotate(180deg));
@@ -81,6 +87,7 @@
   @include transition(max-height, .5s);
   max-height: 500px;
   overflow-y: hidden;
+  a { cursor: pointer }
 
   &.is-collapsed {
     max-height: 0;     
@@ -92,9 +99,13 @@
     text-decoration: underline;
   }
 }
+.tji-chartview-filters__fieldset {
+  margin: $tji-spacing-md 0;
+}
 
 .tji-chartview-filters__filter {
   label {
     text-transform: capitalize;
+    margin: 0 $tji-spacing-xs;
   }
 }

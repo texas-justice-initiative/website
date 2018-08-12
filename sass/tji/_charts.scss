@@ -1,4 +1,10 @@
 /*--------------------------------------------------------------
+>>> EXPLORE THE DATA TABLE OF CONTENTS:
+----------------------------------------------------------------
+# GENERAL
+# CHARTS
+
+/*--------------------------------------------------------------
 ## CHARTS
 --------------------------------------------------------------*/
 
@@ -56,9 +62,21 @@
     margin-bottom: $tji-spacing-lg;
 }
 
+.tji-chartview__select-set-prompt {
+  color: $primaryBlue;
+  font-weight:  $font__weight-bold;
+}
+
+.tji-chartview__description {
+  padding-top: $tji-spacing-md;
+}
+
 .tji-chartview__record-count {
-    font-size: $tji-font-size-sm;
+    font-size: $tji-font-size-md;
     margin-right: $tji-spacing-lg;
+}
+.tji-chartview__count-number {
+    color: $primaryRed;
 }
 
 .tji-chart__title {
@@ -87,6 +105,6 @@
 }
 
 .tji-chart__legend-item-description {
-	font-size: $tji-font-size-xs;
+	font-size: $tji-font-size-sm;
 	line-height: $tji-line-height-xs;
 }
