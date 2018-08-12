@@ -15,6 +15,7 @@
       padding: $tji-spacing-lg;
     }
   }
+
   .tji-chartview-controls {
     @include transition(width, .5s);
     background-color: $tji-blue-dark;
@@ -29,6 +30,12 @@
   }
 
   &.tji-chartview-wrapper--controls-expanded {
+    .tji-chartview-content {
+      @media (min-width: $tji-break-point-md) {
+        width: calc(100% - 325px);
+      }
+    }
+
     .tji-chartview-controls {
       max-width: 90%;
       width: 325px;
