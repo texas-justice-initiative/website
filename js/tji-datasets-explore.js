@@ -607,7 +607,7 @@ TJIChartView.prototype.create_charts = function() {
   var dataset = this.datasets[this.state.active_dataset_index];
   _.each(dataset.chart_configs, function(config){
     var $container = jQuery(that.templates.chart_wrapper_template)
-      .addClass('tji-chart')
+      .addClass('tji-chartview__chart')
       .appendTo(that.ui.$charts_container);
     var chart_constructor;
     switch(config.type) {
@@ -645,7 +645,7 @@ TJIChartView.prototype.create_chartview_DOM = function() {
     .appendTo(this.ui.$chartview_charts);
 
   this.ui.$form = jQuery('<form />', {
-    class: 'tji-chartview-filters',
+    class: 'tji-chartview-controls__filters',
   }).appendTo(this.ui.$chartview_filters);
 
   this.ui.$charts_container = jQuery(this.templates.chartview_charts_template)
