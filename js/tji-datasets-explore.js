@@ -268,6 +268,7 @@ TJIGroupByDoughnutChart.prototype.create_legend = function() {
 // *
 // * argument descriptions:
 // *   datasets: array of objects describing each dataset that can be selected
+// *.  view_elt_selector: selector of HTML element that is the view wrapper (for managing collapse of filters)
 // *   charts_elt_selector: selector of HTML element to put charts in
 // *   filters_elt_selector: selector of HTML element to put filters in
 // *   chart_wrapper_template: HTML to wrap around each chart's canvas object
@@ -298,6 +299,7 @@ var TJIChartView = function(props){
 
   //jquery object references to DOM elements
   this.ui = {
+    $chartview: jQuery(props.view_elt_selector),
     $chartview_charts: jQuery(props.charts_elt_selector),
     $chartview_filters: jQuery(props.filters_elt_selector),
     $form: null,
@@ -605,7 +607,7 @@ TJIChartView.prototype.create_charts = function() {
   var dataset = this.datasets[this.state.active_dataset_index];
   _.each(dataset.chart_configs, function(config){
     var $container = jQuery(that.templates.chart_wrapper_template)
-      .addClass('tji-chart')
+      .addClass('tji-chartview__chart')
       .appendTo(that.ui.$charts_container);
     var chart_constructor;
     switch(config.type) {
@@ -643,7 +645,7 @@ TJIChartView.prototype.create_chartview_DOM = function() {
     .appendTo(this.ui.$chartview_charts);
 
   this.ui.$form = jQuery('<form />', {
-    class: 'tji-chartview-filters',
+    class: 'tji-chartview-controls__filters',
   }).appendTo(this.ui.$chartview_filters);
 
   this.ui.$charts_container = jQuery(this.templates.chartview_charts_template)
@@ -683,6 +685,10 @@ TJIChartView.prototype.create_chartview_DOM = function() {
 // attach delegated event handlers to parent DOM elements that are data agnostic
 TJIChartView.prototype.attach_events = function() {
   var that = this;
+  jQuery('#js-chartview-controls-toggle').on('click', function(e) {
+    that.ui.$chartview.toggleClass('tji-chartview-wrapper--controls-expanded');
+  })
+
   this.ui.$form.on('change', function(e) {
     that.state.active_filters = that.ui.$form.serializeArray();
     that.filter_data();
