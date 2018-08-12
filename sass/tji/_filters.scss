@@ -31,7 +31,7 @@
 
   &.tji-chartview-wrapper--controls-expanded {
     .tji-chartview-content {
-      @media (min-width: $tji-break-point-md) {
+      @media (min-width: $tji-break-point-sm) {
         width: calc(100% - 325px);
       }
     }
@@ -59,8 +59,7 @@
   display: flex;
   height: 50px;
   padding-left: $tji-spacing-sm;
-  span {
-    @include transition(transform, .5s);
+  i {
     cursor: pointer;
   }
 
