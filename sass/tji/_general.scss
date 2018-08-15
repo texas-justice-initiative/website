@@ -229,16 +229,6 @@ blockquote {
 }
 
 /* Mobile Navigation */
-
-
-	.menu-toggle,
-	.main-navigation.toggled ul {
-	 
-
-		@media (min-width: $tji-break-point-sm) {
-		}
-	}
-
 .main-navigation.toggled {
 	.menu-main-navigation-container {
     width: 100vw;
