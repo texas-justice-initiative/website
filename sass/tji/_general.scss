@@ -15,10 +15,10 @@ html, body, p {
 }
 
 .tji-section {
-	padding: 2em;
+	padding: 1em;
 	
-	@media (max-width: 37.5em) {
-		padding: 1em;
+	@media (min-width: $tji-break-point-sm) {
+		padding: 2em;
 	}
 }
 
@@ -168,7 +168,7 @@ blockquote {
 	z-index: 99;
 	box-shadow: 1px 1px 3px rgba(64,64,64,0.5);
 		
-	@media (min-width: 37.5em) {
+	@media (min-width: $tji-break-point-sm) {
 		height: 100px;
 		position: fixed;
 		top: 0;
@@ -181,7 +181,7 @@ blockquote {
 		opacity: 1;
 		width: 100px;
 		
-		@media (min-width: 37.5em) {
+		@media (min-width: $tji-break-point-sm) {
 			width: 125px;
 		}
 	}
@@ -229,15 +229,14 @@ blockquote {
 
 /* Mobile Navigation */
 
-@media (max-width: 37.5em) {
+
 	.menu-toggle,
 	.main-navigation.toggled ul {
-	  display: block;
-	  float: right;
-	  background-color: $primaryBlue;
-	  color: #fff;
+	 
+
+		@media (min-width: $tji-break-point-sm) {
+		}
 	}
-}
 
 .main-navigation.toggled {
 	.menu-main-navigation-container {
@@ -298,7 +297,7 @@ blockquote {
 
 section#hero {
 	
-	@media (min-width: 37.5em) {
+	@media (min-width: $tji-break-point-sm) {
 		margin-top: 100px;
 	}
 }
@@ -513,16 +512,17 @@ section#hero {
 /* Layout and toggles */
 .nav-panel {
 
-	@media (max-width: 37.5em) {
-		display: none;
-	}
-	
 	position: fixed;
 	top: 100px;
 	right: 0;
 	width: 0;
 	height: calc(100vh - 100px);
 	transition: 0.3s all;
+	display:none;
+
+	@media (min-width: $tji-break-point-sm) {
+		display: block;
+	}
 
 	&.story-mode.closed {
 		
@@ -560,7 +560,7 @@ section#hero {
 }
 
 	
-@media (min-width: 37.5em) {
+@media (min-width: $tji-break-point-sm) {
 	.story-sections {
 		margin-right: 0;
 		transition: 0.3s all;
@@ -648,16 +648,16 @@ hr.story-divider {
 
 
 .chart-expand {
-  text-align: right;
+  text-align: center;
   display: block;
-  
+	
+  @media (min-width: $tji-break-point-sm) {
+	  text-align: right;
+  }
+
   a {
 	  font-size: 12px;
 	  text-decoration: none;
-  }
-  
-  @media (max-width: 37.5em) {
-	  text-align: center;
   }
 }
 
@@ -680,7 +680,7 @@ hr.story-divider {
 		color: #fff;
 	}
 	
-	@media (min-width: 37.5em) {
+	@media (min-width: $tji-break-point-sm) {
 		.site-content {
 			margin-top: 100px;
 		}
