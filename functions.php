@@ -208,7 +208,6 @@ add_action( 'save_post', 'save_meta' );
  */
 function tji_scripts() {
 	wp_enqueue_style( 'tji-style', get_stylesheet_uri() );
-	wp_enqueue_style( 'tji-jens-style', get_template_directory_uri() . '/tji-data.css' );
 
 	wp_enqueue_script( 'tji-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true );
 
