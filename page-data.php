@@ -70,7 +70,7 @@ get_header();
           {'name': 'type_of_custody'},
           {'name': 'death_location_type'},
           {'name': 'means_of_death'},
-          {'name': 'agency_county', 'type': 'autocomplete'},
+          {'name': 'agency_name', 'type': 'autocomplete'},
           {'name': 'death_location_county', 'type': 'autocomplete'},
         ],
       }, {
@@ -93,7 +93,7 @@ get_header();
           {'name': 'civilian_gender'},
           {'name': 'civilian_died'},
           {'name': 'deadly_weapon'},
-          {'name': 'agency_county', 'type': 'autocomplete'},
+          {'name': 'agency_name', 'type': 'autocomplete'},
           {'name': 'incident_county', 'type': 'autocomplete'},
         ],
       }],
