@@ -161,6 +161,7 @@ blockquote {
 	width: 100%;
 	display: flex;
 	flex-direction: row;
+	justify-content: space-between;
 	align-items: center;
 	height: 80px;
 	padding: 0 20px;
@@ -336,9 +337,10 @@ section#hero {
 	text-align: justify;
 	margin: 2em auto;
 	max-width: 1000px;
-	
-	@media (max-width: 37.5em) {
-		padding: 0 1em;
+	padding: 0 1em;
+
+	@media (min-width: $tji-break-point-sm) {
+		padding: 0;	
 	}
 
 	.tji-about-column {
@@ -372,14 +374,15 @@ section#hero {
   animation: fadeIn 3s ease-in infinite;
   animation-delay: 2s;
   text-align: center;
-  	
+  display: none;
+
+  @media (min-width: $tji-break-point-sm) {
+		display: block;
+	}
+
 	img {
 		width: 25px;
 		height: auto;
-	}
-	
-	@media (max-width: 37.5em) {
-		display: none;
 	}
 }
 
@@ -411,7 +414,7 @@ section#hero {
 .tji-nav-child {
 	background-color: $primaryBlue;
 	text-align: center;
-	padding: 1em 2em;
+	padding: 0;
 	margin: 1em;
 	width: calc(25% - 2em);
 	max-width: 250px;
@@ -420,8 +423,8 @@ section#hero {
 		width: calc(50% - 2em);
 	}
 
-	@media (max-width: 37.5em) {
-		padding: 0;
+	@media (min-width: $tji-break-point-sm) {
+		padding: 1em 2em;
 	}
 }
 
