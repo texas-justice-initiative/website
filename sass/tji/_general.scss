@@ -346,11 +346,8 @@ section#hero {
 	.tji-about-column {
 	  width: 100%;
 	  padding: 2em 0;
-	}
-
-	@media (min-width: 601px) {	
-		.tji-about-column {
-		  width: calc(50% - 1em);
+	  @media (min-width: $tji-break-point-sm) {	
+	  	width: calc(50% - 1em);
 		  float: left;
 			padding: 2em;
 			display: inline-block;
@@ -358,7 +355,7 @@ section#hero {
 			&:last-of-type {
 				border-left: 2px solid $primaryRed;
 			}
-		}
+  	}
 	}
 }
 
