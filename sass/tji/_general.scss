@@ -317,7 +317,7 @@ section#hero {
 	max-width: 1000px;
 	text-align: center;
 	
-	@media (min-width: 1050px) {
+	@media (min-width: $tji-break-point-md) {
 		margin: 0 auto;
 	}
 
@@ -413,15 +413,13 @@ section#hero {
 	text-align: center;
 	padding: 0;
 	margin: 1em;
-	width: calc(25% - 2em);
+	width: calc(50% - 2em);
 	max-width: 250px;
-	
-	@media (max-width: 1000px) {
-		width: calc(50% - 2em);
-	}
-
 	@media (min-width: $tji-break-point-sm) {
 		padding: 1em 2em;
+	}
+	@media (min-width: $tji-break-point-md) {
+		width: calc(25% - 2em);
 	}
 }
 
@@ -581,12 +579,15 @@ section#hero {
 
 // Grid based layout
 .story-section {
-	display: grid;
+	display: block;
 	grid-template-columns: 60% 40%;
 	//grid-template-rows: 1fr 10fr;
 	//min-height: calc(100vh - 100px);
 	padding-bottom: 4em;
 	padding-top: 4em;
+	@media (min-width: $tji-break-point-md) {
+		display: grid;
+	}
 
 	&:nth-of-type(2n) {
     background-color: #f7f7f7;
@@ -613,15 +614,6 @@ section#hero {
 	.story-content {
 		grid-column: 2/3;
 		//grid-row: 2/3;
-	}
-	
-	@media (max-width: 1000px) {
-		display: block;
-		//min-height: calc(100vh - 80px);
-		
-		.story-viz {
-			padding-right: 0;
-		}
 	}
 }
 
@@ -699,7 +691,7 @@ hr.story-divider {
 		}
 	}
 
-	@media (min-width: 992px) {	
+	@media (min-width: $tji-break-point-md) {	
 		.site-content {
 			display: flex;
 			flex-flow: row nowrap;
@@ -723,7 +715,7 @@ hr.story-divider {
 .tji-staff {
 	margin: 1em 0;
 	
-	@media (min-width: 900px) {
+	@media (min-width: $tji-break-point-md) {
 		margin: 2em 0;
 	}
 	
@@ -732,7 +724,7 @@ hr.story-divider {
 		height: auto;
 		margin-bottom: 1em;
 		
-		@media (min-width: 900px) {
+		@media (min-width: $tji-break-point-md) {
 			width: 25%;
 			max-width: 250px;
 			margin-bottom: 0;
@@ -760,7 +752,7 @@ hr.story-divider {
 	border-bottom: 1px solid #ebebeb;
 	padding: 1em 0;
 
-	@media (min-width: 768px) {
+	@media (min-width: $tji-break-point-sm) {
 	  width: 25%;
 		border-right: 1px solid #ebebeb;
 		border-bottom: 0;
@@ -770,7 +762,7 @@ hr.story-divider {
 	&.last_column {
 		border-bottom: 0;
 
-		@media (min-width: 768px) {
+		@media (min-width: $tji-break-point-md) {
 			border-right: 0;
 		}	
 	}
