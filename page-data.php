@@ -48,8 +48,8 @@ get_header();
         name: 'deaths in custody',
         description: "All deaths in custody in Texas since 2005, as reported to the Office of the Attorney General.",
         urls: {
-          compressed: '/cdr_compressed.json',
-          full: '/cdr_full.csv',
+          compressed: '/wp-content/themes/tji/data/cdr_compressed.json',
+          full: '/wp-content/themes/tji/data/cdr_full.csv',
         },
         chart_configs: [
           {type: 'bar', group_by: 'year'},
@@ -70,15 +70,15 @@ get_header();
           {'name': 'type_of_custody'},
           {'name': 'death_location_type'},
           {'name': 'means_of_death'},
-          {'name': 'agency_county', 'type': 'autocomplete'},
+          {'name': 'agency_name', 'type': 'autocomplete'},
           {'name': 'death_location_county', 'type': 'autocomplete'},
         ],
       }, {
         name: 'officer involved shootings',
         description: "Shootings involving Texas law enforcement since Sept. 2015, as reported to the Office of the Attorney General.",
         urls: {
-          compressed: '/ois_compressed.json',
-          full: '/ois_full.csv',
+          compressed: '/wp-content/themes/tji/data/ois_compressed.json',
+          full: '/wp-content/themes/tji/data/ois_full.csv',
         },
         chart_configs: [
           {type: 'bar', group_by: 'year'},
@@ -93,7 +93,7 @@ get_header();
           {'name': 'civilian_gender'},
           {'name': 'civilian_died'},
           {'name': 'deadly_weapon'},
-          {'name': 'agency_county', 'type': 'autocomplete'},
+          {'name': 'agency_name', 'type': 'autocomplete'},
           {'name': 'incident_county', 'type': 'autocomplete'},
         ],
       }],
