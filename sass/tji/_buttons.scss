@@ -1,4 +1,4 @@
-@media (min-width: 37.5em) {
+@media (min-width: $tji-break-point-sm) {
 	.tji-btn {
 		a {
 	    background-color: $primaryRed;
