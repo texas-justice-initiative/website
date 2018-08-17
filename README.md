@@ -4,7 +4,7 @@ To learn more about TJI, visit our website at www.texasjusticeinitiative.org
 
 ## Developers/contributors -- check out the [wiki](https://github.com/texas-justice-initiative/website/wiki)
 
-Detailed information about getting set up locally, deploying, webhooks, etc resides there.
+Detailed information about getting set up locally, deploying, etc resides there.
 
 ## About this repo
 
