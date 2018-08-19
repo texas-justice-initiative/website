@@ -21,6 +21,12 @@ var COLOR_YELLOW_HUE_4 = '#E2A203';
 var COLOR_YELLOW_HUE_5 = '#BC9800';
 var COLOR_YELLOW_HUE_6 = '#A57F08';
 
+var BREAKPOINTS = { 
+  sm: '768',
+  md: '1024',
+  lg: '1200',
+};
+
 // *******************************************************************
 // * "Class" for a single-variable bar chart
 // *
@@ -687,7 +693,7 @@ TJIChartView.prototype.attach_events = function() {
   var that = this;
 
 	// Expand filter panel by default on larger screens
-	if (jQuery(window).width() > 768) {
+	if (jQuery(window).width() > BREAKPOINTS.sm) {
 		that.ui.$chartview.addClass('tji-chartview-wrapper--controls-expanded');
 	}
 

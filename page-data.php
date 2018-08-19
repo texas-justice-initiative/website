@@ -29,7 +29,7 @@ get_header();
   </div>
 
   <aside class="tji-chartview-controls">
-    <div id="js-chartview-controls-toggle" class="tji-chartview-controls__toggle"><span>←</span><h4>Chart Filters</h4></div>
+    <div id="js-chartview-controls-toggle" class="tji-chartview-controls__toggle"><span>&larr;</span><h4>Chart Filters</h4></div>
     <div id="js-TJIChartViewFilters"></div>
   </aside>
 </div>
