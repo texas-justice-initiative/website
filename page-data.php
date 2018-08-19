@@ -29,7 +29,7 @@ get_header();
   </div>
 
   <aside class="tji-chartview-controls">
-    <div id="js-chartview-controls-toggle" class="tji-chartview-controls__toggle"><i class="fas fa-filter"></i></div>
+    <div id="js-chartview-controls-toggle" class="tji-chartview-controls__toggle"><span>←</span><h4>Chart Filters</h4></div>
     <div id="js-TJIChartViewFilters"></div>
   </aside>
 </div>
@@ -48,8 +48,8 @@ get_header();
         name: 'deaths in custody',
         description: "All deaths in custody in Texas since 2005, as reported to the Office of the Attorney General.",
         urls: {
-          compressed: '/wp-content/themes/tji/data/cdr_compressed.json',
-          full: '/wp-content/themes/tji/data/cdr_full.csv',
+          compressed: '<?php echo get_template_directory_uri(); ?>/data/cdr_compressed.json',
+          full: '<?php echo get_template_directory_uri(); ?>/data/cdr_full.csv',
         },
         chart_configs: [
           {type: 'bar', group_by: 'year'},
