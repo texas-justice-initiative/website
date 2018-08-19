@@ -45,6 +45,9 @@
       span {
         @include transform(rotate(180deg));
       }
+      h4 {
+	      display: block;
+      }
     }
 
     .tji-chartview-controls__filters {
@@ -59,10 +62,14 @@
   display: flex;
   height: 50px;
   padding-left: $tji-spacing-sm;
-  i {
+  span {
     cursor: pointer;
   }
-
+	h4 {
+		text-transform: uppercase;
+		margin-left: $tji-spacing-sm;
+		display: none;
+	}
 }
 
 .tji-chartview-controls__filters {
