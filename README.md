@@ -1,4 +1,4 @@
-# Texas Justice Initiative: Website Theme
+# OMG WHY - Texas Justice Initiative: Website Theme
 
 To learn more about TJI, visit our website at www.texasjusticeinitiative.org
 
