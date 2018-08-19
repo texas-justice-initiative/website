@@ -1,4 +1,4 @@
-# TESTING18 - Texas Justice Initiative: Website Theme
+# Texas Justice Initiative: Website Theme
 
 To learn more about TJI, visit our website at www.texasjusticeinitiative.org
 
