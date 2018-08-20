@@ -4,9 +4,8 @@
     "num_records": 5,
     "lookups": {
       "year": [
-        2015,
-        2017,
-        2018
+        2016,
+        2017
       ],
       "civilian_race": [
         "BLACK",
@@ -14,32 +13,33 @@
         "WHITE"
       ],
       "civilian_gender": [
-        "F",
-        "M"
+        "MALE"
       ],
       "civilian_age": [
         20.0,
-        35.0,
-        45.0,
-        55.0
+        33.0,
+        37.0,
+        52.0,
+        63.0
       ],
       "civilian_died": [
         false,
         true
       ],
       "officer_age": [
-        25.0,
+        27.0,
         30.0,
-        34.0,
-        48.0,
-        49.0
+        38.0,
+        43.0,
+        45.0
       ],
       "officer_race": [
         "HISPANIC",
         "WHITE"
       ],
       "officer_gender": [
-        "M"
+        "FEMALE",
+        "MALE"
       ],
       "incident_result_of": [
         "EMERGENCY CALL OR REQUEST FOR ASSISTANCE",
@@ -47,17 +47,16 @@
         "OTHER - SPECIFY TYPE OF CALL"
       ],
       "incident_county": [
-        "BURNET",
-        "DALLAS",
-        "GREGG",
-        "HARRIS",
-        "TRAVIS"
+        "CAMERON",
+        "COLLIN",
+        "ELLIS",
+        "HARRIS"
       ],
-      "agency_name": [
-        "AUSTIN POLICE DEPT",
-        "HOUSTON POLICE DEPT",
-        "IRVING POLICE DEPT",
-        "LONGVIEW POLICE DEPT"
+      "agency_county": [
+        "CAMERON",
+        "COLLIN",
+        "ELLIS",
+        "HARRIS"
       ],
       "deadly_weapon": [
         true
@@ -70,80 +69,80 @@
   },
   "records": {
     "year": [
-      0,
-      0,
       1,
-      2,
+      1,
+      1,
+      0,
       1
     ],
     "civilian_race": [
-      0,
-      2,
-      2,
       1,
+      0,
+      1,
+      0,
       2
     ],
     "civilian_gender": [
-      1,
-      1,
-      1,
-      0,
-      1
-    ],
-    "civilian_age": [
-      0,
-      1,
-      3,
-      0,
-      2
-    ],
-    "civilian_died": [
-      1,
-      0,
-      0,
-      1,
-      1
-    ],
-    "officer_age": [
-      4,
-      1,
-      3,
-      0,
-      2
-    ],
-    "officer_race": [
-      0,
-      1,
-      1,
-      1,
-      1
-    ],
-    "officer_gender": [
       0,
       0,
       0,
       0,
       0
     ],
+    "civilian_age": [
+      0,
+      1,
+      4,
+      2,
+      3
+    ],
+    "civilian_died": [
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    "officer_age": [
+      4,
+      1,
+      2,
+      3,
+      0
+    ],
+    "officer_race": [
+      0,
+      1,
+      1,
+      0,
+      1
+    ],
+    "officer_gender": [
+      1,
+      1,
+      0,
+      1,
+      1
+    ],
     "incident_result_of": [
       2,
       2,
+      1,
       2,
-      0,
-      1
+      0
     ],
     "incident_county": [
-      3,
-      2,
       0,
-      4,
-      1
-    ],
-    "agency_name": [
+      3,
       1,
       3,
+      2
+    ],
+    "agency_county": [
       0,
-      0,
+      3,
+      1,
+      3,
       2
     ],
     "deadly_weapon": [
