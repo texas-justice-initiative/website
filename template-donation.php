@@ -33,6 +33,10 @@ $action = $_GET["action"];
 			<h1>Support TJI</h1>
 			
 			<p>Texas Justice Initiative is entirely supported through public donations. If you feel like this is a useful resource, please help us through a generous donation. Funding helps us continue to grow and improve the data we provide.</p>
+			
+			<p>You can also donate conveniently through our <a href="https://www.facebook.com/donate/605145886526139/10106361188494357/" target="_blank">Facebook Page</a>.</p>
+			
+			<hr>
 		
 			<form id="donation_form" name="donation_form" class="donation-form" method="post" onsubmit="checkForm(event); return false;">
 				<div class="donation-form__row">
@@ -96,7 +100,7 @@ $action = $_GET["action"];
 					<p><strong>Total: <span class="donor_total"></span></strong></p>
 					<div id="paypal-button"></div>
 				</div>
-				<button type="submit" class="tji-btn-primary donation-confirm__back-button">Go Back</button>
+				<button type="submit" class="tji-btn-primary donation-confirm__back-button">GO BACK</button>
 			</div>
 
 			<?php
