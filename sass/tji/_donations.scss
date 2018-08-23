@@ -21,8 +21,12 @@
 	flex-flow: row wrap;
 }
 
-.donation-form__group--inline {
+.donation-form__field--inline {
 	display: inline-block;
+	
+	.donation-form__label {
+		display: inline-block;
+	}
 }
 
 .donation-form__field {
@@ -123,4 +127,24 @@
 /* Confirmation page */
 .donation-confirm {
 	display: none;
+	
+	.donation-confirm__confirm-box {
+		background: $tji-color-gray-lightest;
+		border: 3px solid $primaryBlue;
+		padding: $tji-spacing-md;
+		margin: $tji-spacing-md 0;
+		
+		h2 {
+			margin-top: 0;
+		}
+		
+		p {
+			margin: 0;
+			
+			&:last-of-type {
+				margin: $tji-spacing-sm 0;
+			}
+		}
+	}
+	
 }

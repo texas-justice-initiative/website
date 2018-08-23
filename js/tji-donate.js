@@ -2,11 +2,11 @@
  * Donation form functionality
  */
  
-
+// Button functionality
 $(document).ready(function() {
 	
-	$('.donation-btn').on('click', function() {
-		event.preventDefault();
+	$('.donation-btn').on('click', function(e) {
+		e.preventDefault();
 		$('.donation-btn').removeClass('selected');
 		$('#other_amount').removeClass('selected');
 		$('.amount-sign').removeClass('amount-sign--focus');
@@ -22,16 +22,35 @@ $(document).ready(function() {
 	
 });
 
-function checkForm() {
-	event.preventDefault();		
+// Verify form details upon submit
+function checkForm(event) {
+	event.preventDefault();
 	
-		if ($('.selected').length) {	
-			$('.order_amount').html($('.selected').val());	
-	    $('.order_name').html($('#first_name').val() + ' ' + $('#last_name').val());
-	    $('.order_email').html($('#email').val());
+		if ($('.selected').length) {
+			var payFee = document.getElementById('tax').checked,
+					donation = parseInt($('.selected').val()),
+					fee = 0,
+					total;
+			
+			/* Determine the total donation */
+			if (payFee) {
+				fee = Math.fround(donation * 0.022 + 0.30);
+				fee = parseFloat(fee.toFixed(2));
+			}
+			
+			total = donation + fee;
+			total = total.toFixed(2);
+			
+			console.log('Donation: ' + donation + '; Fee: ' + fee + 'Total: ' +  total);
+				
+	    $('.donor_name').html($('#first_name').val() + ' ' + $('#last_name').val());
+	    $('.donor_email').html($('#email').val());
+	    $('.donor_amount').html(donation);
+	    $('.donor_fee').html(fee);
+	    $('.donor_total').html(total);
 	    
-	    $('.donation-confirm').show();
-	    $('.donation-confirm').get(0).scrollIntoView();
+	    $('.donation-form').hide();
+	    $('.donation-confirm').show(); 
 	    
 		} else {
 			console.log('No amount selected.');
@@ -39,9 +58,14 @@ function checkForm() {
 	
 };
 
-let amount = '30.11';
+$('.donation-confirm__back-button').on('click', function(e) {
+	e.preventDefault();
+  $('.donation-confirm').hide(); 
+  $('.donation-form').show();  
+});
 
-paypal.Button.render({
+// Render PayPal donation button
+paypal.Button.render({			
   // Configure environment
   env: 'sandbox',
   client: {
@@ -51,19 +75,20 @@ paypal.Button.render({
   // Customize button (optional)
   locale: 'en_US',
   style: {
-    size: 'small',
-    color: 'gold',
-    shape: 'pill',
+	  label: 'checkout',
+    size: 'medium',
+    color: 'blue',
+    shape: 'rect',
   },
 	// Set up a payment
 	payment: function (data, actions) {
 	  return actions.payment.create({
 	    transactions: [{
 	      amount: {
-	        total: $('.donation-btn.selected').val(),
+	        total: $('.donor_total').html(),
 	        currency: 'USD',
 	        details: {
-	          subtotal: $('.donation-btn.selected').val(),
+	          subtotal: $('.donor_total').html(),
 	          tax: '0.00',
 	          shipping: '0.00',
 	          handling_fee: '0.00',
@@ -71,7 +96,7 @@ paypal.Button.render({
 	          insurance: '0.00'
 	        }
 	      },
-	      description: 'The payment transaction description.',
+	      description: 'A donation supporting the Texas Justice Initiative.',
 	      payment_options: {
 	        allowed_payment_method: 'INSTANT_FUNDING_SOURCE'
 	      },
@@ -79,9 +104,9 @@ paypal.Button.render({
 	        items: [
 	          {
 	            name: 'donation',
-	            description: 'Donation in support of Texas Justice Initiative.',
+	            description: 'A donation in support of the Texas Justice Initiative.',
 	            quantity: '1',
-	            price: $('.donation-btn.selected').val(),
+	            price: $('.donor_total').html(),
 	            tax: '0.00',
 	            sku: '1',
 	            currency: 'USD'
@@ -96,8 +121,17 @@ paypal.Button.render({
   onAuthorize: function (data, actions) {
     return actions.payment.execute()
       .then(function () {
-        // Show a confirmation message to the buyer
-        window.alert('Thank you for your purchase!');
+        // Redirect user to confirmation page.
+        //Setup variables
+				var first_name = $('#first_name').val(),
+						last_name = $('#last_name').val(),
+						email = $('#email').val(),
+						donation = $('.donation-btn.selected').val();
+
+        var confirmUrl = 'http://localhost:8888/tji/donate/?action=confirm&first_name=' + first_name +
+        		'&last_name=' + last_name +
+        		'&email=' + email;
+        window.location.href = confirmUrl;
       });
   }
 }, '#paypal-button');
