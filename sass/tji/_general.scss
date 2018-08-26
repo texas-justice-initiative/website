@@ -225,6 +225,11 @@ blockquote {
 	
 	a {
 		font-family: $headingFont;
+		font-size: $tji-font-size-xs;
+		
+		@media (min-width: $tji-break-point-md) {
+			font-size: $tji-font-size-sm;
+		}
 	}
 }
 
