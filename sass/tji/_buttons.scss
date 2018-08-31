@@ -1,19 +1,25 @@
-@media (min-width: $tji-break-point-sm) {
-	.tji-btn {
-		a {
-	    background-color: $primaryRed;
-	    padding: .6em 1em .4em;
-	    border-radius: 3px;
+.tji-btn {
+	
+	a {
+    background-color: $primaryRed;
+    padding: .6em 1em .4em;
+    border-radius: .25rem;
+    color: #fff;
+    box-shadow: 1px 1px 3px rgba(64,64,64,0.5);
+    transition: all 0.35s;
+    width: 200px;
+    margin: 0 auto;
+    
+    &:hover {
+	    background-color: $secondaryRed;
+    }
+    
+    @media (min-width: $tji-break-point-sm) {
 	    margin-top: -10px;
-	    color: #fff;
-	    box-shadow: 1px 1px 3px rgba(64,64,64,0.5);
-	    transition: all 0.35s;
-	    
-	    &:hover {
-		    background-color: $secondaryRed;
-	    }
-		}
+	    width: auto;
+    }
 	}
+	
 }
 
 .tji-btn-download {

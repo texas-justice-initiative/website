@@ -237,6 +237,8 @@ blockquote {
 .main-navigation.toggled {
 	.menu-main-navigation-container {
     width: 100vw;
+    height: calc(100vh - 80px);
+    background: #fff;
     position: absolute;
     top: 80px;
     left: 0;
@@ -245,27 +247,17 @@ blockquote {
 	
 	ul.nav-menu {
 		float: left;
-		background-color: $primaryBlue;
+		background-color: #fff;
 		width: 100%;
 		
 		li {
 			margin: 0;
 			margin-top: 0;
-			text-align: left;
-			padding: 1em;
-			border-bottom: 1px solid $secondaryBlue;
+			text-align: center;
+			padding: $tji-spacing-md;
 			font-size: 10px;
 			display: block;
 			width: 100%;
-			
-			a {
-				color: $primaryYellow;
-				
-				&:visited,
-				&:hover {
-					color: $primaryYellow;
-				}
-			}
 		}
 	}
 }
