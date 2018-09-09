@@ -95,9 +95,9 @@ $action = $_GET["action"];
 					<h2>Confirm your donation</h2>
 					<p>Name: <span class="donor_name"></span></p>
 					<p>Email: <span class="donor_email"></span></p>
-					<p>Donation: <span class="donor_amount"></span></p>
-					<p>Paypal Fee: <span class="donor_fee"></span</p>
-					<p><strong>Total: <span class="donor_total"></span></strong></p>
+					<p>Donation: $<span class="donor_amount"></span></p>
+					<p>Paypal Fee: $<span class="donor_fee"></span</p>
+					<p><strong>Total: $<span class="donor_total"></span></strong></p>
 					<div id="paypal-button"></div>
 				</div>
 				<button type="submit" class="tji-btn-primary donation-confirm__back-button">GO BACK</button>
