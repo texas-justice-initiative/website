@@ -43,6 +43,23 @@
 		li:hover > ul,
 		li.focus > ul {
 			left: auto;
+			position: relative;
+			width: 100%;
+							
+			a {
+				width: 100%;
+				text-align: center;
+			}
+			
+			@media screen and (min-width: $tji-break-point-sm) {
+				position: absolute;
+				width: auto;
+				
+				a {
+					width: 200px;
+					text-align: left;
+				}
+			}
 		}
 	}
 
