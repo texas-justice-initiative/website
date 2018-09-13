@@ -5,10 +5,10 @@
     "lookups": {
       "year": [
         2006,
-        2008,
+        2007,
         2010,
-        2017,
-        2018
+        2015,
+        2017
       ],
       "race": [
         "BLACK",
@@ -16,21 +16,21 @@
         "WHITE"
       ],
       "sex": [
-        "FEMALE",
-        "MALE"
+        "M"
       ],
       "manner_of_death": [
-        "NATURAL CAUSES/ILLNESS",
-        "OTHER, SPECIFY"
+        "HOMICIDE",
+        "NATURAL CAUSES/ILLNESS"
       ],
       "age_at_time_of_death": [
-        37.0,
-        55.0,
-        59.0,
-        60.0,
-        68.0
+        31.0,
+        49.0,
+        50.0,
+        56.0
       ],
       "type_of_custody": [
+        "JAIL",
+        "POLICE CUSTODY (PRE-BOOKING)",
         "PRISON"
       ],
       "death_location_type": [
@@ -38,100 +38,100 @@
         "MEDICAL FACILITY"
       ],
       "means_of_death": [
-        "HANGING, STRANGULATION",
         "NOT APPLICABLE"
       ],
       "death_location_county": [
         "ANDERSON",
-        "BRAZORIA",
-        "LUBBOCK",
-        "TRAVIS"
+        "BASTROP",
+        "WICHITA"
       ],
       "agency_county": [
+        "BASTROP",
+        "BRAZORIA",
         "STATE"
       ]
     },
     "record_ids": {
       "field_name": "record_id",
       "values": [
-        "18-562-P",
-        "PA06196P",
-        "17-293-P",
-        "PRISON20101032",
-        "PA08033P"
+        "PRISON20064028",
+        "PA10063P",
+        "17-246-P",
+        "PA07267CJ",
+        "TEXASTECH23"
       ]
     }
   },
   "records": {
     "year": [
-      4,
       0,
-      3,
       2,
-      1
+      4,
+      1,
+      3
     ],
     "race": [
-      1,
-      0,
       2,
       1,
-      1
+      2,
+      2,
+      0
     ],
     "sex": [
-      1,
       0,
-      1,
-      1,
-      1
+      0,
+      0,
+      0,
+      0
     ],
     "manner_of_death": [
       1,
-      0,
-      0,
-      0,
+      1,
+      1,
+      1,
       0
     ],
     "age_at_time_of_death": [
-      0,
-      1,
       2,
-      4,
-      3
+      3,
+      3,
+      1,
+      0
     ],
     "type_of_custody": [
+      2,
+      2,
+      2,
       0,
-      0,
-      0,
-      0,
-      0
+      1
     ],
     "death_location_type": [
-      0,
-      1,
-      1,
       -1,
-      1
+      1,
+      0,
+      0,
+      -1
     ],
     "means_of_death": [
-      0,
-      1,
-      1,
       -1,
-      1
+      0,
+      0,
+      0,
+      -1
     ],
     "death_location_county": [
-      1,
-      3,
-      2,
       -1,
-      0
+      2,
+      0,
+      1,
+      -1
     ],
     "agency_county": [
+      2,
+      2,
+      2,
       0,
-      0,
-      0,
-      0,
-      0
+      1
     ]
   }
 }
