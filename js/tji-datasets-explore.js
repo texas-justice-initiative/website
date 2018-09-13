@@ -206,20 +206,17 @@ TJIGroupByDoughnutChart.prototype.color_palette = [
 TJIGroupByDoughnutChart.prototype.get_options_overrides = function() {
   return {
     scales: {},
-    plugins: {
-	    labels: {
-	      mode: function (args) {
-	        return args.percentage + '%';
-	      },
-	      precision: 0,
-	      showZero: true,
-	      fontSize: 14,
-	      fontColor: '#fff',
-	      // available value is 'default', 'border' and 'outside'
-	      position: 'default',
-	      overlap: false
-	    }
-	  }
+    pieceLabel: {
+      mode: function (args) {
+        return args.percentage + '%';
+      },
+      precision: 0,
+      showZero: true,
+      fontSize: 14,
+      fontColor: '#fff',
+      // available value is 'default', 'border' and 'outside'
+      position: 'default'
+    }
   };
 }
 
