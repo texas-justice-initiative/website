@@ -10,10 +10,10 @@
     <div class="swiper-wrapper">
         <!-- Slides -->
         <div class="swiper-slide">
-        	<div class="content">Since 2005, <span style="color:#CE2727">8,730 deaths</span> have been reported in Texas custody.</div>
+        	<div class="content">Since 2005, <span style="color:#CE2727"><span id="cdrTotal"></span> deaths</span> have been reported in Texas custody.</div>
         </div>
         <div class="swiper-slide">
-        	<div class="content">Texas law enforcement officers have shot <span style="color:#CE2727">466 civilians</span> since Sept. 1, 2015.</div>
+        	<div class="content">Texas law enforcement officers have shot <span style="color:#CE2727"><span id="oisTotal"></span> civilians</span> since Sept. 1, 2015.</div>
         </div>
         <div class="swiper-slide">
         	<div class="content">There have been <span style="color:#CE2727">78 Texas law enforcement officers</span> shot since Sept. 1, 2015.</div>
@@ -29,6 +29,21 @@
     <!-- If we need scrollbar -->
     <div class="swiper-scrollbar"></div>
 </div>
+<!-- Fetch JSON data for dynamic slider numbers -->
+<script type="text/javascript">
+	var cdrTotalRecords = 0;
+	jQuery.getJSON("cdr_compressed.json", function (data) {
+		cdrTotalRecords = data.meta.num_records;
+		jQuery("#cdrTotal").append(cdrTotalRecords.toLocaleString('en'));
+	    console.log(data);
+	});
+	var oisTotalRecords = 0;
+	jQuery.getJSON("ois_compressed.json", function (data) {
+		oisTotalRecords = data.meta.num_records;
+		jQuery("#oisTotal").append(oisTotalRecords.toLocaleString('en'));
+	    console.log(data);
+	});
+</script>
 
 <?php
 	//Build the landing screen from the homepage content.
@@ -49,3 +64,4 @@
 	*/
 	//End homepage content loop
 ?>
+
