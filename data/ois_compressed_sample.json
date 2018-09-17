@@ -4,7 +4,6 @@
     "num_records": 5,
     "lookups": {
       "year": [
-        2015,
         2017,
         2018
       ],
@@ -14,56 +13,56 @@
         "WHITE"
       ],
       "civilian_gender": [
-        "F",
-        "M"
+        "MALE"
       ],
       "civilian_age": [
-        20.0,
-        35.0,
-        45.0,
-        55.0
+        27.0,
+        43.0,
+        46.0,
+        70.0
       ],
       "civilian_died": [
         false,
         true
       ],
       "officer_age": [
-        25.0,
-        30.0,
-        34.0,
-        48.0,
-        49.0
+        28.0,
+        32.0,
+        36.0,
+        44.0,
+        50.0
       ],
       "officer_race": [
         "HISPANIC",
         "WHITE"
       ],
       "officer_gender": [
-        "M"
+        "MALE"
       ],
       "incident_result_of": [
         "EMERGENCY CALL OR REQUEST FOR ASSISTANCE",
-        "HOSTAGE, BARRICADE, OR OTHER EMERGENCY SITUATION",
+        "EXECUTION OF A WARRANT",
         "OTHER - SPECIFY TYPE OF CALL"
       ],
       "incident_county": [
-        "BURNET",
-        "DALLAS",
-        "GREGG",
+        "COLLIN",
         "HARRIS",
-        "TRAVIS"
+        "HOWARD",
+        "LAMB",
+        "SHELBY"
       ],
       "agency_name": [
-        "AUSTIN POLICE DEPT",
-        "HOUSTON POLICE DEPT",
-        "IRVING POLICE DEPT",
-        "LONGVIEW POLICE DEPT"
+        "BIG SPRING POLICE DEPT",
+        "HARRIS CO SHERIFFS OFFICE",
+        "LUBBOCK CO SHERIFFS OFFICE",
+        "SHELBY CO SHERIFFS OFFICE",
+        "WYLIE POLICE DEPT"
       ],
       "deadly_weapon": [
+        false,
         true
       ],
       "multiple_officers_involved": [
-        false,
         true
       ]
     }
@@ -71,51 +70,51 @@
   "records": {
     "year": [
       0,
-      0,
       1,
-      2,
+      0,
+      0,
       1
     ],
     "civilian_race": [
+      2,
       0,
-      2,
-      2,
+      1,
       1,
       2
     ],
     "civilian_gender": [
-      1,
-      1,
-      1,
       0,
-      1
+      0,
+      0,
+      0,
+      0
     ],
     "civilian_age": [
-      0,
+      2,
       1,
-      3,
       0,
-      2
+      -1,
+      3
     ],
     "civilian_died": [
-      1,
+      0,
       0,
       0,
       1,
       1
     ],
     "officer_age": [
+      2,
+      0,
       4,
       1,
-      3,
-      0,
-      2
+      3
     ],
     "officer_race": [
+      1,
+      1,
+      1,
       0,
-      1,
-      1,
-      1,
       1
     ],
     "officer_gender": [
@@ -126,39 +125,39 @@
       0
     ],
     "incident_result_of": [
-      2,
-      2,
-      2,
       0,
-      1
+      2,
+      1,
+      0,
+      0
     ],
     "incident_county": [
-      3,
-      2,
       0,
-      4,
-      1
+      2,
+      3,
+      1,
+      4
     ],
     "agency_name": [
+      4,
+      0,
+      2,
       1,
-      3,
-      0,
-      0,
-      2
+      3
     ],
     "deadly_weapon": [
+      1,
+      1,
+      0,
+      1,
+      1
+    ],
+    "multiple_officers_involved": [
       0,
       0,
       0,
       0,
       0
-    ],
-    "multiple_officers_involved": [
-      1,
-      1,
-      0,
-      1,
-      1
     ]
   }
 }
