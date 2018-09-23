@@ -44,7 +44,7 @@
 		oisTotalRecords = data.meta.num_records;
 		jQuery("#oisTotal").append(oisTotalRecords.toLocaleString('en'));
 	    console.log(data);
-	});
+	}); 
 </script>
 
 <?php
