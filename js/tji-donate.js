@@ -67,10 +67,10 @@ $('.donation-confirm__back-button').on('click', function(e) {
 // Render PayPal donation button
 paypal.Button.render({			
   // Configure environment
-  env: 'sandbox',
+  env: 'production',
   client: {
     sandbox: 'AZ2LDJwEbuFjH45Izqk5pmxHtyzxtooUPBCrvrn7tjKXIbv-xGxXsflhCMGl6dy2tRBEliztwiPzCckc',
-    production: 'demo_production_client_id'
+    production: 'ATVsibuGpsWpkiSPBnC3hyrqeQFZ-YlLW9BYzg53mOehgbTUv6ZESr0lX-u30xmgxxUosQX5QtQNpT81'
   },
   // Customize button (optional)
   locale: 'en_US',
