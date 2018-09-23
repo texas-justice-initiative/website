@@ -31,20 +31,20 @@
 </div>
 <!-- Fetch JSON data for dynamic slider numbers -->
 <script type="text/javascript">
-	jQuery(function () { 
-		var cdrTotalRecords = 0;
-		jQuery.getJSON("cdr_compressed.json", function (data) {
-			cdrTotalRecords = data.meta.num_records;
-			jQuery("#cdrTotal").append(cdrTotalRecords.toLocaleString('en'));
-		    console.log(data);
-		});
-		var oisTotalRecords = 0;
-		jQuery.getJSON("ois_compressed.json", function (data) {
-			oisTotalRecords = data.meta.num_records;
-			jQuery("#oisTotal").append(oisTotalRecords.toLocaleString('en'));
-		    console.log(data);
-		});
-	} ());
+	var cdrTotalRecords = 0;
+	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/cdr_compressed.json", function (data) {
+		console.log(data);
+		cdrTotalRecords = data.meta.num_records;
+		jQuery("#cdrTotal").append(cdrTotalRecords.toLocaleString('en'));
+	    console.log(data);
+	});
+	var oisTotalRecords = 0;
+	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/ois_compressed.json", function (data) {
+		console.log(data);
+		oisTotalRecords = data.meta.num_records;
+		jQuery("#oisTotal").append(oisTotalRecords.toLocaleString('en'));
+	    console.log(data);
+	});
 </script>
 
 <?php
