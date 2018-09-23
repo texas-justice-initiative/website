@@ -1,14 +1,31 @@
 //TODO: make color constant object
 
-var COLOR_TJI_BLUE = '#0B5D93';
-var COLOR_TJI_RED = '#CE2727';
-var COLOR_TJI_DEEPBLUE = '#252939';
-var COLOR_TJI_PURPLE = '#4D3B6B';
-var COLOR_TJI_YELLOW = '#F1AB32';
-var COLOR_TJI_TEAL = '#50E3C2';
-var COLOR_TJI_DEEPRED = '#872729';
-var COLOR_TJI_DEEPPURPLE = '#2D1752';
+var COLOR_RED_HUE_1 = '#FF8F8F';
+var COLOR_RED_HUE_2 = '#F95858';
+var COLOR_RED_HUE_3 = '#CE2727';
+var COLOR_RED_HUE_4 = '#AA1111';
+var COLOR_RED_HUE_5 = '#721616';
+var COLOR_RED_HUE_6 = '#490B0B';
 
+var COLOR_BLUE_HUE_1 = '#83E5FF';
+var COLOR_BLUE_HUE_2 = '#64B8DD';
+var COLOR_BLUE_HUE_3 = '#348CB2';
+var COLOR_BLUE_HUE_4 = '#0B5D93';
+var COLOR_BLUE_HUE_5 = '#04405B';
+var COLOR_BLUE_HUE_6 = '#052C42';
+
+var COLOR_YELLOW_HUE_1 = '#FFFD00';
+var COLOR_YELLOW_HUE_2 = '#FFD400';
+var COLOR_YELLOW_HUE_3 = '#FFBC00';
+var COLOR_YELLOW_HUE_4 = '#E2A203';
+var COLOR_YELLOW_HUE_5 = '#BC9800';
+var COLOR_YELLOW_HUE_6 = '#A57F08';
+
+var BREAKPOINTS = { 
+  sm: '768',
+  md: '1024',
+  lg: '1200',
+};
 
 // *******************************************************************
 // * "Class" for a single-variable bar chart
@@ -42,7 +59,7 @@ var TJIGroupByBarChart = function(props) {
 
 TJIGroupByBarChart.prototype.type = 'bar';
 
-TJIGroupByBarChart.prototype.color_palette = [COLOR_TJI_BLUE];
+TJIGroupByBarChart.prototype.color_palette = [COLOR_BLUE_HUE_4];
 
 // Create the chart for the first time.
 // This also permanently sets the legend and color mapping.
@@ -119,7 +136,7 @@ TJIGroupByBarChart.prototype.get_options = function() {
       }]
     },
     layout: {
-	    padding: 20
+      padding: 20
     }
   }
   return _.extend(options, this.get_options_overrides());
@@ -183,8 +200,8 @@ TJIGroupByDoughnutChart.prototype = Object.create(TJIGroupByBarChart.prototype);
 TJIGroupByDoughnutChart.prototype.constructor = TJIGroupByDoughnutChart;
 TJIGroupByDoughnutChart.prototype.type = 'doughnut';
 TJIGroupByDoughnutChart.prototype.color_palette = [
-  COLOR_TJI_BLUE, COLOR_TJI_RED, COLOR_TJI_DEEPBLUE, COLOR_TJI_PURPLE,
-  COLOR_TJI_YELLOW, COLOR_TJI_TEAL, COLOR_TJI_DEEPRED, COLOR_TJI_DEEPPURPLE,
+  COLOR_BLUE_HUE_4, COLOR_RED_HUE_4, COLOR_YELLOW_HUE_4, COLOR_BLUE_HUE_2,
+  COLOR_RED_HUE_2, COLOR_YELLOW_HUE_2, COLOR_BLUE_HUE_6, COLOR_RED_HUE_6, COLOR_YELLOW_HUE_6,
 ];
 TJIGroupByDoughnutChart.prototype.get_options_overrides = function() {
   return {
@@ -195,7 +212,7 @@ TJIGroupByDoughnutChart.prototype.get_options_overrides = function() {
       },
       precision: 0,
       showZero: true,
-      fontSize: 10,
+      fontSize: 14,
       fontColor: '#fff',
       // available value is 'default', 'border' and 'outside'
       position: 'default'
@@ -257,6 +274,7 @@ TJIGroupByDoughnutChart.prototype.create_legend = function() {
 // *
 // * argument descriptions:
 // *   datasets: array of objects describing each dataset that can be selected
+// *.  view_elt_selector: selector of HTML element that is the view wrapper (for managing collapse of filters)
 // *   charts_elt_selector: selector of HTML element to put charts in
 // *   filters_elt_selector: selector of HTML element to put filters in
 // *   chart_wrapper_template: HTML to wrap around each chart's canvas object
@@ -287,6 +305,7 @@ var TJIChartView = function(props){
 
   //jquery object references to DOM elements
   this.ui = {
+    $chartview: jQuery(props.view_elt_selector),
     $chartview_charts: jQuery(props.charts_elt_selector),
     $chartview_filters: jQuery(props.filters_elt_selector),
     $form: null,
@@ -486,7 +505,7 @@ TJIChartView.prototype.create_filter_legend = function(filter_name) {
 
 TJIChartView.prototype.create_filter_checkboxes = function(filter) {
   var that = this;
-  var fieldset = jQuery('<fieldset/>');
+  var fieldset = jQuery('<fieldset class="tji-chartview-filters__fieldset"/>');
   var legend = this.create_filter_legend(filter.name);
   var filterset = jQuery('<div class="js-filter-set tji-chartview-filters__filter-set"><a class="js-toggle-select">Select All</a> / <a class="js-toggle-unselect">Unselect All</a></div>');
   _.each(filter.values, function(v) {
@@ -594,7 +613,7 @@ TJIChartView.prototype.create_charts = function() {
   var dataset = this.datasets[this.state.active_dataset_index];
   _.each(dataset.chart_configs, function(config){
     var $container = jQuery(that.templates.chart_wrapper_template)
-      .addClass('tji-chart')
+      .addClass('tji-chartview__chart')
       .appendTo(that.ui.$charts_container);
     var chart_constructor;
     switch(config.type) {
@@ -632,15 +651,20 @@ TJIChartView.prototype.create_chartview_DOM = function() {
     .appendTo(this.ui.$chartview_charts);
 
   this.ui.$form = jQuery('<form />', {
-    class: 'tji-chartview-filters',
+    class: 'tji-chartview-controls__filters',
   }).appendTo(this.ui.$chartview_filters);
 
   this.ui.$charts_container = jQuery(this.templates.chartview_charts_template)
     .addClass('tji-chartview__charts')
     .appendTo(this.ui.$chartview_charts);
 
+  var select_prompt = jQuery('<span />', {
+    class: 'tji-chartview__select-set-prompt',
+    html: 'Select a Dataset:  '
+  });
+
   this.ui.$select_dataset = jQuery('<select />', {
-    class: 'tji-chartview__dataset-select'
+    class: 'tji-chartview__dataset-select',
   });
 
   _.each(this.datasets, function(dataset, index) {
@@ -655,11 +679,11 @@ TJIChartView.prototype.create_chartview_DOM = function() {
     class: 'tji-chartview__record-count'
   });
 
-  this.ui.$download = jQuery('<button class="tji-btn-primary tji-chartview__download-button" disabled> <i class="fas fa-download"></i> Download</button>');
+  this.ui.$download = jQuery('<button class="tji-btn-primary tji-btn-download tji-chartview__download-button" disabled> <i class="fas fa-download"></i> Download</button>');
 
   this.ui.$summary_container = jQuery(this.templates.chartview_summary_template)
     .addClass('tji-chartview__summary')
-    .append(this.ui.$select_dataset, this.ui.$description, this.ui.$record_count, this.ui.$download)   
+    .append(select_prompt, this.ui.$select_dataset, this.ui.$description, this.ui.$record_count, this.ui.$download)   
     .hide()
     .prependTo(this.ui.$chartview_charts);
 }
@@ -667,6 +691,16 @@ TJIChartView.prototype.create_chartview_DOM = function() {
 // attach delegated event handlers to parent DOM elements that are data agnostic
 TJIChartView.prototype.attach_events = function() {
   var that = this;
+
+	// Expand filter panel by default on larger screens
+	if (jQuery(window).width() > BREAKPOINTS.sm) {
+		that.ui.$chartview.addClass('tji-chartview-wrapper--controls-expanded');
+	}
+
+  jQuery('#js-chartview-controls-toggle').on('click', function(e) {
+    that.ui.$chartview.toggleClass('tji-chartview-wrapper--controls-expanded');
+  })
+
   this.ui.$form.on('change', function(e) {
     that.state.active_filters = that.ui.$form.serializeArray();
     that.filter_data();
@@ -770,7 +804,7 @@ TJIChartView.prototype.update_charts = function() {
 }
 
 TJIChartView.prototype.update_chartview_summary = function() {
-  this.ui.$record_count.text(this.state.filtered_record_indices.length + ' records');
+  this.ui.$record_count.html('Total number of filtered incidents:<span class="tji-chartview__count-number"> ' + this.state.filtered_record_indices.length) + '</span>';
 }
 
 TJIChartView.prototype.download = function() {

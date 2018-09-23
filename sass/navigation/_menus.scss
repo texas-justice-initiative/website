@@ -1,11 +1,8 @@
 .main-navigation {
-	clear: both;
-	display: block;
-	float: left;
-	width: 100%;
 
 	ul {
 		display: none;
+		float: right;
 		list-style: none;
 		margin: 0;
 		padding-left: 0;
@@ -46,6 +43,23 @@
 		li:hover > ul,
 		li.focus > ul {
 			left: auto;
+			position: relative;
+			width: 100%;
+							
+			a {
+				width: 100%;
+				text-align: center;
+			}
+			
+			@media screen and (min-width: $tji-break-point-sm) {
+				position: absolute;
+				width: auto;
+				
+				a {
+					width: 200px;
+					text-align: left;
+				}
+			}
 		}
 	}
 
@@ -74,9 +88,12 @@
 .menu-toggle,
 .main-navigation.toggled ul {
 	display: block;
+ 	float: right;
+  background-color: $primaryBlue;
+  color: #fff;
 }
 
-@media screen and (min-width: 37.5em) {
+@media screen and (min-width: $tji-break-point-sm) {
 	.menu-toggle {
 		display: none;
 	}

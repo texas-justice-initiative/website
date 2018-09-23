@@ -10,27 +10,29 @@
 get_header();
 
 ?>
-
-  <div id="primary" class="content-area">
+<div id="js-TJIChartView" class="tji-chartview-wrapper">
+  <div class="tji-chartview-content">
     <main id="main" class="site-main">
 
-    <?php
-      // Bring in data from WordPress page
-      while ( have_posts() ) :
-       the_post();
-       get_template_part( 'template-parts/content', 'page' );
-      endwhile;
-    ?>
+      <?php
+        // Bring in data from WordPress page
+        while ( have_posts() ) :
+         the_post();
+         get_template_part( 'template-parts/content', 'page' );
+        endwhile;
+      ?>
 
-<div id="js-TJIChartView" class="tji-chartview">
+    <div id="js-TJIChartViewCharts" class="tji-chartview">
+    </div>
+
+    </main>
+  </div>
+
+  <aside class="tji-chartview-controls">
+    <div id="js-chartview-controls-toggle" class="tji-chartview-controls__toggle"><span>&larr;</span><h4>Chart Filters</h4></div>
+    <div id="js-TJIChartViewFilters"></div>
+  </aside>
 </div>
-
-</main></div>
-
-<aside id="secondary">
-  <div id="js-TJIChartViewFilters"></div>
-</aside>
-
 <!-- JS Dependencies to build charts -->
 <!-- Any dependencies added here should be added to the Dependencies comment block of the appropriate JS file -->
 <script src="<?php echo get_template_directory_uri(); ?>/js/papaparse.min.js"></script>
@@ -46,8 +48,8 @@ get_header();
         name: 'deaths in custody',
         description: "All deaths in custody in Texas since 2005, as reported to the Office of the Attorney General.",
         urls: {
-          compressed: '/cdr_compressed.json',
-          full: '/cdr_full.csv',
+          compressed: '<?php echo get_template_directory_uri(); ?>/data/cdr_compressed.json',
+          full: '<?php echo get_template_directory_uri(); ?>/data/cdr_full.csv',
         },
         chart_configs: [
           {type: 'bar', group_by: 'year'},
@@ -68,15 +70,15 @@ get_header();
           {'name': 'type_of_custody'},
           {'name': 'death_location_type'},
           {'name': 'means_of_death'},
-          {'name': 'agency_county', 'type': 'autocomplete'},
+          {'name': 'agency_name', 'type': 'autocomplete'},
           {'name': 'death_location_county', 'type': 'autocomplete'},
         ],
       }, {
         name: 'officer involved shootings',
         description: "Shootings involving Texas law enforcement since Sept. 2015, as reported to the Office of the Attorney General.",
         urls: {
-          compressed: '/ois_compressed.json',
-          full: '/ois_full.csv',
+          compressed: '/wp-content/themes/tji/data/ois_compressed.json',
+          full: '/wp-content/themes/tji/data/ois_full.csv',
         },
         chart_configs: [
           {type: 'bar', group_by: 'year'},
@@ -91,11 +93,12 @@ get_header();
           {'name': 'civilian_gender'},
           {'name': 'civilian_died'},
           {'name': 'deadly_weapon'},
-          {'name': 'agency_county', 'type': 'autocomplete'},
+          {'name': 'agency_name', 'type': 'autocomplete'},
           {'name': 'incident_county', 'type': 'autocomplete'},
         ],
       }],
-      charts_elt_selector: '#js-TJIChartView',  
+      view_elt_selector: '#js-TJIChartView',
+      charts_elt_selector: '#js-TJIChartViewCharts',  
       filters_elt_selector: '#js-TJIChartViewFilters',  
       chart_wrapper_template: '<div class="tji-chart col-xs-12 col-md-6 col-lg-4" />',  
       chartview_charts_template: '<div class="row"/>',

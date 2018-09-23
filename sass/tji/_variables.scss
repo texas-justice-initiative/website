@@ -1,15 +1,42 @@
 /* colors */
+
+/*TODO: CONSOLIDATE COLOR VARIABLES*/
 $primaryBlue: #0B5D93;
 	$secondaryBlue: #252939;
 $primaryRed: #CE2727;
 	$secondaryRed: #872729;
 $primaryYellow: #FFFD00;
 
+$tji-blue-darker: #00436f;
+$tji-blue-dark: $primaryBlue;
+$tji-blue: $secondaryBlue;
+$tji-color-white: #FFFFFF;
 $tji-color-gray-lightest: #F4F4F4;
 $tji-color-gray-lighter: #EAEAEA;
 $tji-color-gray-light: #CBCBCB;
 $tji-color-gray: #919191;
 $tji-color-gray-dark: #363636;
+
+$tji-color-red-hue-1: '#FF8F8F'; /* lighest red */
+$tji-color-red-hue-2: '#F95858'; /* lighter red */
+$tji-color-red-hue-3: '#CE2727'; /* light red */
+$tji-color-red-hue-4: '#AA1111'; /* red */
+$tji-color-red-hue-5: '#721616'; /* dark red */
+$tji-color-red-hue-6: '#490B0B'; /* darkest red */
+
+$tji-color-blue-hue-1: '#83E5FF'; /* lighest blue */
+$tji-color-blue-hue-2: '#64B8DD'; /* lighter blue */
+$tji-color-blue-hue-3: '#348CB2'; /* light blue */
+$tji-color-blue-hue-4: '#0B5D93'; /* blue */
+$tji-color-blue-hue-5: '#04405B'; /* dark blue */
+$tji-color-blue-hue-6: '#052C42'; /* darkest blue */
+
+$tji-color-yellow-hue-1: '#FFFD00'; /* lighest yellow */
+$tji-color-yellow-hue-2: '#FFD400'; /* lighter yellow */
+$tji-color-yellow-hue-3: '#FFBC00'; /* light yellow */
+$tji-color-yellow-hue-4: '#E2A203'; /* yellow */
+$tji-color-yellow-hue-5: '#BC9800'; /* dark yellow */
+$tji-color-yellow-hue-6: '#A57F08'; /* darkest yellow */
 
 /* fonts */
 $headingFont: 'museo', Arial, sans-serif;
@@ -24,7 +51,7 @@ $tji-spacing-xl: 3rem;
 
 /* typography */
 $tji-font-size-xs: 0.8rem;
-$tji-font-size-sm: 1.4rem;
+$tji-font-size-sm: 1rem;
 $tji-font-size-md: 1.7rem;
 $tji-font-size-lg: 2.6rem;
 $tji-font-size-xl: 3.6rem;

@@ -1,13 +1,94 @@
 /*--------------------------------------------------------------
 ## FILTERS
 --------------------------------------------------------------*/
-.tji-chartview-filters {}
+.tji-chartview-wrapper {
+  position: relative;
+  width: 100%;
+
+  .tji-chartview-content {
+    @include transition(width, .5s);
+    min-height: 100vh;
+    padding: $tji-spacing-sm;
+    width: calc(100% - 50px);
+    z-index: 1;
+    @media (min-width: $tji-break-point-sm) {
+      padding: $tji-spacing-lg;
+    }
+  }
+
+  .tji-chartview-controls {
+    @include transition(width, .5s);
+    background-color: $tji-blue-dark;
+    color: $tji-color-white;
+    bottom: 0;
+    overflow-x: hidden; 
+    position: absolute;
+    right: 0;
+    top:0;
+    width: 50px;
+    z-index: 2;
+  }
+
+  &.tji-chartview-wrapper--controls-expanded {
+    .tji-chartview-content {
+      @media (min-width: $tji-break-point-sm) {
+        width: calc(100% - 325px);
+      }
+    }
+
+    .tji-chartview-controls {
+      max-width: 90%;
+      width: 325px;
+    }
+
+    .tji-chartview-controls__toggle {
+      span {
+        @include transform(rotate(180deg));
+      }
+      h4 {
+	      display: block;
+      }
+    }
+
+    .tji-chartview-controls__filters {
+      display: block;
+    }
+  }
+}
+
+.tji-chartview-controls__toggle {
+  align-items: center;
+  background-color: $tji-blue-darker;
+  display: flex;
+  height: 50px;
+  padding-left: $tji-spacing-sm;
+  span {
+    cursor: pointer;
+  }
+	h4 {
+		text-transform: uppercase;
+		margin-left: $tji-spacing-sm;
+		display: none;
+	}
+}
+
+.tji-chartview-controls__filters {
+  display: none;
+  padding: 0 $tji-spacing-lg $tji-spacing-lg;
+}
 
 .tji-chartview-filters__filter-legend {
+  cursor: pointer;
+  padding: 0 $tji-spacing-xs;
   text-transform: capitalize;
+
   svg {
     @include transition(transform, .5s);
+    margin: 0 $tji-spacing-xs;
   }
+
+  &:hover { color: $primaryYellow }
+
   &.is-collapsed {
     svg {
       @include transform(rotate(180deg));
@@ -19,14 +100,25 @@
   @include transition(max-height, .5s);
   max-height: 500px;
   overflow-y: hidden;
+  a { cursor: pointer }
 
   &.is-collapsed {
     max-height: 0;     
   }
+
+  a {
+    color: $tji-color-white;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+.tji-chartview-filters__fieldset {
+  margin: $tji-spacing-md 0;
 }
 
 .tji-chartview-filters__filter {
   label {
     text-transform: capitalize;
+    margin: 0 $tji-spacing-xs;
   }
 }
