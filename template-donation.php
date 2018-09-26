@@ -85,7 +85,7 @@ $action = $_GET["action"];
 
 				<div class="donation-form__row">
 					<div id="donation_amount" class="donation-form__field">
-						<input type="submit" class="next-btn tji-form-submit" value="Confirm">
+						<input type="submit" class="next-btn tji-form-submit tji-donation-submit" value="Confirm">
 					</div>
 				</div>
 			</form>
