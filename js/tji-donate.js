@@ -3,8 +3,7 @@
  */
  
 // Button functionality
-$(document).ready(function() {
-	
+jQuery(document).ready(function($){	
 	$('.donation-btn').on('click', function(e) {
 		e.preventDefault();
 		$('.donation-btn').removeClass('selected');
@@ -19,13 +18,11 @@ $(document).ready(function() {
 		$(this).addClass('selected');
 		$('.amount-sign').addClass('amount-sign--focus');
 	});
-	
-});
 
-// Verify form details upon submit
-function checkForm(event) {
-	event.preventDefault();
-	
+	// Verify form details upon submit
+	$('.tji-donation-submit').click(function() {
+		event.preventDefault();
+		
 		if ($('.selected').length) {
 			var payFee = document.getElementById('tax').checked,
 					donation = parseInt($('.selected').val()),
@@ -40,28 +37,26 @@ function checkForm(event) {
 			
 			total = donation + fee;
 			total = total.toFixed(2);
+							
+			$('.donor_name').html($('#first_name').val() + ' ' + $('#last_name').val());
+			$('.donor_email').html($('#email').val());
+			$('.donor_amount').html(donation);
+			$('.donor_fee').html(fee);
+			$('.donor_total').html(total);
 			
-			console.log('Donation: ' + donation + '; Fee: ' + fee + 'Total: ' +  total);
-				
-	    $('.donor_name').html($('#first_name').val() + ' ' + $('#last_name').val());
-	    $('.donor_email').html($('#email').val());
-	    $('.donor_amount').html(donation);
-	    $('.donor_fee').html(fee);
-	    $('.donor_total').html(total);
-	    
-	    $('.donation-form').hide();
-	    $('.donation-confirm').show(); 
-	    
+			$('.donation-form').hide();
+			$('.donation-confirm').show(); 
+			
 		} else {
 			console.log('No amount selected.');
 		}
-	
-};
+	});
 
-$('.donation-confirm__back-button').on('click', function(e) {
-	e.preventDefault();
-  $('.donation-confirm').hide(); 
-  $('.donation-form').show();  
+	$('.donation-confirm__back-button').on('click', function(e) {
+		e.preventDefault();
+		$('.donation-confirm').hide(); 
+		$('.donation-form').show();  
+	});
 });
 
 // Render PayPal donation button
