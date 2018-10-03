@@ -16,7 +16,7 @@
         	<div class="content">Texas law enforcement officers have shot <span style="color:#CE2727"><span id="oisTotal"></span> civilians</span> since Sept. 1, 2015.</div>
         </div>
         <div class="swiper-slide">
-        	<div class="content">There have been <span style="color:#CE2727">78 Texas law enforcement officers</span> shot since Sept. 1, 2015.</div>
+        	<div class="content">There have been <span style="color:#CE2727"><span id="oisOfficersTotal"></span> Texas law enforcement officers</span> shot since Sept. 1, 2015.</div>
         </div>
     </div>
     <!-- If we need pagination -->
@@ -31,20 +31,18 @@
 </div>
 <!-- Fetch JSON data for dynamic slider numbers -->
 <script type="text/javascript">
-	var cdrTotalRecords = 0;
-	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/cdr_compressed.json", function (data) {
-		console.log(data);
-		cdrTotalRecords = data.meta.num_records;
+	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/cdr_compressed.json", function (cdrData) {
+		var cdrTotalRecords = cdrData.meta.num_records;
 		jQuery("#cdrTotal").append(cdrTotalRecords.toLocaleString('en'));
-	    console.log(data);
 	});
-	var oisTotalRecords = 0;
-	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/ois_compressed.json", function (data) {
-		console.log(data);
-		oisTotalRecords = data.meta.num_records;
+	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/ois_compressed.json", function (oisData) {
+		var oisTotalRecords = oisData.meta.num_records;
 		jQuery("#oisTotal").append(oisTotalRecords.toLocaleString('en'));
-	    console.log(data);
-	}); 
+	});
+	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/ois_officers_compressed.json", function (officersData) {
+		var officersTotalRecords = officersData.meta.num_records;
+		jQuery("#oisOfficersTotal").append(officersTotalRecords.toLocaleString('en'));
+	});
 </script>
 
 <?php
