@@ -206,16 +206,19 @@ TJIGroupByDoughnutChart.prototype.color_palette = [
 TJIGroupByDoughnutChart.prototype.get_options_overrides = function() {
   return {
     scales: {},
-    pieceLabel: {
-      mode: function (args) {
-        return args.percentage + '%';
-      },
-      precision: 0,
-      showZero: true,
-      fontSize: 14,
-      fontColor: '#fff',
-      // available value is 'default', 'border' and 'outside'
-      position: 'default'
+    plugins: {
+      labels: {
+        mode: function (args) {
+          return args.percentage + '%';
+        },
+        precision: 0,
+        showZero: true,
+        fontSize: 14,
+        fontColor: '#fff',
+        // available value is 'default', 'border' and 'outside'
+        position: 'default',
+        overlap: false
+      }
     }
   };
 }
@@ -764,8 +767,6 @@ TJIChartView.prototype.set_active_dataset = function(index) {
       that.update_chartview_summary();
     });
 }
-
-    
 
 // Called when the user changes any data filters.
 TJIChartView.prototype.filter_data = function() {
