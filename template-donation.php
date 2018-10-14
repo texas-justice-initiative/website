@@ -42,17 +42,17 @@ $action = $_GET["action"];
 				<div class="donation-form__row">
 					<div class="donation-form__field donation-form__field--medium">
 						<label for="first_name" class="donation-form__label">First Name <span class="donation-form__error">Please enter your first name</span></label>
-						<input type="text" name="first_name" id="first_name" autocomplete="on" required>
+						<input type="text" name="first_name" id="first_name" class="required" autocomplete="on" required>
 					</div>
 					<div class="donation-form__field donation-form__field--medium">
 						<label for="last_name" class="donation-form__label">Last Name <span class="donation-form__error">Please enter your last name</span></label>
-						<input type="text" name="last_name" id="last_name" autocomplete="on" required>
+						<input type="text" name="last_name" id="last_name" class="required" autocomplete="on" required>
 					</div>
 				</div>
 				<div class="donation-form__row">
 					<div class="donation-form__field donation-form__field--medium">
 						<label for="email" class="donation-form__label">Email Address <span class="donation-form__error">Please enter your valid email address</span></label>
-						<input type="email" name="email" id="email" autocomplete="on" maxlength="60" required>
+						<input type="email" name="email" id="email" class="required" autocomplete="on" maxlength="60" required>
 					</div>
 				</div>
 				<!-- Temporarily removed until we decide email functionality

@@ -22,8 +22,20 @@ jQuery(document).ready(function($){
 	// Verify form details upon submit
 	$('.tji-donation-submit').click(function() {
 		event.preventDefault();
+
+		var error = false;
+
+		$('input.required').each(function() {
+			if (this.value == "") {
+				$('label[for="' + this.id + '"]').children('.donation-form__error').css("display", "inline-block");
+				error = true;
+				return false;
+			} else {
+				$('label[for="' + this.id + '"]').children('.donation-form__error').css("display", "none");
+			}
+		});
 		
-		if ($('.selected').length) {
+		if (error == false && $('.selected').length) {
 			var payFee = document.getElementById('tax').checked,
 					donation = parseInt($('.selected').val()),
 					fee = 0,
