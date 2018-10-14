@@ -78,13 +78,21 @@
 
   .tji-chart__canvas-no-data {
     display: none;
-    position: absolute;
-    top: 0;
+    font-size: $tji-font-size-md;
     left: 0;
+    line-height: $tji-line-height-md;
+    position: absolute;
+    text-align: center;
+    top: calc(50% - (#{$tji-line-height-md}/2));
+    width: 100%;
   }
 }
 
 .no-data {
+  .tji-chart__legend {
+    opacity: .25;
+  }
+
   .tji-chart__canvas {
     visibility: hidden;
   }
