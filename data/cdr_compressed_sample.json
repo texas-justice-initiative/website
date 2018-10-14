@@ -5,85 +5,78 @@
     "lookups": {
       "year": [
         2005,
-        2009,
-        2012,
+        2006,
+        2014,
         2015,
-        2016
+        2017
       ],
       "race": [
         "BLACK",
-        "WHITE"
+        "HISPANIC"
       ],
       "sex": [
-        "M"
+        "MALE"
       ],
       "manner_of_death": [
         "HOMICIDE",
         "NATURAL CAUSES/ILLNESS",
-        "OTHER, SPECIFY",
-        "SUICIDE"
+        "OTHER, SPECIFY"
       ],
       "age_at_time_of_death": [
-        30.0,
-        47.0,
-        52.0,
-        53.0,
-        62.0
+        35.0,
+        38.0,
+        40.0,
+        54.0
       ],
       "type_of_custody": [
-        "JAIL",
         "POLICE CUSTODY (PRE-BOOKING)",
         "PRISON"
       ],
       "death_location_type": [
         "CRIME/ARREST SCENE",
-        "LAW ENFORCEMENT FACILITY",
         "MEDICAL FACILITY"
       ],
       "means_of_death": [
         "FIREARM",
-        "HANGING, STRANGULATION",
-        "NOT APPLICABLE"
+        "NOT APPLICABLE",
+        "OTHER, SPECIFY"
       ],
       "death_location_county": [
-        "BEXAR",
-        "DENTON",
+        "BELL",
         "GALVESTON",
-        "HARRIS",
-        "LIBERTY"
+        "HARRIS"
       ],
       "agency_name": [
-        "DALLAS POLICE DEPT",
-        "HARRIS CO SHERIFFS OFFICE",
-        "TEXAS DEPT OF CRIMINAL JUSTICE",
-        "UNIVERSAL CITY POLICE DEPT"
+        "HOUSTON POLICE DEPT",
+        "TEMPLE POLICE DEPT",
+        "TEXAS DEPT OF CRIMINAL JUSTICE"
       ]
     },
     "record_ids": {
       "field_name": "record_id",
       "values": [
-        "PA05094MJ",
-        "16-16-P",
-        "PA15599C",
-        "PA09042P",
-        "PA12053C"
+        "PA15321P",
+        "PRISON20064085",
+        "PRISON20054005",
+        "PA14402C",
+        "17-612-C"
       ]
     }
   },
   "records": {
     "year": [
-      0,
-      4,
       3,
       1,
-      2
+      0,
+      2,
+      4
     ],
     "race": [
+      0,
+      0,
       1,
-      0,
-      0,
-      0,
-      1
+      1,
+      0
     ],
     "sex": [
       0,
@@ -93,53 +86,53 @@
       0
     ],
     "manner_of_death": [
-      3,
       1,
-      2,
       1,
-      0
+      1,
+      0,
+      2
     ],
     "age_at_time_of_death": [
-      1,
-      4,
-      0,
       3,
+      0,
+      1,
+      2,
       2
     ],
     "type_of_custody": [
-      0,
-      2,
       1,
-      2,
-      1
+      1,
+      1,
+      0,
+      0
     ],
     "death_location_type": [
       1,
-      2,
+      -1,
+      -1,
       0,
-      1,
-      0
+      1
     ],
     "means_of_death": [
       1,
-      2,
+      -1,
+      -1,
       0,
-      2,
-      0
+      2
     ],
     "death_location_county": [
-      0,
-      2,
-      3,
-      4,
-      1
-    ],
-    "agency_name": [
-      3,
-      2,
       1,
+      -1,
+      -1,
       2,
       0
+    ],
+    "agency_name": [
+      2,
+      2,
+      2,
+      0,
+      1
     ]
   }
 }
