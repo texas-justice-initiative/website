@@ -64,6 +64,7 @@ $action = $_GET["action"];
 				</div>
 				-->
 				<div class="donation-form__row">
+					<label for="amount" class="donation-form__label"><span class="donation-form__error">Please enter the amount you wish to donate.</span></label>
 					<div id="donation_amount" class="donation-form__field donation-form__field--inline donation-amount">
 						<button class="donation-btn" value="500">$500</button>
 						<button class="donation-btn" value="250">$250</button>
