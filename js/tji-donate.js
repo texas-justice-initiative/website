@@ -20,8 +20,8 @@ jQuery(document).ready(function($){
 	});
 
 	// Verify form details upon submit
-	$('.tji-donation-submit').click(function() {
-		event.preventDefault();
+	$('.tji-donation-submit').click(function(e) {
+		e.preventDefault();
 
 		var error = false;
 
@@ -60,7 +60,8 @@ jQuery(document).ready(function($){
 			$('.donation-confirm').show(); 
 			
 		} else {
-			console.log('No amount selected.');
+			$('label[for="amount"]').children('.donation-form__error').css("display", "inline-block");
+			return false;
 		}
 	});
 
