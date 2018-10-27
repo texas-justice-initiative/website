@@ -78,12 +78,18 @@ TJIGroupByBarChart.prototype.create = function(data) {
   // Persist max grouped count to set y axis max value
   this.count_max = _.max(grouped.counts)
 
+  var $canvas_container = jQuery('<div class="tji-chart__canvas-container" />');
   var $canvas = jQuery('<canvas class="tji-chart__canvas" height="1" width="1"/>');
+
+  $canvas_container
+    .append('<div class="tji-chart__canvas-no-data">NO DATA</div>')
+    .append($canvas);
+
   // Build our (custom) legend.
   var $legend = this.create_legend();
   var $title = jQuery('<div class="tji-chart__title">' + this.group_by.replace(/_/g, " ") + '</div>');
 
-  this.$container.append([$title, $canvas, $legend]);
+  this.$container.append([$title, $canvas_container, $legend]);
 
   // Build the chart
   this.chart = new Chart($canvas, {
@@ -114,6 +120,12 @@ TJIGroupByBarChart.prototype.create_legend = function() {
 // Update the chart with a new (filtered) dataset
 TJIGroupByBarChart.prototype.update = function(data) {
   var grouped = this.get_sorted_group_counts(data);
+  //show no data if all values of grouped.counts are zero
+  if(_.every(grouped.counts, function(count){ return count===0; })) {
+    this.$container.addClass('no-data');
+  } else {
+    this.$container.removeClass('no-data');
+  }  
   this.chart.data.datasets[0].data = grouped.counts;
   this.chart.update();
 }

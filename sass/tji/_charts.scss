@@ -61,7 +61,7 @@
   &:nth-of-type(2n) {
     background-color: $tji-color-gray-lightest;
   }
-  
+
   @media (min-width: $tji-break-point-md) {
     max-width: calc(50% - #{$tji-spacing-sm});
     background-color: $tji-color-gray-lightest;
@@ -70,6 +70,35 @@
 
   @media (min-width: $tji-break-point-lg) {
     max-width: calc(33.33% - #{$tji-spacing-sm});
+  }
+}
+
+.tji-chart__canvas-container {
+  position: relative;
+
+  .tji-chart__canvas-no-data {
+    display: none;
+    font-size: $tji-font-size-md;
+    left: 0;
+    line-height: $tji-line-height-md;
+    position: absolute;
+    text-align: center;
+    top: calc(50% - (#{$tji-line-height-md}/2));
+    width: 100%;
+  }
+}
+
+.no-data {
+  .tji-chart__legend {
+    opacity: .25;
+  }
+
+  .tji-chart__canvas {
+    visibility: hidden;
+  }
+
+  .tji-chart__canvas-no-data {
+    display: block;
   }
 }
 
