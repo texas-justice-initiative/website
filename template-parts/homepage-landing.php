@@ -10,13 +10,13 @@
     <div class="swiper-wrapper">
         <!-- Slides -->
         <div class="swiper-slide">
-        	<div class="content">Since 2005, <span style="color:#CE2727"><span id="cdrTotal"></span> deaths</span> have been reported in Texas custody.</div>
+        	<div class="content">Since <span id="js-cdr-year"></span>, <span class="text--color-red"><span id="js-cdr-total"></span> deaths</span> have been reported in Texas custody.</div>
         </div>
         <div class="swiper-slide">
-        	<div class="content">Texas law enforcement officers have shot <span style="color:#CE2727"><span id="oisTotal"></span> civilians</span> since Sept. 1, 2015.</div>
+        	<div class="content">Texas law enforcement officers have shot <span class="text--color-red"><span id="js-ois-total"></span> civilians</span> since <span id="js-ois-year"></span>.</div>
         </div>
         <div class="swiper-slide">
-        	<div class="content">There have been <span style="color:#CE2727"><span id="oisOfficersTotal"></span> Texas law enforcement officers</span> shot since Sept. 1, 2015.</div>
+        	<div class="content">There have been <span class="text--color-red"><span id="js-ois-officers-total"></span> Texas law enforcement officers</span> shot since <span id="js-officers-year"></span>.</div>
         </div>
     </div>
     <!-- If we need pagination -->
@@ -32,16 +32,22 @@
 <!-- Fetch JSON data for dynamic slider numbers -->
 <script type="text/javascript">
 	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/cdr_compressed.json", function (cdrData) {
+		var cdrStartingYear = cdrData.meta.lookups.year[0];
+		jQuery("#js-cdr-year").html(cdrStartingYear);
 		var cdrTotalRecords = cdrData.meta.num_records;
-		jQuery("#cdrTotal").append(cdrTotalRecords.toLocaleString('en'));
+		jQuery("#js-cdr-total").html(cdrTotalRecords.toLocaleString('en'));
 	});
 	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/ois_compressed.json", function (oisData) {
+		var oisStartingYear = oisData.meta.lookups.year[0];
+		jQuery("#js-ois-year").html(oisStartingYear);
 		var oisTotalRecords = oisData.meta.num_records;
-		jQuery("#oisTotal").append(oisTotalRecords.toLocaleString('en'));
+		jQuery("#js-ois-total").html(oisTotalRecords.toLocaleString('en'));
 	});
 	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/ois_officers_compressed.json", function (officersData) {
+		var officersStartingYear = officersData.meta.lookups.year[0];
+		jQuery("#js-officers-year").html(officersStartingYear);
 		var officersTotalRecords = officersData.meta.num_records;
-		jQuery("#oisOfficersTotal").append(officersTotalRecords.toLocaleString('en'));
+		jQuery("#js-ois-officers-total").html(officersTotalRecords.toLocaleString('en'));
 	});
 </script>
 
