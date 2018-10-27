@@ -38,7 +38,7 @@ $action = $_GET["action"];
 			
 			<hr>
 		
-			<form id="donation_form" name="donation_form" class="donation-form" method="post" onsubmit="checkForm(event); return false;">
+			<form id="js-donation_form" class="donation-form">
 				<div class="donation-form__row">
 					<div class="donation-form__field donation-form__field--medium">
 						<label for="first_name" class="donation-form__label">First Name <span class="donation-form__error">Please enter your first name</span></label>

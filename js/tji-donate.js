@@ -20,26 +20,21 @@ jQuery(document).ready(function($){
 	});
 
 	// Verify form details upon submit
-	$('.tji-donation-submit').click(function(e) {
+	$('#js-donation_form').on("submit", function(e) {
 		e.preventDefault();
 
-		var error = false;
-
-		$('input.required').each(function() {
-			if (this.value == "") {
-				$('label[for="' + this.id + '"]').children('.donation-form__error').css("display", "inline-block");
-				error = true;
-				return false;
-			} else {
-				$('label[for="' + this.id + '"]').children('.donation-form__error').css("display", "none");
-			}
-		});
-		
-		if (error == false && $('.selected').length) {
+		if ($('.selected').length) {
 			var payFee = document.getElementById('tax').checked,
 					donation = parseInt($('.selected').val()),
 					fee = 0,
 					total;
+
+			/* Check for valid donation amount */
+			if (isNaN(donation) || donation == 0) {
+				$('label[for="amount"]').children('.donation-form__error').css("display", "inline-block");
+				$('#other_amount').css("border-color", "red");
+				return false;
+			}
 			
 			/* Determine the total donation */
 			if (payFee) {
