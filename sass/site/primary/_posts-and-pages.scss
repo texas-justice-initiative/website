@@ -8,13 +8,9 @@ body.home {
   .swiper-container .swiper-scrollbar { 
     display: none; 
   }
-  .swiper-container-horizontal>.swiper-pagination-bullets { 
-    top: 10px; 
-    bottom: 0; 
-  }
   .swiper-slide .content { 
     position:absolute; 
-    top: 30%; 
+    top: 30%;
     font-size: 1.5rem; 
     padding: 0; 
     @media (min-width: $tji-break-point-sm) {  
