@@ -30,11 +30,6 @@
 	<!-- Load Google Fonts -->
 	<link href="https://fonts.googleapis.com/css?family=Raleway:400,700" rel="stylesheet"> 
 
-	<!-- Swiper Requirements -->
-	<link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/swiper-4.3.0/dist/css/swiper.min.css">
-	<script src="<?php echo get_template_directory_uri(); ?>/swiper-4.3.0/dist/js/swiper.min.js"></script>
-	<script src="<?php echo get_template_directory_uri(); ?>/swiper-4.3.0/dist/js/swiper.esm.bundle.js"></script>
-
 	<?php wp_head(); ?>
 </head>
 

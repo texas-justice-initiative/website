@@ -3,7 +3,10 @@
 		This is the template file for the initial landing screen of the homepage.
 	*/
 ?>
-<!-- Fetch JSON data for dynamic slider numbers -->
+<!-- Swiper Requirements -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.3.0/css/swiper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.3.0/js/swiper.min.js"></script>
+
 <script type="text/javascript">
 	var cdrStartingYear = 0;
 	var oisStartingYear = 0;
@@ -12,6 +15,7 @@
 	var officersStartingYear = 0;
 	var officersTotalRecords = 0;
 
+	// Fetch JSON data for dynamic slider numbers
 	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/cdr_compressed.json", function (cdrData) {
 		cdrStartingYear = cdrData.meta.lookups.year[0];
 		cdrTotalRecords = cdrData.meta.num_records;
@@ -33,27 +37,27 @@
 
 	jQuery(document).ready(function () {
 		// Initialize Swiper Slider
-			var mySwiper = new Swiper ('.swiper-container', {
-			  	loop:true,
-			  	centeredSlides: true,
-			  	freeMode: true,
-				freeModeSticky: true,
-				slidesPerView: 1,
-				speed: 300,
-				autoplay: {	
-			        delay: 5000,
-			        disableOnInteraction: false
-			    },
-				spaceBetween: 15,
-				navigation: {
-					prevEl: ".swiper-button-prev",
-					nextEl: ".swiper-button-next"
-				},
-				pagination: {
-					el: ".swiper-pagination",
-					clickable: true
-				},
-			});
+		var mySwiper = new Swiper ('.swiper-container', {
+		  	loop:true,
+		  	centeredSlides: true,
+		  	freeMode: true,
+			freeModeSticky: true,
+			slidesPerView: 1,
+			speed: 300,
+			autoplay: {	
+		        delay: 5000,
+		        disableOnInteraction: false
+		    },
+			spaceBetween: 15,
+			navigation: {
+				prevEl: ".swiper-button-prev",
+				nextEl: ".swiper-button-next"
+			},
+			pagination: {
+				el: ".swiper-pagination",
+				clickable: true
+			},
+		});
 	});	
 </script>
 
