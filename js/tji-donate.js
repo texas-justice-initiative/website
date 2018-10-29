@@ -8,7 +8,9 @@ jQuery(document).ready(function($){
 		e.preventDefault();
 		$('.donation-btn').removeClass('selected');
 		$('#other_amount').removeClass('selected');
-		$('.amount-sign').removeClass('amount-sign--focus');
+		$('.amount-sign')
+			.removeClass('amount-sign--focus')
+			.val("");
 		$('#other_amount').val('');
 		$(this).addClass('selected');
 	});
@@ -22,15 +24,16 @@ jQuery(document).ready(function($){
 	// Verify form details upon submit
 	$('#js-donation_form').on("submit", function(e) {
 		e.preventDefault();
+		//console.log(parseFloat($('.selected').val()));
 
 		if ($('.selected').length) {
 			var payFee = document.getElementById('tax').checked,
-					donation = parseInt($('.selected').val()),
+					donation = parseFloat($('.selected').val()),
 					fee = 0,
 					total;
 
 			/* Check for valid donation amount */
-			if (isNaN(donation) || donation == 0) {
+			if (isNaN(donation) || donation <= 0) {
 				$('label[for="amount"]').children('.donation-form__error').css("display", "inline-block");
 				$('#other_amount').css("border-color", "red");
 				return false;
@@ -47,8 +50,8 @@ jQuery(document).ready(function($){
 							
 			$('.donor_name').html($('#first_name').val() + ' ' + $('#last_name').val());
 			$('.donor_email').html($('#email').val());
-			$('.donor_amount').html(donation);
-			$('.donor_fee').html(fee);
+			$('.donor_amount').html(donation.toFixed(2));
+			$('.donor_fee').html(fee.toFixed(2));
 			$('.donor_total').html(total);
 			
 			$('.donation-form').hide();
