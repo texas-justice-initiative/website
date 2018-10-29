@@ -3,6 +3,59 @@
 		This is the template file for the initial landing screen of the homepage.
 	*/
 ?>
+<!-- Fetch JSON data for dynamic slider numbers -->
+<script type="text/javascript">
+	var cdrStartingYear = 0;
+	var oisStartingYear = 0;
+	var cdrTotalRecords = 0;
+	var oisTotalRecords = 0;
+	var officersStartingYear = 0;
+	var officersTotalRecords = 0;
+
+	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/cdr_compressed.json", function (cdrData) {
+		cdrStartingYear = cdrData.meta.lookups.year[0];
+		cdrTotalRecords = cdrData.meta.num_records;
+		jQuery("#js-cdr-year").html(cdrStartingYear);
+		jQuery("#js-cdr-total").html(cdrTotalRecords.toLocaleString('en'));
+	});
+	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/ois_compressed.json", function (oisData) {
+		oisStartingYear = oisData.meta.lookups.year[0];
+		oisTotalRecords = oisData.meta.num_records;
+		jQuery("#js-ois-year").html(oisStartingYear);
+		jQuery("#js-ois-total").html(oisTotalRecords.toLocaleString('en'));
+	});
+	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/ois_officers_compressed.json", function (officersData) {
+		officersStartingYear = officersData.meta.lookups.year[0];
+		officersTotalRecords = officersData.meta.num_records;
+		jQuery("#js-officers-year").html(officersStartingYear);
+		jQuery("#js-ois-officers-total").html(officersTotalRecords.toLocaleString('en'));
+	});
+
+	jQuery(document).ready(function () {
+		// Initialize Swiper Slider
+			var mySwiper = new Swiper ('.swiper-container', {
+			  	loop:true,
+			  	centeredSlides: true,
+			  	freeMode: true,
+				freeModeSticky: true,
+				slidesPerView: 1,
+				speed: 300,
+				autoplay: {	
+			        delay: 5000,
+			        disableOnInteraction: false
+			    },
+				spaceBetween: 15,
+				navigation: {
+					prevEl: ".swiper-button-prev",
+					nextEl: ".swiper-button-next"
+				},
+				pagination: {
+					el: ".swiper-pagination",
+					clickable: true
+				},
+			});
+	});	
+</script>
 
 <!-- Swiper Slider main container -->
 <div class="swiper-container">
@@ -29,27 +82,6 @@
     <!-- If we need scrollbar -->
     <div class="swiper-scrollbar"></div>
 </div>
-<!-- Fetch JSON data for dynamic slider numbers -->
-<script type="text/javascript">
-	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/cdr_compressed.json", function (cdrData) {
-		var cdrStartingYear = cdrData.meta.lookups.year[0];
-		jQuery("#js-cdr-year").html(cdrStartingYear);
-		var cdrTotalRecords = cdrData.meta.num_records;
-		jQuery("#js-cdr-total").html(cdrTotalRecords.toLocaleString('en'));
-	});
-	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/ois_compressed.json", function (oisData) {
-		var oisStartingYear = oisData.meta.lookups.year[0];
-		jQuery("#js-ois-year").html(oisStartingYear);
-		var oisTotalRecords = oisData.meta.num_records;
-		jQuery("#js-ois-total").html(oisTotalRecords.toLocaleString('en'));
-	});
-	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/ois_officers_compressed.json", function (officersData) {
-		var officersStartingYear = officersData.meta.lookups.year[0];
-		jQuery("#js-officers-year").html(officersStartingYear);
-		var officersTotalRecords = officersData.meta.num_records;
-		jQuery("#js-ois-officers-total").html(officersTotalRecords.toLocaleString('en'));
-	});
-</script>
 
 <?php
 	//Build the landing screen from the homepage content.
