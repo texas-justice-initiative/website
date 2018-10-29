@@ -3,6 +3,9 @@
 		This is the template file for the initial landing screen of the homepage.
 	*/
 ?>
+  <!-- Swiper Requirements -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.3.0/css/swiper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.3.0/js/swiper.min.js"></script>
 
 <!-- Swiper Slider main container -->
 <div class="swiper-container">
