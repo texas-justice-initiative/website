@@ -34,25 +34,52 @@
 </div>
 <!-- Fetch JSON data for dynamic slider numbers -->
 <script type="text/javascript">
-	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/cdr_compressed.json", function (cdrData) {
+	var fetch1 = jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/cdr_compressed.json", function (cdrData) {
 		var cdrStartingYear = cdrData.meta.lookups.year[0];
-		jQuery("#js-cdr-year").html(cdrStartingYear);
+		jQuery("#js-cdr-year").text(cdrStartingYear);
 		var cdrTotalRecords = cdrData.meta.num_records;
-		jQuery("#js-cdr-total").html(cdrTotalRecords.toLocaleString('en'));
+		jQuery("#js-cdr-total").text(cdrTotalRecords.toLocaleString('en'));
 	});
-	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/ois_compressed.json", function (oisData) {
+	var fetch2 = jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/ois_compressed.json", function (oisData) {
 		var oisStartingYear = oisData.meta.lookups.year[0];
-		jQuery("#js-ois-year").html(oisStartingYear);
+		jQuery("#js-ois-year").text(oisStartingYear);
 		var oisTotalRecords = oisData.meta.num_records;
-		jQuery("#js-ois-total").html(oisTotalRecords.toLocaleString('en'));
+		jQuery("#js-ois-total").text(oisTotalRecords.toLocaleString('en'));
 	});
-	jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/ois_officers_compressed.json", function (officersData) {
+	var fetch3 = jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/ois_officers_compressed.json", function (officersData) {
 		var officersStartingYear = officersData.meta.lookups.year[0];
-		jQuery("#js-officers-year").html(officersStartingYear);
+		jQuery("#js-officers-year").text(officersStartingYear);
 		var officersTotalRecords = officersData.meta.num_records;
-		jQuery("#js-ois-officers-total").html(officersTotalRecords.toLocaleString('en'));
+		jQuery("#js-ois-officers-total").text(officersTotalRecords.toLocaleString('en'));
 	});
+
+  //Initialize Swiper Slider
+  jQuery.when(fetch1, fetch2, fetch3).done(function(){
+    new Swiper ('.swiper-container', {
+        loop:true,
+        centeredSlides: true,
+        freeMode: true,
+      freeModeSticky: true,
+      slidesPerView: 1,
+      speed: 300,
+      autoplay: { 
+            delay: 5000,
+            disableOnInteraction: false
+          },
+      spaceBetween: 15,
+      navigation: {
+        prevEl: ".swiper-button-prev",
+        nextEl: ".swiper-button-next"
+      },
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true
+      },
+      
+    });
+  })
 </script>
+
 
 <?php
 	//Build the landing screen from the homepage content.
