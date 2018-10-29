@@ -28,6 +28,7 @@
 		jQuery("#js-ois-officers-total").html(officersTotalRecords.toLocaleString('en'));
 	});
 
+	// If you use jQuery/Zepto in your site, then you can initialize it in any of your JS files, but make sure that you do it within document.ready event:
 	jQuery(document).ready(function () {
 		// Initialize Swiper Slider
 		jQuery.when(fetch1, fetch2, fetch3).done(function(){
