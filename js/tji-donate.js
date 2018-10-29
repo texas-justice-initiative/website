@@ -7,11 +7,10 @@ jQuery(document).ready(function($){
 	$('.donation-btn').on('click', function(e) {
 		e.preventDefault();
 		$('.donation-btn').removeClass('selected');
-		$('#other_amount').removeClass('selected');
-		$('.amount-sign')
-			.removeClass('amount-sign--focus')
-			.val("");
-		$('#other_amount').val('');
+		$('#other_amount')
+			.removeClass('selected')
+			.val('');
+		$('.amount-sign').removeClass('amount-sign--focus')
 		$(this).addClass('selected');
 	});
 	
