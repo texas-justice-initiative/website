@@ -135,7 +135,7 @@ paypal.Button.render({
 						email = $('#email').val(),
 						donation = $('.donation-btn.selected').val();
 
-        var confirmUrl = 'http://localhost:8888/tji/donate/?action=confirm&first_name=' + first_name +
+        var confirmUrl = './donate/?action=confirm&first_name=' + first_name +
         		'&last_name=' + last_name +
         		'&email=' + email;
         window.location.href = confirmUrl;
