@@ -73,28 +73,4 @@ jQuery(document).ready(function($) {
 		$(this).parent().addClass("active");
 	});
 	
-	// Initialize Swiper Slider
-	  var mySwiper = new Swiper ('.swiper-container', {
-		  	loop:true,
-		  	centeredSlides: true,
-		  	freeMode: true,
-			freeModeSticky: true,
-			slidesPerView: 1,
-			speed: 300,
-			autoplay: {	
-		        delay: 5000,
-		        disableOnInteraction: false
-	        },
-			spaceBetween: 15,
-			navigation: {
-				prevEl: ".swiper-button-prev",
-				nextEl: ".swiper-button-next"
-			},
-			pagination: {
-				el: ".swiper-pagination",
-				clickable: true
-			},
-			
-	  });
-	
 });
