@@ -6,6 +6,7 @@
 jQuery(document).ready(function($){	
 	$('.donation-btn').on('click', function(e) {
 		e.preventDefault();
+		$('#js-donation-form__error-amount').css('display','none');
 		$('.donation-btn').removeClass('selected');
 		$('#other_amount')
 			.removeClass('selected')
@@ -15,6 +16,7 @@ jQuery(document).ready(function($){
 	});
 	
 	$("#other_amount").focus(function() {
+		$('#js-donation-form__error-amount').css('display','none');
 		$('.donation-btn').removeClass('selected');
 		$(this).addClass('selected');
 		$('.amount-sign').addClass('amount-sign--focus');
@@ -33,7 +35,7 @@ jQuery(document).ready(function($){
 
 			/* Check for valid donation amount */
 			if (isNaN(donation) || donation <= 0) {
-				$('label[for="amount"]').children('.donation-form__error').css("display", "inline-block");
+				$('#js-donation-form__error-amount').css('display','inline-block');
 				$('#other_amount').css("border-color", "red");
 				return false;
 			}
