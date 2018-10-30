@@ -6,28 +6,39 @@
 jQuery(document).ready(function($){	
 	$('.donation-btn').on('click', function(e) {
 		e.preventDefault();
+		$('#js-donation-form__error-amount').css('display','none');
 		$('.donation-btn').removeClass('selected');
-		$('#other_amount').removeClass('selected');
-		$('.amount-sign').removeClass('amount-sign--focus');
-		$('#other_amount').val('');
+		$('#other_amount')
+			.removeClass('selected')
+			.val('');
+		$('.amount-sign').removeClass('amount-sign--focus')
 		$(this).addClass('selected');
 	});
 	
 	$("#other_amount").focus(function() {
+		$('#js-donation-form__error-amount').css('display','none');
 		$('.donation-btn').removeClass('selected');
 		$(this).addClass('selected');
 		$('.amount-sign').addClass('amount-sign--focus');
 	});
 
 	// Verify form details upon submit
-	$('.tji-donation-submit').click(function() {
-		event.preventDefault();
-		
+	$('#js-donation_form').on("submit", function(e) {
+		e.preventDefault();
+		//console.log(parseFloat($('.selected').val()));
+
 		if ($('.selected').length) {
 			var payFee = document.getElementById('tax').checked,
-					donation = parseInt($('.selected').val()),
+					donation = parseFloat($('.selected').val()),
 					fee = 0,
 					total;
+
+			/* Check for valid donation amount */
+			if (isNaN(donation) || donation <= 0) {
+				$('#js-donation-form__error-amount').css('display','inline-block');
+				$('#other_amount').css("border-color", "red");
+				return false;
+			}
 			
 			/* Determine the total donation */
 			if (payFee) {
@@ -40,15 +51,16 @@ jQuery(document).ready(function($){
 							
 			$('.donor_name').html($('#first_name').val() + ' ' + $('#last_name').val());
 			$('.donor_email').html($('#email').val());
-			$('.donor_amount').html(donation);
-			$('.donor_fee').html(fee);
+			$('.donor_amount').html(donation.toFixed(2));
+			$('.donor_fee').html(fee.toFixed(2));
 			$('.donor_total').html(total);
 			
 			$('.donation-form').hide();
 			$('.donation-confirm').show(); 
 			
 		} else {
-			console.log('No amount selected.');
+			$('label[for="amount"]').children('.donation-form__error').css("display", "inline-block");
+			return false;
 		}
 	});
 
@@ -123,7 +135,7 @@ paypal.Button.render({
 						email = $('#email').val(),
 						donation = $('.donation-btn.selected').val();
 
-        var confirmUrl = 'http://localhost:8888/tji/donate/?action=confirm&first_name=' + first_name +
+        var confirmUrl = './donate/?action=confirm&first_name=' + first_name +
         		'&last_name=' + last_name +
         		'&email=' + email;
         window.location.href = confirmUrl;

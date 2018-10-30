@@ -38,21 +38,21 @@ $action = $_GET["action"];
 			
 			<hr>
 		
-			<form id="donation_form" name="donation_form" class="donation-form" method="post" onsubmit="checkForm(event); return false;">
+			<form id="js-donation_form" class="donation-form">
 				<div class="donation-form__row">
 					<div class="donation-form__field donation-form__field--medium">
 						<label for="first_name" class="donation-form__label">First Name <span class="donation-form__error">Please enter your first name</span></label>
-						<input type="text" name="first_name" id="first_name" autocomplete="on" required>
+						<input type="text" name="first_name" id="first_name" class="required" autocomplete="on" required>
 					</div>
 					<div class="donation-form__field donation-form__field--medium">
 						<label for="last_name" class="donation-form__label">Last Name <span class="donation-form__error">Please enter your last name</span></label>
-						<input type="text" name="last_name" id="last_name" autocomplete="on" required>
+						<input type="text" name="last_name" id="last_name" class="required" autocomplete="on" required>
 					</div>
 				</div>
 				<div class="donation-form__row">
 					<div class="donation-form__field donation-form__field--medium">
 						<label for="email" class="donation-form__label">Email Address <span class="donation-form__error">Please enter your valid email address</span></label>
-						<input type="email" name="email" id="email" autocomplete="on" maxlength="60" required>
+						<input type="email" name="email" id="email" class="required" autocomplete="on" maxlength="60" required>
 					</div>
 				</div>
 				<!-- Temporarily removed until we decide email functionality
@@ -64,6 +64,7 @@ $action = $_GET["action"];
 				</div>
 				-->
 				<div class="donation-form__row">
+					<label for="amount" class="donation-form__label"><span id="js-donation-form__error-amount" class="donation-form__error">Please enter the amount you wish to donate.</span></label>
 					<div id="donation_amount" class="donation-form__field donation-form__field--inline donation-amount">
 						<button class="donation-btn" value="500">$500</button>
 						<button class="donation-btn" value="250">$250</button>
@@ -178,6 +179,9 @@ get_sidebar('about');
 
 ?>
 
+<!-- Including a newer version of jQuery here needed for PayPal functionality -->
+<!-- We can remove the redundant jQuery include once we move away from WordPress -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://www.paypalobjects.com/api/checkout.js"></script>
 <script src="<?php echo get_template_directory_uri(); ?>/js/tji-donate.js"></script>
 
