@@ -32,7 +32,7 @@ $action = $_GET["action"];
 
 			<h1>Support TJI</h1>
 			
-			<p>Texas Justice Initiative is entirely supported through public donations. If you feel like this is a useful resource, please help us through a generous donation. Funding helps us continue to grow and improve the data we provide.</p>
+			<p>Texas Justice Initiative is entirely supported through public donations. If you feel like this is a useful resource, please help us through a donation. Funding helps us continue to grow and improve the data we provide.</p>
 			
 			<p>You can also donate conveniently through our <a href="https://www.facebook.com/donate/605145886526139/10106361188494357/" target="_blank">Facebook Page</a>.</p>
 			
