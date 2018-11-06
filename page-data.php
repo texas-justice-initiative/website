@@ -98,7 +98,7 @@ get_header();
         ],
       }, {
         name: 'officers shot',
-        description: "Eva please update --> Shootings involving Texas law enforcement since Sept. 2015, as reported to the Office of the Attorney General.",
+        description: "Shootings that injured or killed Texas law enforcement officers since Sept. 2015, as reported to the Office of the Attorney General.",
         urls: {
           compressed: '/wp-content/themes/tji/data/ois_officers_compressed.json',
           full: '/wp-content/themes/tji/data/ois_officers_full.csv',
