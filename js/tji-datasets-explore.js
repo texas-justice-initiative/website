@@ -45,7 +45,6 @@ var BREAKPOINTS = {
 // * Dependencies: chart.js, Chart.PieceLabel, jQuery, lodash
 // *******************************************************************
 
-
 var TJIGroupByBarChart = function(props) {
   this.$container = props.$container;
   this.group_by = props.group_by;
@@ -282,6 +281,7 @@ TJIGroupByDoughnutChart.prototype.create_legend = function() {
 // *      }],
 // *      charts_elt_selector: '#js-TJIChartView',  
 // *      filters_elt_selector: '#js-TJIChartViewFilters',  
+// *      modal_elt_selector: '#js-TJIChartViewModal',  
 // *      chart_wrapper_template: '<div class="col-sm-12 col-lg-6" />',  
 // *      chartview_charts_template: '<div class="row"/>',
 // *      chartview_summary_template: '<div />',
@@ -323,6 +323,7 @@ var TJIChartView = function(props){
     $chartview: jQuery(props.view_elt_selector),
     $chartview_charts: jQuery(props.charts_elt_selector),
     $chartview_filters: jQuery(props.filters_elt_selector),
+    $chartview_modal: jQuery(props.modal_elt_selector),
     $form: null,
     $charts_container: null,
     $summary_container: null,
@@ -753,6 +754,14 @@ TJIChartView.prototype.attach_events = function() {
   this.ui.$select_dataset.on('change', function(e) {
     that.set_active_dataset(that.ui.$select_dataset.val());
   });
+  this.ui.$chartview_modal.find('.js-cancel').on('click', function(e){
+    e.preventDefault();
+    that.modal_close();
+  })
+  this.ui.$chartview_modal.find('.js-submit').on('click', function(e){
+    e.preventDefault();
+    //serialize data
+  })
 }
 
 TJIChartView.prototype.set_active_dataset = function(index) {
@@ -823,6 +832,11 @@ TJIChartView.prototype.update_chartview_summary = function() {
 }
 
 TJIChartView.prototype.download = function() {
+
+  //Launch modal to collect user information
+  this.modal_open();
+  return;
+
   // Download complete records for the data the user is currently viewing.
   var that = this;
   var dataset = this.datasets[this.state.active_dataset_index];
@@ -856,4 +870,25 @@ TJIChartView.prototype.download = function() {
           document.body.removeChild(link);
       }
   }
+}
+
+TJIChartView.prototype.modal_open = function() {
+  this.ui.$chartview_modal.addClass('opened');
+}
+
+TJIChartView.prototype.modal_close = function() {
+  this.ui.$chartview_modal.removedClass('opened');
+}
+
+// *******************************************************************
+// * "Class" for a managing forms with different steps
+// *
+// * Constructor arguments as properties of props object:
+// *   $container: jQuery object with form DOM
+// *
+// * Dependencies: jQuery
+// *******************************************************************
+
+var TJIForm = function(props) {
+  
 }

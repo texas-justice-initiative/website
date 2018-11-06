@@ -32,6 +32,55 @@ get_header();
     <div id="js-chartview-controls-toggle" class="tji-chartview-controls__toggle"><span>&larr;</span><h4>Chart Filters</h4></div>
     <div id="js-TJIChartViewFilters"></div>
   </aside>
+  <div id="js-TJIChartViewModal" class="tji-chartview__modal-overlay">
+    <div id="js-TJIChartViewForm" class="tji-chartview__modal tji-chartview__form">
+      <div class="tji-chartview__form-panel">
+        <h2>What's your deal?</h2>
+        <p>Tji blah blah Groom yourself 4 hours - checked, have your beauty sleep 18 hours - checked, be fabulous for the rest of the day. </p>
+        <fieldset>
+          <div class="tji-chartview__form-radio-group">
+            <input type="radio" name="whoami" value="researcher"/>
+            <label>Researcher</label>
+          </div>
+          <div class="tji-chartview__form-radio-group">
+            <input type="radio" name="whoami" value="reporter"/>
+            <label>Reporter</label>
+          </div>
+          <div class="tji-chartview__form-radio-group">
+            <input type="radio" name="whoami" value="policy"/>
+            <label>Policy</label>
+          </div>
+          <div class="tji-chartview__form-radio-group">
+            <input type="radio" name="whoami" value="legal"/>
+            <label>Legal</label>
+          </div>
+          <div class="tji-chartview__form-radio-group">
+            <input type="radio" name="whoami" value="personal"/>
+            <label>Personal</label>
+          </div>
+          <div class="tji-chartview__form-radio-group">
+            <input type="radio" name="whoami" value="other" />
+            <label><input type="text" name="whoami_other" placeholder="Other" /></label>
+          </div>
+        </fieldset>
+      </div>
+      
+      <div class="tji-chartview__form-panel">
+        <h2>What's your email?</h2>
+        <p>Did you want to sign up for our newsletter?</p>
+        <fieldset>
+          <div class="tji-chartview__form-text-group tji-chartview__form-group--center">
+            <input type="text" name="email" placeholder="myname@gmail.com" />
+          </div>
+        </fieldset>
+      </div>
+        
+      <div class="tji-chartview__modal-buttons">
+        <a href="#" class="js-cancel link link--cancel">Cancel</a>
+        <a href="#" class="js-submit btn">Continue</a>
+      </div>
+    </div>
+  </div>
 </div>
 <!-- JS Dependencies to build charts -->
 <!-- Any dependencies added here should be added to the Dependencies comment block of the appropriate JS file -->
@@ -100,6 +149,7 @@ get_header();
       view_elt_selector: '#js-TJIChartView',
       charts_elt_selector: '#js-TJIChartViewCharts',  
       filters_elt_selector: '#js-TJIChartViewFilters',  
+      modal_elt_selector: '#js-TJIChartViewModal',
       chart_wrapper_template: '<div class="tji-chart col-xs-12 col-md-6 col-lg-4" />',  
       chartview_charts_template: '<div class="row"/>',
       chartview_summary_template: '<div />',

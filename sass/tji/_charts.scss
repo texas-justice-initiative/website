@@ -7,8 +7,129 @@
   position: relative;
 }
 
+.tji-chartview__form {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+
+  h2 {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
+  p {
+    text-align: left;
+    margin-bottom: $tji-spacing-sm;
+  }
+
+  fieldset {
+    border: none;
+    padding: 0 $tji-spacing-sm;
+  }
+}
+
+.tji-chartview__form-panel {
+  display: none;
+  
+  &:first-child {
+    display: block;
+  }
+}
+
+.tji-chartview__form-group--center {
+  justify-content: center;
+}
+
+.tji-chartview__form-text-group,
+.tji-chartview__form-radio-group {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: $tji-spacing-xs;
+}
+
+.tji-chartview__form-radio-group {
+  input {
+    margin-right: $tji-spacing-xxs;
+  }
+}
+
+.tji-chartview__form-text-group {
+  input {
+    margin-left: $tji-spacing-xs;
+  }
+}
+
+.tji-chartview__modal-overlay {
+
+  &:before {
+    content: "";
+    display: none;
+    background: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+  }
+
+  .tji-chartview__modal {
+    background: #fefefe;
+    border: #333333 solid 0px;
+    border-radius: 5px;
+    margin-left: -200px;
+    text-align:center;
+    position: fixed;
+    left: 50%;
+    top: -100%;
+    z-index: 101;
+    width: 360px;
+    box-shadow:0 5px 10px rgba(0,0,0,0.3);
+    -webkit-transform: translate(0, -500%);
+    -ms-transform: translate(0, -500%);
+    transform: translate(0, -500%);
+    -webkit-transition: -webkit-transform 0.3s ease-out;
+    -moz-transition: -moz-transform 0.6s ease-out;
+    -o-transition: -o-transform 0.6s ease-out;
+    transition: transform 0.6s ease-out;
+  }
+
+  &.opened {
+
+    &:before {
+      display: block;
+    }
+
+    .tji-chartview__modal {
+      -webkit-transform: translate(0, -50%);
+      -ms-transform: translate(0, -50%);
+      transform: translate(0, -50%);
+      top: 50%;
+    }
+  }
+}
+
+.tji-chartview__modal-buttons {
+  margin-top: $tji-spacing-md;
+
+  .link--cancel {
+    color: $tji-color-gray;
+  }
+
+  .btn {
+    background-color: $tji-blue-dark;
+    color: $tji-color-white;
+    padding: $tji-spacing-xs $tji-spacing-sm;
+    text-decoration: none;
+  }
+
+  a {
+    margin: 0 $tji-spacing-xxs;
+  }
+}
+
 .tji-chartview__loader-overlay {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.5);
   bottom: 0;
   display: flex;
   justify-content: center;
