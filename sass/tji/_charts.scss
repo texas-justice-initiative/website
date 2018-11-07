@@ -1,65 +1,8 @@
 /*--------------------------------------------------------------
-## CHARTS
+## MODAL FORM
 --------------------------------------------------------------*/
 
-.tji-chartview {
-  min-height: 400px;
-  position: relative;
-}
-
-.tji-chartview__form {
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-
-  h2 {
-    margin-bottom: 0;
-    margin-top: 0;
-  }
-
-  p {
-    text-align: left;
-    margin-bottom: $tji-spacing-sm;
-  }
-
-  fieldset {
-    border: none;
-    padding: 0 $tji-spacing-sm;
-  }
-}
-
-.tji-chartview__form-panel {
-  display: none;
-  
-  &:first-child {
-    display: block;
-  }
-}
-
-.tji-chartview__form-group--center {
-  justify-content: center;
-}
-
-.tji-chartview__form-text-group,
-.tji-chartview__form-radio-group {
-  display: flex;
-  align-items: baseline;
-  margin-bottom: $tji-spacing-xs;
-}
-
-.tji-chartview__form-radio-group {
-  input {
-    margin-right: $tji-spacing-xxs;
-  }
-}
-
-.tji-chartview__form-text-group {
-  input {
-    margin-left: $tji-spacing-xs;
-  }
-}
-
-.tji-chartview__modal-overlay {
+.tji-modal {
 
   &:before {
     content: "";
@@ -73,7 +16,7 @@
     z-index: 100;
   }
 
-  .tji-chartview__modal {
+  .tji-modal__body {
     background: #fefefe;
     border: #333333 solid 0px;
     border-radius: 5px;
@@ -100,7 +43,7 @@
       display: block;
     }
 
-    .tji-chartview__modal {
+    .tji-modal__body {
       -webkit-transform: translate(0, -50%);
       -ms-transform: translate(0, -50%);
       transform: translate(0, -50%);
@@ -109,7 +52,7 @@
   }
 }
 
-.tji-chartview__modal-buttons {
+.tji-modal__buttons {
   margin-top: $tji-spacing-md;
 
   .link--cancel {
@@ -126,6 +69,67 @@
   a {
     margin: 0 $tji-spacing-xxs;
   }
+}
+
+.tji-modal__form {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+
+  h2 {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
+  p {
+    text-align: left;
+    margin-bottom: $tji-spacing-sm;
+  }
+
+  fieldset {
+    border: none;
+    padding: 0 $tji-spacing-sm;
+  }
+}
+
+.tji-modal__form-panel {
+  display: none;
+  
+  &:first-child {
+    display: block;
+  }
+}
+
+.tji-modal__form-group--center {
+  justify-content: center;
+}
+
+.tji-modal__form-text-group,
+.tji-modal__form-radio-group {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: $tji-spacing-xs;
+}
+
+.tji-modal__form-radio-group {
+  input {
+    margin-right: $tji-spacing-xxs;
+  }
+}
+
+.tji-modal__form-text-group {
+  input {
+    margin-left: $tji-spacing-xs;
+  }
+}
+
+/*--------------------------------------------------------------
+## CHARTS
+--------------------------------------------------------------*/
+
+.tji-chartview {
+  min-height: 400px;
+  position: relative;
 }
 
 .tji-chartview__loader-overlay {

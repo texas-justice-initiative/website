@@ -28,6 +28,90 @@ var BREAKPOINTS = {
 };
 
 // *******************************************************************
+// * "Class" for a managing forms with different steps
+// *
+// * Constructor arguments as properties of props object:
+// *   modal_elt_selector: jQuery object with modal DOM
+// *
+// * Dependencies: jQuery
+// *******************************************************************
+
+var TJIFormModal = function(props) {
+  
+  var that = this;
+
+  //properties that describe current state of app
+  //ex. selected current panel
+  this.state = {
+    panel: 0,
+    data: [],
+  }
+
+  //jquery object references to DOM elements
+  this.ui = {
+    $modal: jQuery(props.modal_elt_selector),
+  };
+
+  this.attach_events();
+}
+
+TJIFormModal.prototype.attach_events = function() {
+  var that = this;
+  this.ui.$modal.on('click', '.js-next', function(e){
+    e.preventDefault();
+    that.next();
+  });
+  this.ui.$modal.on('click', '.js-cancel', function(e){
+    e.preventDefault();
+    that.close();
+  });
+  this.ui.$modal.on('click', '.js-signup', function(e){
+    e.preventDefault();
+    that.signup();
+  });
+  this.ui.$modal.on('click', '.js-donate', function(e){
+    e.preventDefault();
+    that.donate()
+  });
+}
+
+TJIFormModal.prototype.next = function() {
+//TODO: validate
+//if valid
+  console.log('update this.state.data');
+  this.state.panel = this.state.panel + 1;
+//TODO: slide out and slide in transition?
+  this.ui.$modal.find('.js-formpanel').hide();
+  this.ui.$modal.find('.js-formpanel').eq(this.state.panel).show();
+}
+
+TJIFormModal.prototype.open = function() {
+  this.ui.$modal.find('.js-formpanel').hide();
+  this.ui.$modal.find('.js-formpanel').eq(this.state.panel).show();
+  this.ui.$modal.addClass('opened');
+}
+
+TJIFormModal.prototype.close = function() {
+  this.ui.$modal
+    .hide(function(){
+      jQuery(this)
+        .removeClass('opened')
+        .show(0);
+    });
+    
+  this.state.panel = 0;
+  this.state.data = [];
+}
+
+TJIFormModal.prototype.signup = function() {
+  console.log('OH WOW SIGNUP!');
+}
+
+TJIFormModal.prototype.donate = function() {
+  console.log('launch donate page in new window? maybe we should make it into a modalform too?')
+}
+
+// *******************************************************************
 // * "Class" for a single-variable bar chart
 // *
 // * Shows counts of records grouped by a particular column.
@@ -323,8 +407,7 @@ var TJIChartView = function(props){
     $chartview: jQuery(props.view_elt_selector),
     $chartview_charts: jQuery(props.charts_elt_selector),
     $chartview_filters: jQuery(props.filters_elt_selector),
-    $chartview_modal: jQuery(props.modal_elt_selector),
-    $form: null,
+    $filters_form: null,
     $charts_container: null,
     $summary_container: null,
     $description: null,
@@ -345,6 +428,7 @@ var TJIChartView = function(props){
   this.components = {
     charts: [],
     autocompletes: [],
+    modal: new TJIFormModal({modal_elt_selector: props.modal_elt_selector}),
   }
 
   // Create DOM and attach DOM events only once
@@ -469,7 +553,7 @@ TJIChartView.prototype.destroy_filters = function() {
     autocomplete.destroy();
   });
   this.components.autocompletes.length = 0;
-  this.ui.$form.empty();
+  this.ui.$filters_form.empty();
 }
 
 TJIChartView.prototype.create_filters = function() {
@@ -506,9 +590,9 @@ TJIChartView.prototype.create_filters = function() {
     }
     fieldsets.push(fieldset);
   });
-  this.ui.$form.append(fieldsets);
+  this.ui.$filters_form.append(fieldsets);
 
-  this.state.active_filters = this.ui.$form.serializeArray();    
+  this.state.active_filters = this.ui.$filters_form.serializeArray();    
 }
 
 TJIChartView.prototype.create_filter_legend = function(filter_name) {
@@ -581,7 +665,7 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
     auto_complete_list.find('#'+id).remove();
     auto_complete_list.prepend(that.create_filter_checkbox(filter.name, term, id));
     input.val('');
-    that.ui.$form.trigger('change');
+    that.ui.$filters_form.trigger('change');
   }
   
   var auto_complete = new autoComplete({
@@ -666,7 +750,7 @@ TJIChartView.prototype.create_chartview_DOM = function() {
     .append('<div class="tji-chartview__loader" />')
     .appendTo(this.ui.$chartview_charts);
 
-  this.ui.$form = jQuery('<form />', {
+  this.ui.$filters_form = jQuery('<form />', {
     class: 'tji-chartview-controls__filters',
   }).appendTo(this.ui.$chartview_filters);
 
@@ -713,12 +797,14 @@ TJIChartView.prototype.attach_events = function() {
 		that.ui.$chartview.addClass('tji-chartview-wrapper--controls-expanded');
 	}
 
+  // Make Filter panel collapsible
   jQuery('#js-chartview-controls-toggle').on('click', function(e) {
     that.ui.$chartview.toggleClass('tji-chartview-wrapper--controls-expanded');
   })
 
-  this.ui.$form.on('change', function(e) {
-    that.state.active_filters = that.ui.$form.serializeArray();
+  // Handle filter selection changes
+  this.ui.$filters_form.on('change', function(e) {
+    that.state.active_filters = that.ui.$filters_form.serializeArray();
     that.filter_data();
     that.update_charts();
   })
@@ -731,37 +817,32 @@ TJIChartView.prototype.attach_events = function() {
       .toggleClass('is-collapsed')
       .siblings('.js-filter-set').toggleClass('is-collapsed');
   })
-  //Toggle checkboxes in each filter section
+  // Make handlers for select/deselect all links
   .on('click', '.js-toggle-select', function(e){
     e.preventDefault();
     jQuery(this).siblings('.js-filter')
       .find('input[type=checkbox]')
       .prop('checked', true);
-    that.ui.$form.trigger('change');
+    that.ui.$filters_form.trigger('change');
   })
   .on('click', '.js-toggle-unselect', function(e){
     e.preventDefault();
     jQuery(this).siblings('.js-filter')
       .find('input[type=checkbox]')
       .prop('checked', false);
-    that.ui.$form.trigger('change');
+    that.ui.$filters_form.trigger('change');
   }) 
 
+  // Make handler for download data button
   this.ui.$download.on('click', function(e) {
     e.preventDefault();
     that.download();
   });
+
+  // Make handler to select different datasets
   this.ui.$select_dataset.on('change', function(e) {
     that.set_active_dataset(that.ui.$select_dataset.val());
   });
-  this.ui.$chartview_modal.find('.js-cancel').on('click', function(e){
-    e.preventDefault();
-    that.modal_close();
-  })
-  this.ui.$chartview_modal.find('.js-submit').on('click', function(e){
-    e.preventDefault();
-    //serialize data
-  })
 }
 
 TJIChartView.prototype.set_active_dataset = function(index) {
@@ -833,8 +914,7 @@ TJIChartView.prototype.update_chartview_summary = function() {
 
 TJIChartView.prototype.download = function() {
 
-  //Launch modal to collect user information
-  this.modal_open();
+  this.components.modal.open();
   return;
 
   // Download complete records for the data the user is currently viewing.
@@ -870,25 +950,4 @@ TJIChartView.prototype.download = function() {
           document.body.removeChild(link);
       }
   }
-}
-
-TJIChartView.prototype.modal_open = function() {
-  this.ui.$chartview_modal.addClass('opened');
-}
-
-TJIChartView.prototype.modal_close = function() {
-  this.ui.$chartview_modal.removedClass('opened');
-}
-
-// *******************************************************************
-// * "Class" for a managing forms with different steps
-// *
-// * Constructor arguments as properties of props object:
-// *   $container: jQuery object with form DOM
-// *
-// * Dependencies: jQuery
-// *******************************************************************
-
-var TJIForm = function(props) {
-  
 }

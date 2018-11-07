@@ -32,53 +32,81 @@ get_header();
     <div id="js-chartview-controls-toggle" class="tji-chartview-controls__toggle"><span>&larr;</span><h4>Chart Filters</h4></div>
     <div id="js-TJIChartViewFilters"></div>
   </aside>
-  <div id="js-TJIChartViewModal" class="tji-chartview__modal-overlay">
-    <div id="js-TJIChartViewForm" class="tji-chartview__modal tji-chartview__form">
-      <div class="tji-chartview__form-panel">
+  <div id="js-TJIChartViewModal" class="tji-modal">
+    <div id="js-TJIChartViewForm" class="tji-modal__body">
+      <form class="tji-modal__form">
+
+      <div class="js-formpanel tji-modal__form-panel">
         <h2>What's your deal?</h2>
         <p>Tji blah blah Groom yourself 4 hours - checked, have your beauty sleep 18 hours - checked, be fabulous for the rest of the day. </p>
         <fieldset>
-          <div class="tji-chartview__form-radio-group">
+          <div class="tji-modal__form-radio-group">
             <input type="radio" name="whoami" value="researcher"/>
             <label>Researcher</label>
           </div>
-          <div class="tji-chartview__form-radio-group">
+          <div class="tji-modal__form-radio-group">
             <input type="radio" name="whoami" value="reporter"/>
             <label>Reporter</label>
           </div>
-          <div class="tji-chartview__form-radio-group">
+          <div class="tji-modal__form-radio-group">
             <input type="radio" name="whoami" value="policy"/>
             <label>Policy</label>
           </div>
-          <div class="tji-chartview__form-radio-group">
+          <div class="tji-modal__form-radio-group">
             <input type="radio" name="whoami" value="legal"/>
             <label>Legal</label>
           </div>
-          <div class="tji-chartview__form-radio-group">
+          <div class="tji-modal__form-radio-group">
             <input type="radio" name="whoami" value="personal"/>
             <label>Personal</label>
           </div>
-          <div class="tji-chartview__form-radio-group">
+          <div class="tji-modal__form-radio-group">
             <input type="radio" name="whoami" value="other" />
             <label><input type="text" name="whoami_other" placeholder="Other" /></label>
           </div>
         </fieldset>
+        
+        <div class="tji-modal__buttons">
+          <a href="#" class="js-cancel link link--cancel">Cancel</a>
+          <a href="#" class="js-next btn">Continue</a>
+        </div>
       </div>
       
-      <div class="tji-chartview__form-panel">
+      <div class="js-formpanel tji-modal__form-panel">
         <h2>What's your email?</h2>
         <p>Did you want to sign up for our newsletter?</p>
         <fieldset>
-          <div class="tji-chartview__form-text-group tji-chartview__form-group--center">
+          <div class="tji-modal__form-text-group tji-modal__form-group--center">
             <input type="text" name="email" placeholder="myname@gmail.com" />
           </div>
         </fieldset>
+
+        <div class="tji-modal__buttons">
+          <a href="#" class="js-next link link--cancel">Nope</a>
+          <a href="#" class="js-signup btn">Yep</a>          
+        </div>
       </div>
-        
-      <div class="tji-chartview__modal-buttons">
-        <a href="#" class="js-cancel link link--cancel">Cancel</a>
-        <a href="#" class="js-submit btn">Continue</a>
+
+      <div class="js-formpanel tji-modal__form-panel">
+        <h2>Please give us your $$$</h2>
+        <p>TJI could really use your money. We'll use it to pay for cheetos for our volunteers? I dunno. </p>
+
+        <div class="tji-modal__buttons">
+          <a href="#" class="js-next link link--cancel">Nope</a>
+          <a href="#" class="js-donate btn">Yep</a>          
+        </div>
       </div>
+
+      <div class="js-formpanel tji-modal__form-panel">
+        <h2>Thanks!</h2>
+        <p>We really appreciate you and your work with the criminal justice system!</p>
+
+        <div class="tji-modal__buttons">
+          <a href="#" class="js-cancel btn">You're Welcome!</a>
+        </div>
+      </div>
+      
+    </form>
     </div>
   </div>
 </div>
