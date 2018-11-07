@@ -68,6 +68,10 @@ TJIFormModal.prototype.attach_events = function() {
     e.preventDefault();
     that.close();
   });
+  this.ui.$modal.on('click', '.js-log', function(e){
+    e.preventDefault();
+    that.log();
+  });
   this.ui.$modal.on('click', '.js-signup', function(e){
     e.preventDefault();
     that.signup();
@@ -100,20 +104,55 @@ TJIFormModal.prototype.close = function() {
     });
     
   this.state.panel = 0;
-  this.state.data = [];
+  this.state.data = {};
 }
 
-TJIFormModal.prototype.whoami = function() {
-  console.log('log whoami!');
+TJIFormModal.prototype.set_data_and_validate = function() {
+  this.reset_validation();
+  var data = this.ui.$modal.find('form').serializeArray();
+  this.state.data = _.mapValues(_.keyBy(data, 'name'), 'value');
+  return this.validate();
+}
+
+TJIFormModal.prototype.validate = function() {
+  if(this.state.panel === 0) {
+    this.state.data.whoami = (this.state.data.whoami === 'other') ? this.state.data.whoami_other : this.state.data.whoami;
+    if (!this.state.data.whoami) {
+      console.log('Please let us know what your deal is?');
+      return false;
+    }
+  }
+  if(this.state.panel === 1) {
+    if(this.state.data.email && !/\S+@\S+\.\S+/.test(this.state.data.email)) {
+      console.log('Please let us know what your deal is?');
+      return false;
+    }
+  }
+  localStorage.setItem(this.local_storage_key, this.state.data);
+  return true;
+}
+
+TJIFormModal.prototype.reset_validation = function() {
+  //remove validation error from UI
+}
+
+TJIFormModal.prototype.log = function() {
+  if(!this.set_data_and_validate())
+    return;
+  console.log('log!');
   this.next();
 }
 
 TJIFormModal.prototype.signup = function() {
+  if(!this.set_data_and_validate())
+    return;
   console.log('OH WOW SIGNUP!');
   this.next();
 }
 
 TJIFormModal.prototype.donate = function() {
+  if(!this.set_data_and_validate())
+    return;
   console.log('launch donate page in new window? maybe we should make it into a modalform too?');
   this.next();
 }

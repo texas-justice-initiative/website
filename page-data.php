@@ -71,7 +71,7 @@ get_header();
         </fieldset>
         
         <div class="tji-modal__buttons">
-          <a href="#" class="js-next btn">Continue</a>
+          <a href="#" class="js-log btn">Continue</a>
         </div>
       </div>
       
