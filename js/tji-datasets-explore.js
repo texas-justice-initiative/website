@@ -60,6 +60,9 @@ var TJIFormModal = function(props) {
 
 TJIFormModal.prototype.attach_events = function() {
   var that = this;
+  this.ui.$modal.find('.tji-modal__form-radio-group--textinput').on('focus', 'input[type="text"]', function(e){
+    jQuery(e.delegateTarget).find('input[type="radio"]').prop('checked', true);
+  });
   this.ui.$modal.on('click', '.js-next', function(e){
     e.preventDefault();
     that.next();
@@ -124,11 +127,11 @@ TJIFormModal.prototype.validate = function() {
   }
   if(this.state.panel === 1) {
     if(this.state.data.email && !/\S+@\S+\.\S+/.test(this.state.data.email)) {
-      console.log('Please let us know what your deal is?');
+      console.log('Your email is bunk?');
       return false;
     }
   }
-  localStorage.setItem(this.local_storage_key, this.state.data);
+  localStorage.setItem(this.local_storage_key, JSON.stringify(this.state.data));
   return true;
 }
 

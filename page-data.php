@@ -40,6 +40,7 @@ get_header();
         <h2>What's your deal?</h2>
         <p>Tji blah blah Groom yourself 4 hours - checked, have your beauty sleep 18 hours - checked, be fabulous for the rest of the day. </p>
         <fieldset>
+          <!-- TODO ADD LABEL 'FOR' FOR ALL RADIOS -->
           <div class="tji-modal__form-radio-group">
             <input type="radio" name="whoami" value="researcher"/>
             <label>Researcher</label>
