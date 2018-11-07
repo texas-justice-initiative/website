@@ -63,6 +63,9 @@ TJIFormModal.prototype.attach_events = function() {
   this.ui.$modal.find('.tji-modal__form-radio-group--textinput').on('focus', 'input[type="text"]', function(e){
     jQuery(e.delegateTarget).find('input[type="radio"]').prop('checked', true);
   });
+  this.ui.$modal.find('.tji-modal__form-radio-group').on('click', function(e){
+    jQuery(e.currentTarget).siblings('.tji-modal__form-radio-group--textinput').find('input[type="text"]').val('');
+  });
   this.ui.$modal.on('click', '.js-next', function(e){
     e.preventDefault();
     that.next();
