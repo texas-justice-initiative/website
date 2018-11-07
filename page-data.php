@@ -33,7 +33,7 @@ get_header();
     <div id="js-TJIChartViewFilters"></div>
   </aside>
   <div id="js-TJIChartViewModal" class="tji-modal">
-    <div id="js-TJIChartViewForm" class="tji-modal__body">
+    <div class="tji-modal__body">
       <form class="tji-modal__form">
 
       <div class="js-formpanel tji-modal__form-panel">
@@ -61,13 +61,16 @@ get_header();
             <label>Personal</label>
           </div>
           <div class="tji-modal__form-radio-group">
+            <input type="radio" name="whoami" value="personal"/>
+            <label>Prefer not to disclose</label>
+          </div>
+          <div class="tji-modal__form-radio-group tji-modal__form-radio-group--textinput">
             <input type="radio" name="whoami" value="other" />
             <label><input type="text" name="whoami_other" placeholder="Other" /></label>
           </div>
         </fieldset>
         
         <div class="tji-modal__buttons">
-          <a href="#" class="js-cancel link link--cancel">Cancel</a>
           <a href="#" class="js-next btn">Continue</a>
         </div>
       </div>
@@ -106,7 +109,7 @@ get_header();
         </div>
       </div>
       
-    </form>
+      </form>
     </div>
   </div>
 </div>

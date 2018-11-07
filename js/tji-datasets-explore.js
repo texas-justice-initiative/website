@@ -32,6 +32,7 @@ var BREAKPOINTS = {
 // *
 // * Constructor arguments as properties of props object:
 // *   modal_elt_selector: jQuery object with modal DOM
+// *   local_storage_key: key used to store data to localStorage
 // *
 // * Dependencies: jQuery
 // *******************************************************************
@@ -46,6 +47,8 @@ var TJIFormModal = function(props) {
     panel: 0,
     data: [],
   }
+
+  this.local_storage_key = props.local_storage_key;
 
   //jquery object references to DOM elements
   this.ui = {
@@ -76,9 +79,6 @@ TJIFormModal.prototype.attach_events = function() {
 }
 
 TJIFormModal.prototype.next = function() {
-//TODO: validate
-//if valid
-  console.log('update this.state.data');
   this.state.panel = this.state.panel + 1;
 //TODO: slide out and slide in transition?
   this.ui.$modal.find('.js-formpanel').hide();
@@ -103,12 +103,19 @@ TJIFormModal.prototype.close = function() {
   this.state.data = [];
 }
 
+TJIFormModal.prototype.whoami = function() {
+  console.log('log whoami!');
+  this.next();
+}
+
 TJIFormModal.prototype.signup = function() {
   console.log('OH WOW SIGNUP!');
+  this.next();
 }
 
 TJIFormModal.prototype.donate = function() {
-  console.log('launch donate page in new window? maybe we should make it into a modalform too?')
+  console.log('launch donate page in new window? maybe we should make it into a modalform too?');
+  this.next();
 }
 
 // *******************************************************************
@@ -428,7 +435,10 @@ var TJIChartView = function(props){
   this.components = {
     charts: [],
     autocompletes: [],
-    modal: new TJIFormModal({modal_elt_selector: props.modal_elt_selector}),
+    modal: new TJIFormModal({
+      modal_elt_selector: props.modal_elt_selector,
+      local_storage_key: 'download'
+    }),
   }
 
   // Create DOM and attach DOM events only once
@@ -914,8 +924,12 @@ TJIChartView.prototype.update_chartview_summary = function() {
 
 TJIChartView.prototype.download = function() {
 
-  this.components.modal.open();
-  return;
+  if(!localStorage.getItem(this.components.modal.local_storage_key)) {
+    this.components.modal.open();
+  }
+
+//TODO: remove return  
+return;
 
   // Download complete records for the data the user is currently viewing.
   var that = this;
