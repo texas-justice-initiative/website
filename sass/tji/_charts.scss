@@ -118,7 +118,13 @@
 
 .tji-modal__form-radio-group--textinput {
   label {
+    align-items: baseline;
+    display: flex;
     flex: 0 1 100%;
+
+    span {
+      margin-right: $tji-spacing-xxs;
+    }
 
     input {
       width: 100%;

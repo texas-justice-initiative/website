@@ -37,54 +37,14 @@ get_header();
       <form class="tji-modal__form">
 
       <div class="js-formpanel tji-modal__form-panel">
-        <h2>What's your deal?</h2>
-        <p>Tji blah blah Groom yourself 4 hours - checked, have your beauty sleep 18 hours - checked, be fabulous for the rest of the day. </p>
-        <fieldset>
-          <!-- TODO ADD LABEL 'FOR' FOR ALL RADIOS -->
-          <div class="tji-modal__form-radio-group">
-            <input type="radio" name="whoami" value="researcher"/>
-            <label>Researcher</label>
-          </div>
-          <div class="tji-modal__form-radio-group">
-            <input type="radio" name="whoami" value="reporter"/>
-            <label>Reporter</label>
-          </div>
-          <div class="tji-modal__form-radio-group">
-            <input type="radio" name="whoami" value="policy"/>
-            <label>Policy</label>
-          </div>
-          <div class="tji-modal__form-radio-group">
-            <input type="radio" name="whoami" value="legal"/>
-            <label>Legal</label>
-          </div>
-          <div class="tji-modal__form-radio-group">
-            <input type="radio" name="whoami" value="personal"/>
-            <label>Personal</label>
-          </div>
-          <div class="tji-modal__form-radio-group">
-            <input type="radio" name="whoami" value="personal"/>
-            <label>Prefer not to disclose</label>
-          </div>
-          <div class="tji-modal__form-radio-group tji-modal__form-radio-group--textinput">
-            <input type="radio" name="whoami" value="other" />
-            <label><input type="text" name="whoami_other" placeholder="Other" /></label>
-          </div>
-        </fieldset>
-        
+        <?php require get_template_directory() . '/inc/forms/whoami.php' ?>
         <div class="tji-modal__buttons">
           <a href="#" class="js-log btn">Continue</a>
         </div>
       </div>
       
       <div class="js-formpanel tji-modal__form-panel">
-        <h2>What's your email?</h2>
-        <p>Did you want to sign up for our newsletter?</p>
-        <fieldset>
-          <div class="tji-modal__form-text-group tji-modal__form-group--center">
-            <input type="text" name="email" placeholder="myname@gmail.com" />
-          </div>
-        </fieldset>
-
+        <?php require get_template_directory() . '/inc/forms/newsletter.php' ?>
         <div class="tji-modal__buttons">
           <a href="#" class="js-next link link--cancel">Nope</a>
           <a href="#" class="js-signup btn">Yep</a>          
@@ -92,9 +52,7 @@ get_header();
       </div>
 
       <div class="js-formpanel tji-modal__form-panel">
-        <h2>Please give us your $$$</h2>
-        <p>TJI could really use your money. We'll use it to pay for cheetos for our volunteers? I dunno. </p>
-
+        <?php require get_template_directory() . '/inc/forms/donate.php' ?>
         <div class="tji-modal__buttons">
           <a href="#" class="js-next link link--cancel">Nope</a>
           <a href="#" class="js-donate btn">Yep</a>          
