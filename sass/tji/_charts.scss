@@ -103,6 +103,12 @@
   }
 }
 
+.tji-modal__form-panel-error {
+  color: $primaryRed;
+  margin-bottom: $tji-spacing-md;
+  text-align: left;
+}
+
 .tji-modal__form-text-group,
 .tji-modal__form-radio-group {
   display: flex;

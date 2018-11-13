@@ -42,12 +42,13 @@ var TJISignupDonateFormModal = function(props) {
   var that = this;
 
   //properties that describe current state of app
-  //ex. selected current panel
+  //ex. selected current panel/step of form
   this.state = {
     panel: 0,
     data: [],
   }
 
+  // key to save data to local storage / user's browser
   this.local_storage_key = props.local_storage_key;
 
   //jquery object references to DOM elements
@@ -60,18 +61,29 @@ var TJISignupDonateFormModal = function(props) {
 
 TJISignupDonateFormModal.prototype.attach_events = function() {
   var that = this;
+
+  //select the radio next to the custom radio value text input when a user is typing within that custom input
+  //this is for users to send a custom text value in a group of radio buttons
   this.ui.$modal.find('.tji-modal__form-radio-group--textinput').on('focus', 'input[type="text"]', function(e){
+    that.reset_validation();
     jQuery(e.delegateTarget).find('input[type="radio"]').prop('checked', true);
   });
+
+  //clear the custom radio value text input when another radio is clicked
+  //this is for users to send a custom text value in a group of radio buttons
   this.ui.$modal.find('.tji-modal__form-radio-group').on('click', function(e){
+    that.reset_validation();
     jQuery(e.currentTarget).siblings('.tji-modal__form-radio-group--textinput').find('input[type="text"]').val('');
   });
+
   this.ui.$modal.on('click', '.js-next', function(e){
     e.preventDefault();
+    that.reset_validation();
     that.next();
   });
   this.ui.$modal.on('click', '.js-cancel', function(e){
     e.preventDefault();
+    that.reset_validation();
     that.close();
   });
   this.ui.$modal.on('click', '.js-log', function(e){
@@ -113,6 +125,10 @@ TJISignupDonateFormModal.prototype.close = function() {
   this.state.data = {};
 }
 
+TJISignupDonateFormModal.prototype.reset_validation = function() {
+  this.ui.$modal.find('.tji-modal__form-panel-error').remove();
+}
+
 TJISignupDonateFormModal.prototype.set_data_and_validate = function() {
   this.reset_validation();
   var data = this.ui.$modal.find('form').serializeArray();
@@ -121,25 +137,35 @@ TJISignupDonateFormModal.prototype.set_data_and_validate = function() {
 }
 
 TJISignupDonateFormModal.prototype.validate = function() {
+  var error_message;
+
   if(this.state.panel === 0) {
     this.state.data.whoami = (this.state.data.whoami === 'other') ? this.state.data.whoami_other : this.state.data.whoami;
     if (!this.state.data.whoami) {
-      console.log('Please let us know what your deal is?');
-      return false;
+      error_message = 'Please let us know what your deal is?';
     }
   }
   if(this.state.panel === 1) {
     if(!/\S+@\S+\.\S+/.test(this.state.data.email)) {
-      console.log('Your email is bunk?');
-      return false;
+      error_message = 'Your email is bunk?';
     }
   }
+  if(this.state.panel === 2) {
+    if(!/\S+@\S+\.\S+/.test(this.state.data.email)) {
+      error_message = 'Please enter a dollar amount?';
+    }
+  }
+
+  if(error_message) {
+    var $error = jQuery('<div class="tji-modal__form-panel-error" />').text(error_message);
+    this.ui.$modal.find('.js-formpanel').eq(this.state.panel)
+      .find('fieldset')
+      .before($error);
+    return false;
+  }
+
   localStorage.setItem(this.local_storage_key, JSON.stringify(this.state.data));
   return true;
-}
-
-TJISignupDonateFormModal.prototype.reset_validation = function() {
-  //remove validation error from UI
 }
 
 TJISignupDonateFormModal.prototype.log = function() {
@@ -969,9 +995,9 @@ TJIChartView.prototype.update_chartview_summary = function() {
 
 TJIChartView.prototype.download = function() {
 
-  if(!localStorage.getItem(this.components.modal.local_storage_key)) {
+  // if(!localStorage.getItem(this.components.modal.local_storage_key)) {
     this.components.modal.open();
-  }
+  // }
 
 //TODO: remove return  
 return;
