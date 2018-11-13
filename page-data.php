@@ -32,45 +32,11 @@ get_header();
     <div id="js-chartview-controls-toggle" class="tji-chartview-controls__toggle"><span>&larr;</span><h4>Chart Filters</h4></div>
     <div id="js-TJIChartViewFilters"></div>
   </aside>
-  <div id="js-TJIChartViewModal" class="tji-modal">
-    <div class="tji-modal__body">
-      <form class="tji-modal__form">
 
-      <div class="js-formpanel tji-modal__form-panel">
-        <?php require get_template_directory() . '/inc/forms/whoami.php' ?>
-        <div class="tji-modal__buttons">
-          <a href="#" class="js-log btn">Continue</a>
-        </div>
-      </div>
-      
-      <div class="js-formpanel tji-modal__form-panel">
-        <?php require get_template_directory() . '/inc/forms/newsletter.php' ?>
-        <div class="tji-modal__buttons">
-          <a href="#" class="js-next link link--cancel">Nope</a>
-          <a href="#" class="js-signup btn">Yep</a>          
-        </div>
-      </div>
-
-      <div class="js-formpanel tji-modal__form-panel">
-        <?php require get_template_directory() . '/inc/forms/donate.php' ?>
-        <div class="tji-modal__buttons">
-          <a href="#" class="js-next link link--cancel">Nope</a>
-          <a href="#" class="js-donate btn">Yep</a>          
-        </div>
-      </div>
-
-      <div class="js-formpanel tji-modal__form-panel">
-        <h2>Thanks!</h2>
-        <p>We really appreciate you and your work with the criminal justice system!</p>
-
-        <div class="tji-modal__buttons">
-          <a href="#" class="js-cancel btn">You're Welcome!</a>
-        </div>
-      </div>
-      
-      </form>
-    </div>
-  </div>
+  <?php 
+    $signupdonate_id = 'js-TJIChartViewModal';
+    require get_template_directory() . '/inc/forms/signupdonate.php' 
+  ?>
 </div>
 <!-- JS Dependencies to build charts -->
 <!-- Any dependencies added here should be added to the Dependencies comment block of the appropriate JS file -->

@@ -37,7 +37,7 @@ var BREAKPOINTS = {
 // * Dependencies: jQuery
 // *******************************************************************
 
-var TJIFormModal = function(props) {
+var TJISignupDonateFormModal = function(props) {
   
   var that = this;
 
@@ -58,7 +58,7 @@ var TJIFormModal = function(props) {
   this.attach_events();
 }
 
-TJIFormModal.prototype.attach_events = function() {
+TJISignupDonateFormModal.prototype.attach_events = function() {
   var that = this;
   this.ui.$modal.find('.tji-modal__form-radio-group--textinput').on('focus', 'input[type="text"]', function(e){
     jQuery(e.delegateTarget).find('input[type="radio"]').prop('checked', true);
@@ -88,20 +88,20 @@ TJIFormModal.prototype.attach_events = function() {
   });
 }
 
-TJIFormModal.prototype.next = function() {
+TJISignupDonateFormModal.prototype.next = function() {
   this.state.panel = this.state.panel + 1;
 //TODO: slide out and slide in transition?
   this.ui.$modal.find('.js-formpanel').hide();
   this.ui.$modal.find('.js-formpanel').eq(this.state.panel).show();
 }
 
-TJIFormModal.prototype.open = function() {
+TJISignupDonateFormModal.prototype.open = function() {
   this.ui.$modal.find('.js-formpanel').hide();
   this.ui.$modal.find('.js-formpanel').eq(this.state.panel).show();
   this.ui.$modal.addClass('opened');
 }
 
-TJIFormModal.prototype.close = function() {
+TJISignupDonateFormModal.prototype.close = function() {
   this.ui.$modal
     .hide(function(){
       jQuery(this)
@@ -113,14 +113,14 @@ TJIFormModal.prototype.close = function() {
   this.state.data = {};
 }
 
-TJIFormModal.prototype.set_data_and_validate = function() {
+TJISignupDonateFormModal.prototype.set_data_and_validate = function() {
   this.reset_validation();
   var data = this.ui.$modal.find('form').serializeArray();
   this.state.data = _.mapValues(_.keyBy(data, 'name'), 'value');
   return this.validate();
 }
 
-TJIFormModal.prototype.validate = function() {
+TJISignupDonateFormModal.prototype.validate = function() {
   if(this.state.panel === 0) {
     this.state.data.whoami = (this.state.data.whoami === 'other') ? this.state.data.whoami_other : this.state.data.whoami;
     if (!this.state.data.whoami) {
@@ -138,25 +138,25 @@ TJIFormModal.prototype.validate = function() {
   return true;
 }
 
-TJIFormModal.prototype.reset_validation = function() {
+TJISignupDonateFormModal.prototype.reset_validation = function() {
   //remove validation error from UI
 }
 
-TJIFormModal.prototype.log = function() {
+TJISignupDonateFormModal.prototype.log = function() {
   if(!this.set_data_and_validate())
     return;
   console.log('log!');
   this.next();
 }
 
-TJIFormModal.prototype.signup = function() {
+TJISignupDonateFormModal.prototype.signup = function() {
   if(!this.set_data_and_validate())
     return;
   console.log('OH WOW SIGNUP!');
   this.next();
 }
 
-TJIFormModal.prototype.donate = function() {
+TJISignupDonateFormModal.prototype.donate = function() {
   if(!this.set_data_and_validate())
     return;
   console.log('launch donate page in new window? maybe we should make it into a modalform too?');
@@ -480,7 +480,7 @@ var TJIChartView = function(props){
   this.components = {
     charts: [],
     autocompletes: [],
-    modal: new TJIFormModal({
+    modal: new TJISignupDonateFormModal({
       modal_elt_selector: props.modal_elt_selector,
       local_storage_key: 'download'
     }),
