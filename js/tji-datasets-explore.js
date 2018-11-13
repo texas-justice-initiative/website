@@ -129,7 +129,7 @@ TJIFormModal.prototype.validate = function() {
     }
   }
   if(this.state.panel === 1) {
-    if(this.state.data.email && !/\S+@\S+\.\S+/.test(this.state.data.email)) {
+    if(!/\S+@\S+\.\S+/.test(this.state.data.email)) {
       console.log('Your email is bunk?');
       return false;
     }
