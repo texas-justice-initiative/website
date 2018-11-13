@@ -35,7 +35,7 @@ get_header();
 
   <?php 
     $signupdonate_id = 'js-TJIChartViewModal';
-    require get_template_directory() . '/inc/forms/signupdonate.php' 
+    require get_template_directory() . '/inc/template/form-signupdonate.php' 
   ?>
 </div>
 <!-- JS Dependencies to build charts -->

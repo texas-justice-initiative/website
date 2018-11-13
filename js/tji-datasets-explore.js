@@ -100,11 +100,15 @@ TJISignupDonateFormModal.prototype.attach_events = function() {
   });
 }
 
-TJISignupDonateFormModal.prototype.next = function() {
+TJISignupDonateFormModal.prototype.next = function(message) {
   this.state.panel = this.state.panel + 1;
 //TODO: slide out and slide in transition?
   this.ui.$modal.find('.js-formpanel').hide();
-  this.ui.$modal.find('.js-formpanel').eq(this.state.panel).show();
+  var $target_panel = this.ui.$modal.find('.js-formpanel').eq(this.state.panel)
+  if(message) {
+    $target_panel.prepend('<p class="tji-modal__form-panel-success">' + message + '</p>')
+  }
+  $target_panel.show();
 }
 
 TJISignupDonateFormModal.prototype.open = function() {
@@ -114,15 +118,25 @@ TJISignupDonateFormModal.prototype.open = function() {
 }
 
 TJISignupDonateFormModal.prototype.close = function() {
+  var that = this;
   this.ui.$modal
     .hide(function(){
       jQuery(this)
         .removeClass('opened')
-        .show(0);
+        .show(0)
+        .find('.tji-modal__form-panel-success').remove();
+      that.reset_validation();
     });
     
   this.state.panel = 0;
   this.state.data = {};
+}
+
+TJISignupDonateFormModal.prototype.render_validation_error = function(error_message) {
+  var $error = jQuery('<div class="tji-modal__form-panel-error" />').text(error_message);
+  this.ui.$modal.find('.js-formpanel').eq(this.state.panel)
+    .find('fieldset')
+    .before($error);
 }
 
 TJISignupDonateFormModal.prototype.reset_validation = function() {
@@ -137,31 +151,30 @@ TJISignupDonateFormModal.prototype.set_data_and_validate = function() {
 }
 
 TJISignupDonateFormModal.prototype.validate = function() {
-  var error_message;
 
   if(this.state.panel === 0) {
     this.state.data.whoami = (this.state.data.whoami === 'other') ? this.state.data.whoami_other : this.state.data.whoami;
     if (!this.state.data.whoami) {
-      error_message = 'Please let us know what your deal is?';
+      this.render_validation_error('Please let us know what your deal is?');
+      return false;
     }
   }
   if(this.state.panel === 1) {
+    this.state.data.fname = this.state.data.fname.trim();
+    if(!this.state.data.fname) {
+      this.render_validation_error('Please enter your first name.');
+      return false;
+    }
     if(!/\S+@\S+\.\S+/.test(this.state.data.email)) {
-      error_message = 'Your email is bunk?';
+      this.render_validation_error('Why did you enter a bunk email?');
+      return false;
     }
   }
   if(this.state.panel === 2) {
     if(!/\S+@\S+\.\S+/.test(this.state.data.email)) {
-      error_message = 'Please enter a dollar amount?';
+      this.render_validation_error('Please enter a dollar amount?');
+      return false;
     }
-  }
-
-  if(error_message) {
-    var $error = jQuery('<div class="tji-modal__form-panel-error" />').text(error_message);
-    this.ui.$modal.find('.js-formpanel').eq(this.state.panel)
-      .find('fieldset')
-      .before($error);
-    return false;
   }
 
   localStorage.setItem(this.local_storage_key, JSON.stringify(this.state.data));
@@ -178,8 +191,16 @@ TJISignupDonateFormModal.prototype.log = function() {
 TJISignupDonateFormModal.prototype.signup = function() {
   if(!this.set_data_and_validate())
     return;
-  console.log('OH WOW SIGNUP!');
-  this.next();
+
+  var that = this;
+
+  jQuery.post('/wp-json/newsletter/signup/', this.state.data)
+    .done(function(response){
+      that.next('Thanks, ' + response +'! You\'re all signed up for our newsletter!');
+    })
+    .fail(function(error){
+      that.render_validation_error('OH NO! ' + error.responseJSON.message);
+    });
 }
 
 TJISignupDonateFormModal.prototype.donate = function() {
@@ -995,9 +1016,10 @@ TJIChartView.prototype.update_chartview_summary = function() {
 
 TJIChartView.prototype.download = function() {
 
-  // if(!localStorage.getItem(this.components.modal.local_storage_key)) {
+//TODO: remove comments to stop modal pop
+// if(!localStorage.getItem(this.components.modal.local_storage_key)) {
     this.components.modal.open();
-  // }
+// }
 
 //TODO: remove return  
 return;

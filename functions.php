@@ -242,6 +242,43 @@ function tji_data_load() {
 add_action( 'wp_enqueue_scripts', 'tji_data_load' );
 
 /**
+ * Create rest endpoint for mailchimp sign up
+ */
+
+require('inc/vendor/MailChimp.php'); 
+use \TJI\MailChimp\MailChimp;
+
+function mc_signup(WP_REST_Request $request) {
+	// api key for mailchimp
+	$mc_apikey = getenv('MAILCHIMP_API_KEY');
+	//id for mailchimp email list: Texas Justice Initiative
+	$mc_listid = getenv('MAILCHIMP_NEWSLETTER_LIST');
+
+	$MC = new MailChimp($mc_apikey);
+
+	$result = $MC->post("lists/$mc_listid/members", [
+	        'email_address' => sanitize_text_field($request->get_param( 'email' )),
+	        'status'        => 'subscribed',
+	        'merge_fields' 	=> ['FNAME'=>sanitize_text_field($request->get_param( 'fname' ))]
+	      ]);
+
+	if ($MC->success()) {
+	  return $result['merge_fields']['FNAME']; 
+	} else {
+		$error = json_decode($MC->getLastResponse()['body']);
+	  return new WP_Error('mailchimp_post_error', $error->detail, ['status' => $error->status]);
+	}
+}
+
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'newsletter', '/signup/', [
+    'methods' => 'POST',
+    'callback' => 'mc_signup',
+  ]);
+});
+
+
+/**
  * Implement the Custom Header feature.
  */
 require get_template_directory() . '/inc/custom-header.php';

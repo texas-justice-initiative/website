@@ -45,7 +45,10 @@
         <p>Did you want to sign up for our newsletter?</p>
         <fieldset>
           <div class="tji-modal__form-text-group tji-modal__form-group--center">
-            <input type="text" name="email" placeholder="myname@gmail.com" />
+            <input type="text" name="fname" placeholder="First Name" />
+          </div>
+          <div class="tji-modal__form-text-group tji-modal__form-group--center">
+            <input type="text" name="email" placeholder="Email" />
           </div>
         </fieldset>
         <div class="tji-modal__buttons">
