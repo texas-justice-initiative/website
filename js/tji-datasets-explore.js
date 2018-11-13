@@ -356,7 +356,11 @@ var TJIChartView = function(props){
 
   this.datasets[this.state.active_dataset_index].fetch_data
     .done(function(){
-      that.ui.$summary_container.show();
+      that.ui.$summary_container.show();  
+      // Expand filter panel by default on larger screens
+      if (jQuery(window).width() > BREAKPOINTS.sm) {
+        that.ui.$chartview.addClass('tji-chartview-wrapper--controls-expanded');
+      }
     });
 }
 
@@ -706,11 +710,6 @@ TJIChartView.prototype.create_chartview_DOM = function() {
 // attach delegated event handlers to parent DOM elements that are data agnostic
 TJIChartView.prototype.attach_events = function() {
   var that = this;
-
-	// Expand filter panel by default on larger screens
-	if (jQuery(window).width() > BREAKPOINTS.sm) {
-		that.ui.$chartview.addClass('tji-chartview-wrapper--controls-expanded');
-	}
 
   jQuery('#js-chartview-controls-toggle').on('click', function(e) {
     that.ui.$chartview.toggleClass('tji-chartview-wrapper--controls-expanded');
