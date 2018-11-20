@@ -111,11 +111,11 @@
 
 .tji-modal__form-text-group,
 .tji-modal__form-radio-group {
-  display: flex;
   align-items: baseline;
+  display: flex;
+  flex-shrink: 0;
   margin-bottom: $tji-spacing-xs;
 }
-
 .tji-modal__form-radio-group {
   input {
     margin-right: $tji-spacing-xxs;
@@ -139,22 +139,31 @@
 }
 
 .tji-modal__form-text-group {
+  width: 100%;
+
   input {
-    margin-left: $tji-spacing-xs;
+    width: 100%;
   }
 }
 
-.tji-modal__form-group--center {
-  
+.tji-modal__form-group--center {  
   justify-content: center;
+}
 
-  &.tji-modal__form-text-group {
-    input {
-      width: 100%;
-      margin-left: 0;
-    }
+.tji-modal__fieldset-flex {
+  display: flex;
+  flex-wrap: wrap;
+  .tji-modal__form-col-1 {
+    width: 100%; 
+  }
+  .tji-modal__form-col-2 {
+    width: 50%; 
+  }
+  .tji-modal__form-col-3 {
+    width: 33%; 
   }
 }
+
 
 /*--------------------------------------------------------------
 ## CHARTS

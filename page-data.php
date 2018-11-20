@@ -45,6 +45,7 @@ get_header();
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 <script src="<?php echo get_template_directory_uri(); ?>/js/chartjs-plugin-labels.min.js"></script>
 <script src="<?php echo get_template_directory_uri(); ?>/js/auto-complete.min.js"></script>
+
 <script>
   // See js/tji-datasets-explore.js
   jQuery(function(){
@@ -112,6 +113,8 @@ get_header();
     });
   })
 </script>
+<!-- JS Dependencies for newsletter signup and donate functionality -->
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
 
 <?php
   

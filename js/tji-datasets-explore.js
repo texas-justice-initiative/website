@@ -28,11 +28,13 @@ var BREAKPOINTS = {
 };
 
 // *******************************************************************
-// * "Class" for a managing forms with different steps
+// * "Class" for a managing newsletter sign up and donate form modal
+ // * with different panels
 // *
 // * Constructor arguments as properties of props object:
 // *   modal_elt_selector: jQuery object with modal DOM
 // *   local_storage_key: key used to store data to localStorage
+// *   show_panels: array ['whoami', 'newsletter', 'donate']
 // *
 // * Dependencies: jQuery
 // *******************************************************************
@@ -41,22 +43,32 @@ var TJISignupDonateFormModal = function(props) {
   
   var that = this;
 
+  this.props = props;
+
+  // panels to show
+  this.panels = props.show_panels || ['newsletter', 'whoami', 'donate'];
+  this.panels.push('thanks');
+
+  // key to save data to local storage / user's browser
+  this.local_storage_key = props.local_storage_key;
+
   //properties that describe current state of app
   //ex. selected current panel/step of form
   this.state = {
     panel: 0,
-    data: [],
+    data: {},
   }
-
-  // key to save data to local storage / user's browser
-  this.local_storage_key = props.local_storage_key;
 
   //jquery object references to DOM elements
   this.ui = {
     $modal: jQuery(props.modal_elt_selector),
   };
 
+  this.render_dom();
   this.attach_events();
+}
+TJISignupDonateFormModal.prototype.render_dom = function() {
+  //TODO: REMOVE PANELS NOT IN LIST
 }
 
 TJISignupDonateFormModal.prototype.attach_events = function() {
@@ -86,11 +98,11 @@ TJISignupDonateFormModal.prototype.attach_events = function() {
     that.reset_validation();
     that.close();
   });
-  this.ui.$modal.on('click', '.js-log', function(e){
+  this.ui.$modal.on('click', '.js-log-whoami', function(e){
     e.preventDefault();
     that.log();
   });
-  this.ui.$modal.on('click', '.js-signup', function(e){
+  this.ui.$modal.on('click', '.js-signup-newsletter', function(e){
     e.preventDefault();
     that.signup();
   });
@@ -100,20 +112,26 @@ TJISignupDonateFormModal.prototype.attach_events = function() {
   });
 }
 
-TJISignupDonateFormModal.prototype.next = function(message) {
-  this.state.panel = this.state.panel + 1;
-//TODO: slide out and slide in transition?
+TJISignupDonateFormModal.prototype.show_panel = function(panel_name, message) {
+  //TODO: some transition animation / slide out and slide in transition?
   this.ui.$modal.find('.js-formpanel').hide();
-  var $target_panel = this.ui.$modal.find('.js-formpanel').eq(this.state.panel)
+  var $target_panel = this.ui.$modal.find('.js-formpanel-' + panel_name);
   if(message) {
     $target_panel.prepend('<p class="tji-modal__form-panel-success">' + message + '</p>')
   }
   $target_panel.show();
 }
 
+TJISignupDonateFormModal.prototype.next = function(message) {
+  this.state.panel++;
+  //TODO: deserialize existing form data if present 
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!-- somehow copy email to donor-email -- fname to donor-fname
+  this.show_panel(this.panels[this.state.panel], message);
+}
+
 TJISignupDonateFormModal.prototype.open = function() {
   this.ui.$modal.find('.js-formpanel').hide();
-  this.ui.$modal.find('.js-formpanel').eq(this.state.panel).show();
+  this.ui.$modal.find('.js-formpanel-' + this.panels[this.state.panel]).show();
   this.ui.$modal.addClass('opened');
 }
 
@@ -134,7 +152,7 @@ TJISignupDonateFormModal.prototype.close = function() {
 
 TJISignupDonateFormModal.prototype.render_validation_error = function(error_message) {
   var $error = jQuery('<div class="tji-modal__form-panel-error" />').text(error_message);
-  this.ui.$modal.find('.js-formpanel').eq(this.state.panel)
+  this.ui.$modal.find('.js-formpanel-' + this.panels[this.state.panel])
     .find('fieldset')
     .before($error);
 }
@@ -145,21 +163,20 @@ TJISignupDonateFormModal.prototype.reset_validation = function() {
 
 TJISignupDonateFormModal.prototype.set_data_and_validate = function() {
   this.reset_validation();
-  var data = this.ui.$modal.find('form').serializeArray();
-  this.state.data = _.mapValues(_.keyBy(data, 'name'), 'value');
+  var data = this.ui.$modal.find('.js-formpanel-' + this.panels[this.state.panel]).find('[name]').serializeArray();
+  _.assign(this.state.data, _.mapValues(_.keyBy(data, 'name'), 'value'));
   return this.validate();
 }
 
 TJISignupDonateFormModal.prototype.validate = function() {
-
-  if(this.state.panel === 0) {
+  if(this.panels[this.state.panel] === 'whoami') {
     this.state.data.whoami = (this.state.data.whoami === 'other') ? this.state.data.whoami_other : this.state.data.whoami;
     if (!this.state.data.whoami) {
       this.render_validation_error('Please let us know what your deal is?');
       return false;
     }
   }
-  if(this.state.panel === 1) {
+  if(this.panels[this.state.panel] === 'newsletter') {
     this.state.data.fname = this.state.data.fname.trim();
     if(!this.state.data.fname) {
       this.render_validation_error('Please enter your first name.');
@@ -170,9 +187,11 @@ TJISignupDonateFormModal.prototype.validate = function() {
       return false;
     }
   }
-  if(this.state.panel === 2) {
-    if(!/\S+@\S+\.\S+/.test(this.state.data.email)) {
-      this.render_validation_error('Please enter a dollar amount?');
+  if(this.panels[this.state.panel] === 'donate') {
+    this.state.data.donation = this.state.data.donation === 'other' ? this.state.data.donation_other : this.state.data.donation;
+    this.state.data.donation = parseFloat(this.state.data.donation).toFixed(2);
+    if(isNaN(this.state.data.donation) || !this.state.data.donation) {
+      this.render_validation_error('Please enter a numeric dollar amount more than 0');
       return false;
     }
   }
@@ -206,8 +225,15 @@ TJISignupDonateFormModal.prototype.signup = function() {
 TJISignupDonateFormModal.prototype.donate = function() {
   if(!this.set_data_and_validate())
     return;
-  console.log('launch donate page in new window? maybe we should make it into a modalform too?');
-  this.next();
+  //fill in values on confirmation panel with this.state.data
+  //init paypal
+  this.show_panel('donate-confirmation');
+}
+
+TJISignupDonateFormModal.prototype.initialize_paypal = function() {
+  //initialize paypal donate button //paypal.Button.render({ ..., '#' + this.props.modal_elt_selector + '-paypal'
+  //if paypal success --> this.next();
+  //else show error?
 }
 
 // *******************************************************************
