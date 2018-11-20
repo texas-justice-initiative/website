@@ -36,7 +36,7 @@ var BREAKPOINTS = {
 // *   local_storage_key: key used to store data to localStorage
 // *   show_panels: array ['whoami', 'newsletter', 'donate']
 // *
-// * Dependencies: jQuery
+// * Dependencies: jQuery, Google Analytics, Paypal checkout
 // *******************************************************************
 
 var TJISignupDonateFormModal = function(props) {
@@ -64,11 +64,7 @@ var TJISignupDonateFormModal = function(props) {
     $modal: jQuery(props.modal_elt_selector),
   };
 
-  this.render_dom();
   this.attach_events();
-}
-TJISignupDonateFormModal.prototype.render_dom = function() {
-  //TODO: REMOVE PANELS NOT IN LIST
 }
 
 TJISignupDonateFormModal.prototype.attach_events = function() {
@@ -77,26 +73,28 @@ TJISignupDonateFormModal.prototype.attach_events = function() {
   //select the radio next to the custom radio value text input when a user is typing within that custom input
   //this is for users to send a custom text value in a group of radio buttons
   this.ui.$modal.find('.tji-modal__form-radio-group--textinput').on('focus', 'input[type="text"]', function(e){
-    that.reset_validation();
+    that.clear_messages();
     jQuery(e.delegateTarget).find('input[type="radio"]').prop('checked', true);
   });
 
   //clear the custom radio value text input when another radio is clicked
   //this is for users to send a custom text value in a group of radio buttons
   this.ui.$modal.find('.tji-modal__form-radio-group').on('click', function(e){
-    that.reset_validation();
+    that.clear_messages();
     jQuery(e.currentTarget).siblings('.tji-modal__form-radio-group--textinput').find('input[type="text"]').val('');
   });
 
   this.ui.$modal.on('click', '.js-next', function(e){
     e.preventDefault();
-    that.reset_validation();
     that.next();
   });
   this.ui.$modal.on('click', '.js-cancel', function(e){
     e.preventDefault();
-    that.reset_validation();
     that.close();
+  });
+  this.ui.$modal.on('click', '.js-edit', function(e){
+    e.preventDefault();
+    that.show_panel(that.panels[that.state.panel], null, 'Please edit your information below.');
   });
   this.ui.$modal.on('click', '.js-log-whoami', function(e){
     e.preventDefault();
@@ -112,20 +110,56 @@ TJISignupDonateFormModal.prototype.attach_events = function() {
   });
 }
 
-TJISignupDonateFormModal.prototype.show_panel = function(panel_name, message) {
+TJISignupDonateFormModal.prototype.show_panel = function(panel_name, message, error_message) {
   //TODO: some transition animation / slide out and slide in transition?
-  this.ui.$modal.find('.js-formpanel').hide();
   var $target_panel = this.ui.$modal.find('.js-formpanel-' + panel_name);
+  this.ui.$modal.find('.js-formpanel').hide();
+  this.clear_messages();
   if(message) {
     $target_panel.prepend('<p class="tji-modal__form-panel-success">' + message + '</p>')
   }
+  if(error_message) this.render_validation_error(error_message);
+  this.prefill_panel(panel_name)
   $target_panel.show();
+}
+
+TJISignupDonateFormModal.prototype.prefill_panel = function(panel_name) {
+  var $target_panel = this.ui.$modal.find('.js-formpanel-' + panel_name);
+
+  if(panel_name === 'newsletter') {
+    if(this.state.data.email) {
+      $target_panel.find('input[name="email"]').val(this.state.data.email);
+      $target_panel.find('input[name="fname"]').val(this.state.data.fname);
+      return;
+    }
+    if(this.state.data.donor_email) {
+      $target_panel.find('input[name="email"]').val(this.state.data.donor_email);
+      $target_panel.find('input[name="fname"]').val(this.state.data.donor_fname);
+      return;
+    }
+  } 
+  if(panel_name == 'donate') {
+    if(this.state.data.donor_email) {
+      $target_panel.find('input[name="donor_email"]').val(this.state.data.donor_email);
+      $target_panel.find('input[name="donor_fname"]').val(this.state.data.donor_fname);
+      return;
+    }
+    if(this.state.data.email) {
+      $target_panel.find('input[name="donor_email"]').val(this.state.data.email);
+      $target_panel.find('input[name="donor_fname"]').val(this.state.data.fname);
+      return;
+    }
+  }
+  if(panel_name == 'donate-confirmation') {
+    $target_panel.find('input[name="donor_email"]').val(this.state.data.donor_email);
+    $target_panel.find('input[name="donor_fname"]').val(this.state.data.donor_fname);
+    $target_panel.find('input[name="donation"]').val(this.state.data.donation);
+    return;
+  }
 }
 
 TJISignupDonateFormModal.prototype.next = function(message) {
   this.state.panel++;
-  //TODO: deserialize existing form data if present 
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!-- somehow copy email to donor-email -- fname to donor-fname
   this.show_panel(this.panels[this.state.panel], message);
 }
 
@@ -143,7 +177,7 @@ TJISignupDonateFormModal.prototype.close = function() {
         .removeClass('opened')
         .show(0)
         .find('.tji-modal__form-panel-success').remove();
-      that.reset_validation();
+      that.clear_messages();
     });
     
   this.state.panel = 0;
@@ -157,18 +191,17 @@ TJISignupDonateFormModal.prototype.render_validation_error = function(error_mess
     .before($error);
 }
 
-TJISignupDonateFormModal.prototype.reset_validation = function() {
+TJISignupDonateFormModal.prototype.clear_messages = function() {
   this.ui.$modal.find('.tji-modal__form-panel-error').remove();
+  this.ui.$modal.find('.tji-modal__form-panel-success').remove();
 }
 
 TJISignupDonateFormModal.prototype.set_data_and_validate = function() {
-  this.reset_validation();
+  this.clear_messages();
+  
   var data = this.ui.$modal.find('.js-formpanel-' + this.panels[this.state.panel]).find('[name]').serializeArray();
   _.assign(this.state.data, _.mapValues(_.keyBy(data, 'name'), 'value'));
-  return this.validate();
-}
 
-TJISignupDonateFormModal.prototype.validate = function() {
   if(this.panels[this.state.panel] === 'whoami') {
     this.state.data.whoami = (this.state.data.whoami === 'other') ? this.state.data.whoami_other : this.state.data.whoami;
     if (!this.state.data.whoami) {
@@ -203,7 +236,7 @@ TJISignupDonateFormModal.prototype.validate = function() {
 TJISignupDonateFormModal.prototype.log = function() {
   if(!this.set_data_and_validate())
     return;
-  console.log('log!');
+  console.log('log to GA: ', this.state.data.whoami);
   this.next();
 }
 
@@ -225,15 +258,71 @@ TJISignupDonateFormModal.prototype.signup = function() {
 TJISignupDonateFormModal.prototype.donate = function() {
   if(!this.set_data_and_validate())
     return;
-  //fill in values on confirmation panel with this.state.data
-  //init paypal
+  this.initialize_paypal();
   this.show_panel('donate-confirmation');
 }
 
 TJISignupDonateFormModal.prototype.initialize_paypal = function() {
-  //initialize paypal donate button //paypal.Button.render({ ..., '#' + this.props.modal_elt_selector + '-paypal'
-  //if paypal success --> this.next();
-  //else show error?
+
+  var that = this;
+  
+  paypal.Button.render({
+
+      // Set your environment
+
+    env: 'sandbox', // sandbox | production
+
+    // Specify the style of the button
+
+    style: {
+      label: 'checkout',
+      size:  'medium',    // small | medium | large | responsive
+      shape: 'rect',     // pill | rect
+      color: 'gold',      // gold | blue | silver | black
+      tagline: false
+    },
+
+    // PayPal Client IDs - replace with your own
+    // Create a PayPal app: https://developer.paypal.com/developer/applications/create
+
+    client: {
+      sandbox: 'AZ2LDJwEbuFjH45Izqk5pmxHtyzxtooUPBCrvrn7tjKXIbv-xGxXsflhCMGl6dy2tRBEliztwiPzCckc',
+      production: 'ATVsibuGpsWpkiSPBnC3hyrqeQFZ-YlLW9BYzg53mOehgbTUv6ZESr0lX-u30xmgxxUosQX5QtQNpT81'
+    },
+
+    payment: function(data, actions) {
+      return actions.payment.create({
+        payment: {
+          transactions: [
+            {
+              amount: { total: that.state.data.donation_amount, currency: 'USD' },
+              description: 'A donation supporting the Texas Justice Initiative.',
+              payment_options: {
+                allowed_payment_method: 'INSTANT_FUNDING_SOURCE'
+              },
+            }
+          ],
+          note_to_payer: 'Thank you for supporting the Texas Justice Initiative. We greatly appreciate your generous donation!'
+        },
+        experience: {
+          input_fields: {
+            no_shipping: 1
+          }
+        }
+      });
+    },
+
+    onAuthorize: function(data, actions) {
+      return actions.payment.execute().then(function() {
+        window.alert('Payment Complete!');
+      });
+    },
+
+    onError: function (err) { 
+      console.log('paypal err:', err);
+    }
+
+  }, '#' + this.props.modal_elt_selector + '-paypal');
 }
 
 // *******************************************************************

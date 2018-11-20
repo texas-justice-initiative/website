@@ -62,10 +62,10 @@
         <p>TJI could really use your money. We'll use it to pay for cheetos for our volunteers? I dunno. </p>
         <fieldset>
           <div class="tji-modal__form-text-group">
-            <input type="text" name="donor-fname" placeholder="Donor First Name" />
+            <input type="text" name="donor_fname" placeholder="Donor First Name" />
           </div>
           <div class="tji-modal__form-text-group">
-            <input type="text" name="donor-email" placeholder="Donor Email" />
+            <input type="text" name="donor_email" placeholder="Donor Email" />
           </div>
           <p class="font-blue font-bold">Choose a donation amount: </p>
           <div class="tji-modal__fieldset-flex">
@@ -105,18 +105,18 @@
         <h2>Do you really wanna give us $$$???</h2>
         <p>Please confirm that all the stuff below is legit</p>
         <fieldset>
-          <div class="tji-modal__form-text-group tji-modal__form-group--center">
-            <input type="text" name="donor-fname" readonly />
+          <div class="tji-modal__form-text-group">
+            <input type="text" name="donor_fname" readonly />
           </div>
           <div class="tji-modal__form-text-group tji-modal__form-group--center">
-            <input type="text" name="donor-email" readonly />
+            <input type="text" name="donor_email" readonly />
           </div>
           <div class="tji-modal__form-text-group tji-modal__form-group--center">
             <span>$</span><input type="text" name="donation" readonly />
           </div>
         </fieldset>
         <div class="tji-modal__buttons">
-          <a href="#" class="js-next link link--cancel">Nope</a>
+          <a href="#" class="js-edit link link--cancel">Nope</a>
           <div id="<?= $signupdonate_id ?>-paypal"></div>          
         </div>
       </div>
