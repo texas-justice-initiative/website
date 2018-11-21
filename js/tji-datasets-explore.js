@@ -46,7 +46,7 @@ var TJISignupDonateFormModal = function(props) {
   this.props = props;
 
   // panels to show
-  this.panels = props.show_panels || ['newsletter', 'whoami', 'donate'];
+  this.panels = props.show_panels || ['whoami', 'newsletter', 'donate'];
   this.panels.push('thanks');
 
   // key to save data to local storage / user's browser
@@ -61,8 +61,12 @@ var TJISignupDonateFormModal = function(props) {
 
   //jquery object references to DOM elements
   this.ui = {
-    $modal: jQuery(props.modal_elt_selector),
+    $modal:   jQuery(props.modal_elt_selector),
+    $loader:  jQuery(props.modal_elt_selector).find('.tji-modal__loader-overlay'),
   };
+
+  //TODO: create attach dom method which inserts DOM instead of prewriting dom with PHP
+  this.ui.$loader.hide();
 
   this.attach_events();
 }
@@ -237,7 +241,7 @@ TJISignupDonateFormModal.prototype.log = function() {
   if(!this.set_data_and_validate())
     return;
   console.log('log to GA: ', this.state.data.whoami);
-  this.next();
+  this.next('Thanks for helping us better know our users!');
 }
 
 TJISignupDonateFormModal.prototype.signup = function() {
@@ -245,13 +249,15 @@ TJISignupDonateFormModal.prototype.signup = function() {
     return;
 
   var that = this;
-
+  this.ui.$loader.show();
   jQuery.post('/wp-json/newsletter/signup/', this.state.data)
-    .done(function(response){
+    .done(function(response){      
       that.next('Thanks, ' + response +'! You\'re all signed up for our newsletter!');
+      that.ui.$loader.hide();
     })
     .fail(function(error){
       that.render_validation_error('OH NO! ' + error.responseJSON.message);
+      that.ui.$loader.hide();
     });
 }
 
@@ -291,11 +297,12 @@ TJISignupDonateFormModal.prototype.initialize_paypal = function() {
     },
 
     payment: function(data, actions) {
+      that.ui.$loader.show();
       return actions.payment.create({
         payment: {
           transactions: [
             {
-              amount: { total: that.state.data.donation_amount, currency: 'USD' },
+              amount: { total: that.state.data.donation, currency: 'USD' },
               description: 'A donation supporting the Texas Justice Initiative.',
               payment_options: {
                 allowed_payment_method: 'INSTANT_FUNDING_SOURCE'
@@ -314,15 +321,19 @@ TJISignupDonateFormModal.prototype.initialize_paypal = function() {
 
     onAuthorize: function(data, actions) {
       return actions.payment.execute().then(function() {
+        that.ui.$loader.hide();
         window.alert('Payment Complete!');
       });
     },
-
+    onCancel: function (data, actions) {
+      that.ui.$loader.hide();
+      //TODO: show cancel button, change button, paypal button
+    },
     onError: function (err) { 
       console.log('paypal err:', err);
     }
 
-  }, '#' + this.props.modal_elt_selector + '-paypal');
+  }, this.props.modal_elt_selector + '-paypal');
 }
 
 // *******************************************************************

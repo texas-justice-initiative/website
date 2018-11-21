@@ -116,7 +116,7 @@
           </div>
         </fieldset>
         <div class="tji-modal__buttons">
-          <a href="#" class="js-edit link link--cancel">Nope</a>
+          <a href="#" class="js-edit link link--cancel">Edit Info</a>
           <div id="<?= $signupdonate_id ?>-paypal"></div>          
         </div>
       </div>
@@ -131,5 +131,8 @@
       </div>
       
     </form>
+    <div class="tji-modal__loader-overlay">
+      <div class="tji-modal__loader"></div>
+    </div>
   </div>
 </div>
