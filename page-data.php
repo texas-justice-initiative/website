@@ -74,7 +74,7 @@ get_header();
           {'name': 'death_location_county', 'type': 'autocomplete'},
         ],
       }, {
-        name: 'officer involved shootings',
+        name: 'civilians shot by officers',
         description: "Shootings involving Texas law enforcement since Sept. 2015, as reported to the Office of the Attorney General.",
         urls: {
           compressed: '<?php echo get_template_directory_uri(); ?>/data/ois_compressed.json',
@@ -97,7 +97,7 @@ get_header();
           {'name': 'incident_county', 'type': 'autocomplete'},
         ],
       }, {
-        name: 'officers shot',
+        name: 'OIS - officers shot by civilians',
         description: "Shootings that injured or killed Texas law enforcement officers since Sept. 2015, as reported to the Office of the Attorney General.",
         urls: {
           compressed: '<?php echo get_template_directory_uri(); ?>/data/ois_officers_compressed.json',
