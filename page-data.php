@@ -114,7 +114,6 @@ get_header();
           {'name': 'year'},
           {'name': 'officer_race'},
           {'name': 'officer_harm'},
-          {'name': 'civilian_race_1'},
           {'name': 'civilian_harm'},
           {'name': 'agency_name', 'type': 'autocomplete'},
           {'name': 'incident_county', 'type': 'autocomplete'},
