@@ -108,8 +108,6 @@ get_header();
           {type: 'doughnut', group_by: 'officer_race'},
           {type: 'doughnut', group_by: 'officer_gender'},
           {type: 'doughnut', group_by: 'officer_harm'},
-          {type: 'doughnut', group_by: 'civilian_race_1'},
-          {type: 'doughnut', group_by: 'civilian_gender_1'},
           {type: 'doughnut', group_by: 'civilian_harm'},
         ],
         filter_configs: [
