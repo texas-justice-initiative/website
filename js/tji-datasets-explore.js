@@ -694,7 +694,7 @@ TJIChartView.prototype.create_chartview_DOM = function() {
     class: 'tji-chartview__record-count'
   });
 
-  this.ui.$download = jQuery('<button class="tji-btn-primary tji-btn-download tji-chartview__download-button" disabled> <i class="fas fa-download"></i> Download</button>');
+  this.ui.$download = jQuery('<button class="tji-btn-primary tji-btn-download tji-chartview__download-button" disabled> <i class="fas fa-download"></i> Download (CSV)</button>');
 
   this.ui.$summary_container = jQuery(this.templates.chartview_summary_template)
     .addClass('tji-chartview__summary')
