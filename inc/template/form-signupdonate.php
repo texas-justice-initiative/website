@@ -108,15 +108,18 @@
         <h2>Do you really wanna give us $$$???</h2>
         <p>Please confirm that all the stuff below is legit</p>
         <fieldset>
+          <div class="tji-modal__form-label">Donor Name:</div>
           <div class="tji-modal__form-text-group">
             <input type="text" name="donor_fname" readonly />
           </div>
           <div class="tji-modal__form-text-group">
             <input type="text" name="donor_lname" readonly />
           </div>
+          <div class="tji-modal__form-label">Donor Email:</div>
           <div class="tji-modal__form-text-group tji-modal__form-group--center">
             <input type="text" name="donor_email" readonly />
           </div>
+          <div class="tji-modal__form-label">Donation Amount:</div>
           <div class="tji-modal__form-text-group tji-modal__form-group--center">
             <span>$</span><input type="text" name="donation" readonly />
           </div>

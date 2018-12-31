@@ -130,6 +130,7 @@ TJISignupDonateFormModal.prototype.prefill_panel = function(panel_name) {
   if(panel_name == 'donate-confirmation') {
     $target_panel.find('input[name="donor_email"]').val(this.state.data.donor_email);
     $target_panel.find('input[name="donor_fname"]').val(this.state.data.donor_fname);
+    $target_panel.find('input[name="donor_lname"]').val(this.state.data.donor_lname);
     $target_panel.find('input[name="donation"]').val(this.state.data.donation);
     return;
   }
@@ -258,6 +259,9 @@ TJISignupDonateFormModal.prototype.donate = function() {
 TJISignupDonateFormModal.prototype.initialize_paypal = function() {
 
   var that = this;
+  
+  //TODO: how to reset values w/o rerendering new button 
+  // --> if user edits info multiple buttons will be rendered
   
   paypal.Button.render({
 

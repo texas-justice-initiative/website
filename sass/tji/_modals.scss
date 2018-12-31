@@ -18,9 +18,9 @@
 
   .tji-modal__body {
     background: #fefefe;
-    border: #333333 solid 0px;
+    border: none;
     border-radius: 5px;
-    margin-left: -200px;
+    margin-left: -185px;
     text-align:center;
     position: fixed;
     left: 50%;
@@ -146,6 +146,12 @@
   text-align: left;
 }
 
+.tji-modal__form-label {
+  color: $tji-blue-dark;
+  margin-top: $tji-spacing-sm;
+  text-align: left;
+}
+
 .tji-modal__form-text-group,
 .tji-modal__form-radio-group {
   align-items: baseline;
@@ -177,6 +183,10 @@
 
 .tji-modal__form-text-group {
   width: 100%;
+
+  span {
+    margin-right: $tji-spacing-xxs;
+  }
 
   input {
     width: 100%;
