@@ -198,6 +198,20 @@ TJISignupDonateFormModal.prototype.set_data_and_validate = function() {
     }
   }
   if(this.panels[this.state.panel] === 'donate') {
+    this.state.data.donor_fname = this.state.data.donor_fname.trim();
+    if(!this.state.data.donor_fname) {
+      this.render_validation_error('Please enter the donor\'s first name.');
+      return false;
+    }
+    this.state.data.donor_lname = this.state.data.donor_lname.trim();
+    if(!this.state.data.donor_lname) {
+      this.render_validation_error('Please enter the donor\'s last name.');
+      return false;
+    }
+    if(!/\S+@\S+\.\S+/.test(this.state.data.donor_email)) {
+      this.render_validation_error('Why did you enter a bunk donor email?');
+      return false;
+    }
     this.state.data.donation = this.state.data.donation === 'other' ? this.state.data.donation_other : this.state.data.donation;
     this.state.data.donation = parseFloat(this.state.data.donation).toFixed(2);
     if(isNaN(this.state.data.donation) || !this.state.data.donation) {
@@ -282,6 +296,13 @@ TJISignupDonateFormModal.prototype.initialize_paypal = function() {
               },
             }
           ],
+          payer: {
+            payer_info: {
+              email: that.state.data.donor_email,
+              first_name: that.state.data.donor_fname,
+              last_name: that.state.data.donor_lname,
+            },
+          },
           note_to_payer: 'Thank you for supporting the Texas Justice Initiative. We greatly appreciate your generous donation!'
         },
         experience: {
@@ -295,12 +316,14 @@ TJISignupDonateFormModal.prototype.initialize_paypal = function() {
     onAuthorize: function(data, actions) {
       return actions.payment.execute().then(function() {
         that.ui.$loader.hide();
-        window.alert('Payment Complete!');
+        //TODO: show thanks for your donation stuff on modal
+        //remove paypal button
       });
     },
     onCancel: function (data, actions) {
       that.ui.$loader.hide();
       //TODO: show cancel button, change button, paypal button
+      //remove paypal button
     },
     onError: function (err) { 
       console.log('paypal err:', err);

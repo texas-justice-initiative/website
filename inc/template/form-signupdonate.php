@@ -65,6 +65,9 @@
             <input type="text" name="donor_fname" placeholder="Donor First Name" />
           </div>
           <div class="tji-modal__form-text-group">
+            <input type="text" name="donor_lname" placeholder="Donor Last Name" />
+          </div>
+          <div class="tji-modal__form-text-group">
             <input type="text" name="donor_email" placeholder="Donor Email" />
           </div>
           <p class="font-blue font-bold">Choose a donation amount: </p>
@@ -108,6 +111,9 @@
           <div class="tji-modal__form-text-group">
             <input type="text" name="donor_fname" readonly />
           </div>
+          <div class="tji-modal__form-text-group">
+            <input type="text" name="donor_lname" readonly />
+          </div>
           <div class="tji-modal__form-text-group tji-modal__form-group--center">
             <input type="text" name="donor_email" readonly />
           </div>
@@ -116,8 +122,10 @@
           </div>
         </fieldset>
         <div class="tji-modal__buttons">
-          <a href="#" class="js-edit link link--cancel">Edit Info</a>
-          <div id="<?= $signupdonate_id ?>-paypal"></div>          
+          <div>
+            <div id="<?= $signupdonate_id ?>-paypal" class="tji-modal__paypal-button"></div>
+            <a href="#" class="js-edit link link--cancel">Edit Info</a>
+          </div>
         </div>
       </div>
 
