@@ -228,6 +228,9 @@ TJISignupDonateFormModal.prototype.set_data_and_validate = function() {
 TJISignupDonateFormModal.prototype.log = function() {
   if(!this.set_data_and_validate())
     return;
+
+  //TODO: push google analytics event
+  //ga('send', 'event', 'whoami', this.state.data.whoami);
   console.log('log to GA: ', this.state.data.whoami);
   this.next('Thanks for helping us better know our users!');
 }
@@ -262,7 +265,7 @@ TJISignupDonateFormModal.prototype.initialize_paypal = function() {
   
   //TODO: how to reset values w/o rerendering new button 
   // --> if user edits info multiple buttons will be rendered
-  
+
   paypal.Button.render({
 
       // Set your environment
