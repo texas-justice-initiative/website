@@ -52,8 +52,8 @@
           </div>
         </fieldset>
         <div class="tji-modal__buttons">
-          <a href="#" class="js-next link link--cancel">Nope</a>
-          <a href="#" class="js-signup-newsletter btn">Yep</a>          
+          <a href="#" class="js-next link link--cancel">No Thanks</a>
+          <a href="#" class="js-signup-newsletter btn">Sign up!</a>          
         </div>
       </div>
 
@@ -99,35 +99,19 @@
           </div>
         </fieldset>
         <div class="tji-modal__buttons">
-          <a href="#" class="js-next link link--cancel">Nope</a>
-          <a href="#" class="js-donate btn">Yep</a>          
+          <a href="#" class="js-next link link--cancel">No Thanks</a>
+          <a href="#" class="js-donate btn">Donate!</a>          
         </div>
       </div>
 
       <div class="js-formpanel js-formpanel-donate-confirmation tji-modal__form-panel">
-        <h2>Do you really wanna give us $$$???</h2>
-        <p>Please confirm that all the stuff below is legit</p>
-        <fieldset>
-          <div class="tji-modal__form-label">Donor Name:</div>
-          <div class="tji-modal__form-text-group">
-            <input type="text" name="donor_fname" readonly />
-          </div>
-          <div class="tji-modal__form-text-group">
-            <input type="text" name="donor_lname" readonly />
-          </div>
-          <div class="tji-modal__form-label">Donor Email:</div>
-          <div class="tji-modal__form-text-group tji-modal__form-group--center">
-            <input type="text" name="donor_email" readonly />
-          </div>
-          <div class="tji-modal__form-label">Donation Amount:</div>
-          <div class="tji-modal__form-text-group tji-modal__form-group--center">
-            <span>$</span><input type="text" name="donation" readonly />
-          </div>
-        </fieldset>
+        <h2>Choose a payment type:</h2>
+        <p>Currently we only use paypal to accept payments. Click Paypal to donate below.</p>
+        <fieldset></fieldset>
         <div class="tji-modal__buttons">
           <div>
             <div id="<?= $signupdonate_id ?>-paypal" class="tji-modal__paypal-button"></div>
-            <a href="#" class="js-edit link link--cancel">Edit Info</a>
+            <a href="#" class="js-next link link--cancel">No thanks</a>
           </div>
         </div>
       </div>

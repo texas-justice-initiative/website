@@ -156,17 +156,23 @@ TJISignupDonateFormModal.prototype.close = function() {
         .show(0)
         .find('.tji-modal__form-panel-success').remove();
       that.clear_messages();
+      that.clear_fields();
     });
     
   this.state.panel = 0;
   this.state.data = {};
 }
 
-TJISignupDonateFormModal.prototype.render_validation_error = function(error_message) {
+TJISignupDonateFormModal.prototype.render_validation_error = function(error_message, panel) {
+  var panel = panel || this.panels[this.state.panel];
   var $error = jQuery('<div class="tji-modal__form-panel-error" />').text(error_message);
-  this.ui.$modal.find('.js-formpanel-' + this.panels[this.state.panel])
+  this.ui.$modal.find('.js-formpanel-' + panel)
     .find('fieldset')
     .before($error);
+}
+
+TJISignupDonateFormModal.prototype.clear_fields = function() {
+  this.ui.$modal.find('form').trigger('reset')
 }
 
 TJISignupDonateFormModal.prototype.clear_messages = function() {
@@ -263,9 +269,8 @@ TJISignupDonateFormModal.prototype.initialize_paypal = function() {
 
   var that = this;
   
-  //TODO: how to reset values w/o rerendering new button 
-  // --> if user edits info multiple buttons will be rendered
-
+  jQuery(this.props.modal_elt_selector + '-paypal').empty();
+  
   paypal.Button.render({
 
       // Set your environment
@@ -323,17 +328,16 @@ TJISignupDonateFormModal.prototype.initialize_paypal = function() {
     onAuthorize: function(data, actions) {
       return actions.payment.execute().then(function() {
         that.ui.$loader.hide();
-        //TODO: show thanks for your donation stuff on modal
-        //remove paypal button
+        that.next('Thanks for your donation!');
       });
     },
     onCancel: function (data, actions) {
       that.ui.$loader.hide();
-      //TODO: show cancel button, change button, paypal button
-      //remove paypal button
+      that.render_validation_error('Looks like you\'re trying to cancel your donation. ' + 
+        'If you changed your mind, please click \'No Thanks\' below. If not, please click a payment type below.', 'donate-confirmation');
     },
     onError: function (err) { 
-      console.log('paypal err:', err);
+      that.render_validation_error('OH NO! Something went wrong. Try clicking a payment type below again.', 'donate-confirmation');
     }
 
   }, this.props.modal_elt_selector + '-paypal');
