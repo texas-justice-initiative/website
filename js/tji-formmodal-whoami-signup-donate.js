@@ -235,9 +235,7 @@ TJISignupDonateFormModal.prototype.log = function() {
   if(!this.set_data_and_validate())
     return;
 
-  //TODO: push google analytics event
-  //ga('send', 'event', 'whoami', this.state.data.whoami);
-  console.log('log to GA: ', this.state.data.whoami);
+  ga('send', 'event', 'whoami', this.state.data.whoami);
   this.next('Thanks for helping us better know our users!');
 }
 
