@@ -833,13 +833,9 @@ TJIChartView.prototype.update_chartview_summary = function() {
 
 TJIChartView.prototype.download = function() {
 
-//TODO: remove comments to stop modal pop
-// if(!localStorage.getItem(this.components.modal.local_storage_key)) {
-    this.components.modal.open();
-// }
-
-//TODO: remove return  
-return;
+  if(!localStorage.getItem(this.components.modal.local_storage_key)) {
+      this.components.modal.open();
+  }
 
   // Download complete records for the data the user is currently viewing.
   var that = this;
