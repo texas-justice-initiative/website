@@ -48,8 +48,8 @@ get_header();
         name: 'deaths in custody',
         description: "All deaths in custody in Texas since 2005, as reported to the Office of the Attorney General.",
         urls: {
-          compressed: '<?php echo get_template_directory_uri(); ?>/data/cdr_compressed.json',
-          full: '<?php echo get_template_directory_uri(); ?>/data/cdr_full.csv',
+          compressed: 'https://s3.amazonaws.com/tji-compressed-data/cdr_compressed.json',
+          full: 'https://s3.us-east-2.amazonaws.com/tji-public-cleaned-datasets/cleaned_custodial_death_reports.csv',
         },
         chart_configs: [
           {type: 'bar', group_by: 'year'},
@@ -77,8 +77,8 @@ get_header();
         name: 'civilians shot by officers',
         description: "Shootings involving Texas law enforcement since Sept. 2015, as reported to the Office of the Attorney General.",
         urls: {
-          compressed: '<?php echo get_template_directory_uri(); ?>/data/ois_compressed.json',
-          full: '<?php echo get_template_directory_uri(); ?>/data/ois_full.csv',
+          compressed: 'https://s3.amazonaws.com/tji-compressed-data/ois_compressed.json',
+          full: 'https://s3.us-east-2.amazonaws.com/tji-public-cleaned-datasets/shot_civilians.csv',
         },
         chart_configs: [
           {type: 'bar', group_by: 'year'},
@@ -100,8 +100,8 @@ get_header();
         name: 'OIS - officers shot by civilians',
         description: "Shootings that injured or killed Texas law enforcement officers since Sept. 2015, as reported to the Office of the Attorney General.",
         urls: {
-          compressed: '<?php echo get_template_directory_uri(); ?>/data/ois_officers_compressed.json',
-          full: '<?php echo get_template_directory_uri(); ?>/data/ois_officers_full.csv',
+          compressed: 'https://s3.amazonaws.com/tji-compressed-data/ois_officers_compressed.json',
+          full: 'https://s3.us-east-2.amazonaws.com/tji-public-cleaned-datasets/shot_officers.csv',
         },
         chart_configs: [
           {type: 'bar', group_by: 'year'},
