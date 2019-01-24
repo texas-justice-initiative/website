@@ -9,21 +9,21 @@
 
 <script type="text/javascript">
 	// Fetch JSON data for dynamic slider numbers
-	var fetch1 = jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/cdr_compressed.json", function (cdrData) {
-		var cdrStartingYear = cdrData.meta.lookups.year[0];
-		var cdrTotalRecords = cdrData.meta.num_records;
+	var fetch1 = jQuery.getJSON("https://s3.amazonaws.com/tji-compressed-data/cdr_slider.json", function (cdrData) {
+		var cdrStartingYear = cdrData.startingYear;
+		var cdrTotalRecords = cdrData.totalRecords;
 		jQuery("#js-cdr-year").html(cdrStartingYear);
 		jQuery("#js-cdr-total").html(cdrTotalRecords.toLocaleString('en'));
 	});
-	var fetch2 = jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/ois_compressed.json", function (oisData) {
-		var oisStartingYear = oisData.meta.lookups.year[0];
-		var oisTotalRecords = oisData.meta.num_records;
+	var fetch2 = jQuery.getJSON("https://s3.amazonaws.com/tji-compressed-data/ois_slider.json", function (oisData) {
+		var oisStartingYear = oisData.startingYear;
+		var oisTotalRecords = oisData.totalRecords;
 		jQuery("#js-ois-year").html(oisStartingYear);
 		jQuery("#js-ois-total").html(oisTotalRecords.toLocaleString('en'));
 	});
-	var fetch3 = jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/ois_officers_compressed.json", function (officersData) {
-		var officersStartingYear = officersData.meta.lookups.year[0];
-		var officersTotalRecords = officersData.meta.num_records;
+	var fetch3 = jQuery.getJSON("https://s3.amazonaws.com/tji-compressed-data/ois_officers_slider.json", function (officersData) {
+		var officersStartingYear = officersData.startingYear;
+		var officersTotalRecords = officersData.totalRecords;
 		jQuery("#js-officers-year").html(officersStartingYear);
 		jQuery("#js-ois-officers-total").html(officersTotalRecords.toLocaleString('en'));
 	});
