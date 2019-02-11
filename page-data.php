@@ -81,11 +81,11 @@ get_header();
           {'name': 'death_location_county', 'type': 'autocomplete'},
         ],
       }, {
-        name: 'officer involved shootings',
+        name: 'civilians shot by officers',
         description: "Shootings involving Texas law enforcement since Sept. 2015, as reported to the Office of the Attorney General.",
         urls: {
-          compressed: '/wp-content/themes/tji/data/ois_compressed.json',
-          full: '/wp-content/themes/tji/data/ois_full.csv',
+          compressed: '<?php echo get_template_directory_uri(); ?>/data/ois_compressed.json',
+          full: '<?php echo get_template_directory_uri(); ?>/data/ois_full.csv',
         },
         chart_configs: [
           {type: 'bar', group_by: 'year'},
@@ -100,6 +100,28 @@ get_header();
           {'name': 'civilian_gender'},
           {'name': 'civilian_died'},
           {'name': 'deadly_weapon'},
+          {'name': 'agency_name', 'type': 'autocomplete'},
+          {'name': 'incident_county', 'type': 'autocomplete'},
+        ],
+      }, {
+        name: 'OIS - officers shot by civilians',
+        description: "Shootings that injured or killed Texas law enforcement officers since Sept. 2015, as reported to the Office of the Attorney General.",
+        urls: {
+          compressed: '<?php echo get_template_directory_uri(); ?>/data/ois_officers_compressed.json',
+          full: '<?php echo get_template_directory_uri(); ?>/data/ois_officers_full.csv',
+        },
+        chart_configs: [
+          {type: 'bar', group_by: 'year'},
+          {type: 'doughnut', group_by: 'officer_race'},
+          {type: 'doughnut', group_by: 'officer_gender'},
+          {type: 'doughnut', group_by: 'officer_harm'},
+          {type: 'doughnut', group_by: 'civilian_harm'},
+        ],
+        filter_configs: [
+          {'name': 'year'},
+          {'name': 'officer_race'},
+          {'name': 'officer_harm'},
+          {'name': 'civilian_harm'},
           {'name': 'agency_name', 'type': 'autocomplete'},
           {'name': 'incident_county', 'type': 'autocomplete'},
         ],
