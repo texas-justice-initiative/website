@@ -20,13 +20,13 @@
     background: #fefefe;
     border: none;
     border-radius: 5px;
-    margin-left: -185px;
+    margin-left: -150px;
     text-align:center;
     position: fixed;
     left: 50%;
     top: -100%;
     z-index: 101;
-    width: 360px;
+    width: 300px;
     box-shadow:0 5px 10px rgba(0,0,0,0.3);
     -webkit-transform: translate(0, -500%);
     -ms-transform: translate(0, -500%);
@@ -35,6 +35,11 @@
     -moz-transition: -moz-transform 0.6s ease-out;
     -o-transition: -o-transform 0.6s ease-out;
     transition: transform 0.6s ease-out;
+
+    @media (min-width: $tji-break-point-sm) {
+      margin-left: -225px;
+      width: 450px;
+    }
   }
 
   &.opened {
@@ -106,11 +111,20 @@
 .tji-modal__form {
   display: flex;
   flex-direction: column;
-  padding: $tji-spacing-lg;
+  padding: $tji-spacing-sm;
+
+  @media (min-width: $tji-break-point-sm) {
+    padding: $tji-spacing-lg;
+  }
 
   h2 {
+    font-size: $tji-spacing-sm;
     margin-bottom: 0;
     margin-top: 0;
+
+    @media (min-width: $tji-break-point-sm) {
+      font-size: $tji-spacing-md;
+    }
   }
 
   p {
@@ -120,7 +134,11 @@
 
   fieldset {
     border: none;
-    padding: 0 $tji-spacing-sm;
+    padding: 0;
+    
+    @media (min-width: $tji-break-point-sm) {
+      padding: 0 $tji-spacing-sm;
+    }
   }
 }
 

@@ -19,7 +19,7 @@ var TJISignupDonateFormModal = function(props) {
   this.props = props;
 
   // panels to show
-  this.panels = props.show_panels || ['whoami', 'newsletter', 'donate'];
+  this.panels = props.show_panels || ['whoamiparticipate', 'whoami', 'whoamidata', 'newsletter', 'donate'];
   this.panels.push('thanks');
 
   // key to save data to local storage / user's browser
@@ -47,20 +47,28 @@ var TJISignupDonateFormModal = function(props) {
 TJISignupDonateFormModal.prototype.attach_events = function() {
   var that = this;
 
+  //clear validation when user interacts with inputs
+  this.ui.$modal.find('input').on('focus', function(e){
+    that.clear_messages();
+  });
+
   //select the radio next to the custom radio value text input when a user is typing within that custom input
   //this is for users to send a custom text value in a group of radio buttons
   this.ui.$modal.find('.tji-modal__form-radio-group--textinput').on('focus', 'input[type="text"]', function(e){
-    that.clear_messages();
     jQuery(e.delegateTarget).find('input[type="radio"]').prop('checked', true);
   });
 
   //clear the custom radio value text input when another radio is clicked
   //this is for users to send a custom text value in a group of radio buttons
   this.ui.$modal.find('.tji-modal__form-radio-group').on('click', function(e){
-    that.clear_messages();
     jQuery(e.currentTarget).siblings('.tji-modal__form-radio-group--textinput').find('input[type="text"]').val('');
   });
 
+  this.ui.$modal.on('click', '.js-optout', function(e){
+    e.preventDefault();
+    that.log('whoami_optout', 'whoamiparticipate', null, true);
+    that.close();
+  });
   this.ui.$modal.on('click', '.js-next', function(e){
     e.preventDefault();
     that.next();
@@ -75,7 +83,11 @@ TJISignupDonateFormModal.prototype.attach_events = function() {
   });
   this.ui.$modal.on('click', '.js-log-whoami', function(e){
     e.preventDefault();
-    that.log();
+    that.log('I_am', 'whoami', 'Thanks for helping us better know our users!');
+  });
+  this.ui.$modal.on('click', '.js-log-whoamidata', function(e){
+    e.preventDefault();
+    that.log('I_want_data_on', 'whoamidata', 'Thanks for letting us know what type of data we can collect for you!');
   });
   this.ui.$modal.on('click', '.js-signup-newsletter', function(e){
     e.preventDefault();
@@ -189,9 +201,20 @@ TJISignupDonateFormModal.prototype.set_data_and_validate = function() {
   if(this.panels[this.state.panel] === 'whoami') {
     this.state.data.whoami = (this.state.data.whoami === 'other') ? this.state.data.whoami_other : this.state.data.whoami;
     if (!this.state.data.whoami) {
-      this.render_validation_error('Please let us know what your deal is?');
+      this.render_validation_error('Please let us know who you are.');
       return false;
     }
+  }
+  if(this.panels[this.state.panel] === 'whoamidata') {
+    if (!this.state.data.whoamidata) {
+      this.render_validation_error('Please let us know what type of data you\'re searching for.');
+      return false;
+    }
+    if (!this.state.data.whoamidata_yesno) {
+      this.render_validation_error('Please let us know if we had the data you were looking for.');
+      return false;
+    }
+    this.state.data.whoamidata = this.state.data.whoamidata_yesno + '-' + this.state.data.whoamidata;
   }
   if(this.panels[this.state.panel] === 'newsletter') {
     this.state.data.fname = this.state.data.fname.trim();
@@ -200,7 +223,7 @@ TJISignupDonateFormModal.prototype.set_data_and_validate = function() {
       return false;
     }
     if(!/\S+@\S+\.\S+/.test(this.state.data.email)) {
-      this.render_validation_error('Why did you enter a bunk email?');
+      this.render_validation_error('Please enter a valid email address.');
       return false;
     }
   }
@@ -216,7 +239,7 @@ TJISignupDonateFormModal.prototype.set_data_and_validate = function() {
       return false;
     }
     if(!/\S+@\S+\.\S+/.test(this.state.data.donor_email)) {
-      this.render_validation_error('Why did you enter a bunk donor email?');
+      this.render_validation_error('Please enter a valid email address');
       return false;
     }
     this.state.data.donation = this.state.data.donation === 'other' ? this.state.data.donation_other : this.state.data.donation;
@@ -231,12 +254,16 @@ TJISignupDonateFormModal.prototype.set_data_and_validate = function() {
   return true;
 }
 
-TJISignupDonateFormModal.prototype.log = function() {
+TJISignupDonateFormModal.prototype.log = function(analytics_category, data_name, message, stop) {
   if(!this.set_data_and_validate())
     return;
-
-  ga('send', 'event', 'whoami', this.state.data.whoami);
-  this.next('Thanks for helping us better know our users!');
+console.log('EVENT', analytics_category, this.state.data[data_name]);
+  ga('send', 'event', analytics_category, this.state.data[data_name]);
+  
+  if(stop) 
+    return;
+  
+  this.next(message);
 }
 
 TJISignupDonateFormModal.prototype.signup = function() {
