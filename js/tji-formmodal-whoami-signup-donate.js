@@ -265,8 +265,11 @@ TJISignupDonateFormModal.prototype.set_data_and_validate = function() {
 TJISignupDonateFormModal.prototype.log = function(analytics_category, data_name, message, stop) {
   if(!this.set_data_and_validate())
     return;
-console.log('EVENT', analytics_category, this.state.data[data_name]);
-  ga('send', 'event', analytics_category, this.state.data[data_name]);
+  
+  gtag('event', 'SignupDonateFormModal', {
+    event_category: analytics_category, 
+    event_label: this.state.data[data_name]
+  });
   
   if(stop) 
     return;
