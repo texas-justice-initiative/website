@@ -259,11 +259,15 @@ function mc_signup(WP_REST_Request $request) {
 	$result = $MC->post("lists/$mc_listid/members", [
 	        'email_address' => sanitize_text_field($request->get_param( 'email' )),
 	        'status'        => 'subscribed',
-	        'merge_fields' 	=> ['FNAME'=>sanitize_text_field($request->get_param( 'fname' ))]
+	        'merge_fields' 	=> [
+        		'FNAME'=>sanitize_text_field($request->get_param( 'fname' )),
+        		'LNAME'=>sanitize_text_field($request->get_param( 'lname' ))
+        	],
+        	'tags' => [sanitize_text_field($request->get_param( 'whoami' ))]
 	      ]);
 
 	if ($MC->success()) {
-	  return $result['merge_fields']['FNAME']; 
+	  return json_encode($result); 
 	} else {
 		$error = json_decode($MC->getLastResponse()['body']);
 	  return new WP_Error('mailchimp_post_error', $error->detail, ['status' => $error->status]);

@@ -119,11 +119,13 @@ TJISignupDonateFormModal.prototype.prefill_panel = function(panel_name) {
     if(this.state.data.email) {
       $target_panel.find('input[name="email"]').val(this.state.data.email);
       $target_panel.find('input[name="fname"]').val(this.state.data.fname);
+      $target_panel.find('input[name="lname"]').val(this.state.data.lname);
       return;
     }
     if(this.state.data.donor_email) {
       $target_panel.find('input[name="email"]').val(this.state.data.donor_email);
       $target_panel.find('input[name="fname"]').val(this.state.data.donor_fname);
+      $target_panel.find('input[name="lname"]').val(this.state.data.donor_lname);
       return;
     }
   } 
@@ -131,11 +133,13 @@ TJISignupDonateFormModal.prototype.prefill_panel = function(panel_name) {
     if(this.state.data.donor_email) {
       $target_panel.find('input[name="donor_email"]').val(this.state.data.donor_email);
       $target_panel.find('input[name="donor_fname"]').val(this.state.data.donor_fname);
+      $target_panel.find('input[name="donor_lname"]').val(this.state.data.donor_lname);
       return;
     }
     if(this.state.data.email) {
       $target_panel.find('input[name="donor_email"]').val(this.state.data.email);
       $target_panel.find('input[name="donor_fname"]').val(this.state.data.fname);
+      $target_panel.find('input[name="donor_lname"]').val(this.state.data.lname);
       return;
     }
   }
@@ -222,6 +226,10 @@ TJISignupDonateFormModal.prototype.set_data_and_validate = function() {
       this.render_validation_error('Please enter your first name.');
       return false;
     }
+    if(!this.state.data.lname) {
+      this.render_validation_error('Please enter your last name.');
+      return false;
+    }
     if(!/\S+@\S+\.\S+/.test(this.state.data.email)) {
       this.render_validation_error('Please enter a valid email address.');
       return false;
@@ -274,7 +282,8 @@ TJISignupDonateFormModal.prototype.signup = function() {
   this.ui.$loader.show();
   jQuery.post('/wp-json/newsletter/signup/', this.state.data)
     .done(function(response){      
-      that.next('Thanks, ' + response +'! You\'re all signed up for our newsletter!');
+      var json_response = JSON.parse(response);
+      that.next('Thanks, ' + json_response.merge_fields.FNAME +'! You\'re all signed up for our newsletter!');
       that.ui.$loader.hide();
     })
     .fail(function(error){

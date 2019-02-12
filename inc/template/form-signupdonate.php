@@ -89,6 +89,9 @@
             <input type="text" name="fname" placeholder="First Name" />
           </div>
           <div class="tji-modal__form-text-group tji-modal__form-group--center">
+            <input type="text" name="lname" placeholder="Last Name" />
+          </div>
+          <div class="tji-modal__form-text-group tji-modal__form-group--center">
             <input type="text" name="email" placeholder="Email" />
           </div>
         </fieldset>
@@ -100,7 +103,7 @@
 
       <div class="js-formpanel js-formpanel-donate tji-modal__form-panel">
         <h2>I'd like to contribute to TJI...</h2>
-        <p>TJI is a nonprofit organization that seeks to serve as a data resource. Donations help pay for records and staff time to expand our portal. Please consider donating $5 today through PayPal. Don't have PayPal? Donate via  <a href="https://www.facebook.com/TXJusticeInitiative/">Facebook</a>.</p>
+        <p>TJI provides its data to all users for free. Please consider making a $5 contribution so we can continue to be a free resource. Donate via mail by sending a check to PO Box 164286 Austin, TX 78746, or via <a href="https://www.facebook.com/TXJusticeInitiative/">Facebook</a> or online using the form below.</p>
         <fieldset>
           <div class="tji-modal__form-text-group">
             <input type="text" name="donor_fname" placeholder="Donor First Name" />
@@ -139,7 +142,7 @@
 
       <div class="js-formpanel js-formpanel-donate-confirmation tji-modal__form-panel">
         <h2>Choose a payment type:</h2>
-        <p>Currently we only use paypal to accept payments. Click Paypal to donate below.</p>
+        <p>Currently we can only accept online payments via PayPal. Click Paypal to donate below.</p>
         <fieldset></fieldset>
         <div class="tji-modal__buttons">
           <div>
