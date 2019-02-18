@@ -326,6 +326,7 @@ var TJIChartView = function(props){
     $form: null,
     $charts_container: null,
     $summary_container: null,
+    $last_updated_date: null,
     $description: null,
     $select_dataset: null,
     $download: null,
@@ -684,6 +685,11 @@ TJIChartView.prototype.create_chartview_DOM = function() {
 
   _.each(this.datasets, function(dataset, index) {
     jQuery('<option value="'+index+'">'+dataset.name+'</option>').appendTo(that.ui.$select_dataset)
+  });
+
+  this.ui.$last_updated_date = jQuery('<div />', {
+    class: 'tji-chartview__last-updated-date',
+    html: ''
   });
 
   this.ui.$description = jQuery('<div />', {

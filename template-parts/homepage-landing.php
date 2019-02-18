@@ -9,29 +9,25 @@
 
 <script type="text/javascript">
 	// Fetch JSON data for dynamic slider numbers
-	var fetch1 = jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/cdr_compressed.json", function (cdrData) {
-		var cdrStartingYear = cdrData.meta.lookups.year[0];
-		var cdrTotalRecords = cdrData.meta.num_records;
+	var fetchSliderData = jQuery.getJSON("https://s3.amazonaws.com/tji-compressed-data/all_slider_data.json", function(data) {
+		var cdrStartingYear = data.cdr.startingYear;
+		var cdrTotalRecords = data.cdr.totalRecords;
+		var oisStartingYear = data.ois.startingYear;
+	 	var oisTotalRecords = data.ois.totalRecords;
+	 	var officersStartingYear = data.ois_officers.startingYear;
+	 	var officersTotalRecords = data.ois_officers.totalRecords;
 		jQuery("#js-cdr-year").html(cdrStartingYear);
 		jQuery("#js-cdr-total").html(cdrTotalRecords.toLocaleString('en'));
-	});
-	var fetch2 = jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/ois_compressed.json", function (oisData) {
-		var oisStartingYear = oisData.meta.lookups.year[0];
-		var oisTotalRecords = oisData.meta.num_records;
 		jQuery("#js-ois-year").html(oisStartingYear);
-		jQuery("#js-ois-total").html(oisTotalRecords.toLocaleString('en'));
-	});
-	var fetch3 = jQuery.getJSON("<?php echo get_template_directory_uri(); ?>/data/ois_officers_compressed.json", function (officersData) {
-		var officersStartingYear = officersData.meta.lookups.year[0];
-		var officersTotalRecords = officersData.meta.num_records;
-		jQuery("#js-officers-year").html(officersStartingYear);
-		jQuery("#js-ois-officers-total").html(officersTotalRecords.toLocaleString('en'));
+	 	jQuery("#js-ois-total").html(oisTotalRecords.toLocaleString('en'));
+	 	jQuery("#js-officers-year").html(officersStartingYear);
+	 	jQuery("#js-ois-officers-total").html(officersTotalRecords.toLocaleString('en'));
 	});
 
 	// If you use jQuery/Zepto in your site, then you can initialize it in any of your JS files, but make sure that you do it within document.ready event:
 	jQuery(document).ready(function () {
 		// Initialize Swiper Slider
-		jQuery.when(fetch1, fetch2, fetch3).done(function(){
+		jQuery.when(fetchSliderData).done(function(){
 			var mySwiper = new Swiper ('.swiper-container', {
 			  	loop:true,
 			  	centeredSlides: true,
