@@ -9,29 +9,25 @@
 
 <script type="text/javascript">
 	// Fetch JSON data for dynamic slider numbers
-	var fetch1 = jQuery.getJSON("https://s3.amazonaws.com/tji-compressed-data/cdr_slider.json", function (cdrData) {
-		var cdrStartingYear = cdrData.startingYear;
-		var cdrTotalRecords = cdrData.totalRecords;
+	var fetchSliderData = jQuery.getJSON("https://s3.amazonaws.com/tji-compressed-data/all_slider_data.json", function(data) {
+		var cdrStartingYear = data.cdr.startingYear;
+		var cdrTotalRecords = data.cdr.totalRecords;
+		var oisStartingYear = data.ois.startingYear;
+	 	var oisTotalRecords = data.ois.totalRecords;
+	 	var officersStartingYear = data.ois_officers.startingYear;
+	 	var officersTotalRecords = data.ois_officers.totalRecords;
 		jQuery("#js-cdr-year").html(cdrStartingYear);
 		jQuery("#js-cdr-total").html(cdrTotalRecords.toLocaleString('en'));
-	});
-	var fetch2 = jQuery.getJSON("https://s3.amazonaws.com/tji-compressed-data/ois_slider.json", function (oisData) {
-		var oisStartingYear = oisData.startingYear;
-		var oisTotalRecords = oisData.totalRecords;
 		jQuery("#js-ois-year").html(oisStartingYear);
-		jQuery("#js-ois-total").html(oisTotalRecords.toLocaleString('en'));
-	});
-	var fetch3 = jQuery.getJSON("https://s3.amazonaws.com/tji-compressed-data/ois_officers_slider.json", function (officersData) {
-		var officersStartingYear = officersData.startingYear;
-		var officersTotalRecords = officersData.totalRecords;
-		jQuery("#js-officers-year").html(officersStartingYear);
-		jQuery("#js-ois-officers-total").html(officersTotalRecords.toLocaleString('en'));
+	 	jQuery("#js-ois-total").html(oisTotalRecords.toLocaleString('en'));
+	 	jQuery("#js-officers-year").html(officersStartingYear);
+	 	jQuery("#js-ois-officers-total").html(officersTotalRecords.toLocaleString('en'));
 	});
 
 	// If you use jQuery/Zepto in your site, then you can initialize it in any of your JS files, but make sure that you do it within document.ready event:
 	jQuery(document).ready(function () {
 		// Initialize Swiper Slider
-		jQuery.when(fetch1, fetch2, fetch3).done(function(){
+		jQuery.when(fetchSliderData).done(function(){
 			var mySwiper = new Swiper ('.swiper-container', {
 			  	loop:true,
 			  	centeredSlides: true,
