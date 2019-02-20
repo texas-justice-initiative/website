@@ -2,33 +2,37 @@
 	/* Template Name: Tableau Page */
 ?>
 
-<!DOCTYPE html>
-<html>
+<?php get_header(); ?>
 
-<head>
-    <title>Basic Embed</title>
+<script type="text/javascript"
+  src="https://online.tableau.com/javascripts/api/tableau-2.min.js"></script>
 
-    <script type="text/javascript"
-	    src="https://public.tableau.com/javascripts/api/tableau-2.min.js"></script>
-    <script type="text/javascript">
-        function initViz() {
-            var containerDiv = document.getElementById("vizContainer"),
-                url = "http://public.tableau.com/views/RegionalSampleWorkbook/Storms",
-                options = {
-                    hideTabs: true,
-                    onFirstInteractive: function () {
-                        console.log("Run this code when the viz has finished loading.");
-                    }
-                };
+	<div id="primary" class="content-area">
+		<main id="main" class="site-main">
+      <h1>Report by James Babyak</h1> 
+      <p>Some compelling text.</p>
+      <hr>
+      <div id="vizContainer"></div>
+    </main><!-- #main -->
+	</div><!-- #primary -->
 
-            var viz = new tableau.Viz(containerDiv, url, options);
-            // Create a viz object and embed it in the container div.
-        }
-    </script>
-</head>
+<script type="text/javascript">
+    function initViz() {
+        var containerDiv = document.getElementById("vizContainer"),
+            url = "https://public.tableau.com/views/TJI-BailReform/Deaths_Bail",
+            options = {
+                hideTabs: true,
+                onFirstInteractive: function () {
+                    console.log("Run this code when the viz has finished loading.");
+                }
+            };
 
-<body onload="initViz();">
-    <div id="vizContainer" style="width:800px; height:700px;"></div>
-</body>
+        var viz = new tableau.Viz(containerDiv, url, options);
+        // Create a viz object and embed it in the container div.
+    }
+</script>
 
-</html>
+<?php
+//Default sidebar
+get_sidebar('about');
+get_footer(); ?>
