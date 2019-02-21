@@ -45,7 +45,6 @@ var BREAKPOINTS = {
 // * Dependencies: chart.js, Chart.PieceLabel, jQuery, lodash
 // *******************************************************************
 
-
 var TJIGroupByBarChart = function(props) {
   this.$container = props.$container;
   this.group_by = props.group_by;
@@ -282,6 +281,7 @@ TJIGroupByDoughnutChart.prototype.create_legend = function() {
 // *      }],
 // *      charts_elt_selector: '#js-TJIChartView',  
 // *      filters_elt_selector: '#js-TJIChartViewFilters',  
+// *      modal_elt_selector: '#js-TJIChartViewModal',  
 // *      chart_wrapper_template: '<div class="col-sm-12 col-lg-6" />',  
 // *      chartview_charts_template: '<div class="row"/>',
 // *      chartview_summary_template: '<div />',
@@ -323,7 +323,7 @@ var TJIChartView = function(props){
     $chartview: jQuery(props.view_elt_selector),
     $chartview_charts: jQuery(props.charts_elt_selector),
     $chartview_filters: jQuery(props.filters_elt_selector),
-    $form: null,
+    $filters_form: null,
     $charts_container: null,
     $summary_container: null,
     $last_updated_date: null,
@@ -345,6 +345,10 @@ var TJIChartView = function(props){
   this.components = {
     charts: [],
     autocompletes: [],
+    modal: new TJISignupDonateFormModal({
+      modal_elt_selector: props.modal_elt_selector,
+      local_storage_key: 'download'
+    }),
   }
 
   // Create DOM and attach DOM events only once
@@ -469,7 +473,7 @@ TJIChartView.prototype.destroy_filters = function() {
     autocomplete.destroy();
   });
   this.components.autocompletes.length = 0;
-  this.ui.$form.empty();
+  this.ui.$filters_form.empty();
 }
 
 TJIChartView.prototype.create_filters = function() {
@@ -506,9 +510,9 @@ TJIChartView.prototype.create_filters = function() {
     }
     fieldsets.push(fieldset);
   });
-  this.ui.$form.append(fieldsets);
+  this.ui.$filters_form.append(fieldsets);
 
-  this.state.active_filters = this.ui.$form.serializeArray();    
+  this.state.active_filters = this.ui.$filters_form.serializeArray();    
 }
 
 TJIChartView.prototype.create_filter_legend = function(filter_name) {
@@ -581,7 +585,7 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
     auto_complete_list.find('#'+id).remove();
     auto_complete_list.prepend(that.create_filter_checkbox(filter.name, term, id));
     input.val('');
-    that.ui.$form.trigger('change');
+    that.ui.$filters_form.trigger('change');
   }
   
   var auto_complete = new autoComplete({
@@ -666,7 +670,7 @@ TJIChartView.prototype.create_chartview_DOM = function() {
     .append('<div class="tji-chartview__loader" />')
     .appendTo(this.ui.$chartview_charts);
 
-  this.ui.$form = jQuery('<form />', {
+  this.ui.$filters_form = jQuery('<form />', {
     class: 'tji-chartview-controls__filters',
   }).appendTo(this.ui.$chartview_filters);
 
@@ -718,12 +722,14 @@ TJIChartView.prototype.attach_events = function() {
 		that.ui.$chartview.addClass('tji-chartview-wrapper--controls-expanded');
 	}
 
+  // Make Filter panel collapsible
   jQuery('#js-chartview-controls-toggle').on('click', function(e) {
     that.ui.$chartview.toggleClass('tji-chartview-wrapper--controls-expanded');
   })
 
-  this.ui.$form.on('change', function(e) {
-    that.state.active_filters = that.ui.$form.serializeArray();
+  // Handle filter selection changes
+  this.ui.$filters_form.on('change', function(e) {
+    that.state.active_filters = that.ui.$filters_form.serializeArray();
     that.filter_data();
     that.update_charts();
   })
@@ -736,26 +742,29 @@ TJIChartView.prototype.attach_events = function() {
       .toggleClass('is-collapsed')
       .siblings('.js-filter-set').toggleClass('is-collapsed');
   })
-  //Toggle checkboxes in each filter section
+  // Make handlers for select/deselect all links
   .on('click', '.js-toggle-select', function(e){
     e.preventDefault();
     jQuery(this).siblings('.js-filter')
       .find('input[type=checkbox]')
       .prop('checked', true);
-    that.ui.$form.trigger('change');
+    that.ui.$filters_form.trigger('change');
   })
   .on('click', '.js-toggle-unselect', function(e){
     e.preventDefault();
     jQuery(this).siblings('.js-filter')
       .find('input[type=checkbox]')
       .prop('checked', false);
-    that.ui.$form.trigger('change');
+    that.ui.$filters_form.trigger('change');
   }) 
 
+  // Make handler for download data button
   this.ui.$download.on('click', function(e) {
     e.preventDefault();
     that.download();
   });
+
+  // Make handler to select different datasets
   this.ui.$select_dataset.on('change', function(e) {
     that.set_active_dataset(that.ui.$select_dataset.val());
   });
@@ -829,6 +838,11 @@ TJIChartView.prototype.update_chartview_summary = function() {
 }
 
 TJIChartView.prototype.download = function() {
+
+  if(!localStorage.getItem(this.components.modal.local_storage_key)) {
+      this.components.modal.open();
+  }
+
   // Download complete records for the data the user is currently viewing.
   var that = this;
   var dataset = this.datasets[this.state.active_dataset_index];
