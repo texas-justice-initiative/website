@@ -312,7 +312,7 @@ TJISignupDonateFormModal.prototype.initialize_paypal = function() {
 
       // Set your environment
 
-    env: 'sandbox', // sandbox | production
+    env: 'production', // sandbox | production
 
     // Specify the style of the button
 
