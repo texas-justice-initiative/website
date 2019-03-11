@@ -608,7 +608,15 @@ TJIChartView.prototype.create_filter_autocomplete = function(filter) {
     if(event.which !== 13) return;
     var term = input.val().toUpperCase();
     var isMatch = ~filter.values.indexOf(term);
-    if(!isMatch) return; //TODO: maybe offer some user-affordance when the value they searched doesn't match
+    // if(!isMatch) return; //TODO: maybe offer some user-affordance when the value they searched doesn't match
+	/* 
+		if(isMatch) {
+		  // remove warning class from input
+		} else {
+		  // add warning class to input maybe a red outline or red text
+		  // or append " (Value Not Found)" to the text
+		}
+    */
     onSelect(event, term);
     jQuery('.autocomplete-suggestions').hide();
   });
