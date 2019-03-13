@@ -8,12 +8,12 @@
   src="https://online.tableau.com/javascripts/api/tableau-2.min.js"></script>
 
 	<div id="primary" class="content-area">
-		<main id="main" class="site-main">
-      <h1>Report by James Babyak</h1> 
-      <p>Some compelling text.</p>
-      <hr>
-      <div id="vizContainer"></div>
-    </main><!-- #main -->
+	    <main id="main" class="site-main">
+            <!-- Get the content from WordPress -->
+            <?php the_content(); ?>
+            <hr>
+            <div id="vizContainer"></div>
+        </main><!-- #main -->
 	</div><!-- #primary -->
 
 <script type="text/javascript">
