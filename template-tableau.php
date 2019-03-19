@@ -48,6 +48,5 @@ $content = apply_filters( 'the_content', $post->post_content );
 </script>
 
 <?php
-//Default sidebar
-get_sidebar('about');
+
 get_footer(); ?>
