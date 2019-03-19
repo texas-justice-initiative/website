@@ -663,6 +663,12 @@ hr.story-divider {
 		#primary {
 			padding: 2em;
 			width: 75%;
+
+			&.full-width {
+				width: 100%;
+				max-width: 1170px;
+				margin: 0 auto;
+			}
 		}
 		
 		/* Sidebar area */

@@ -14,7 +14,7 @@ $content = apply_filters( 'the_content', $post->post_content );
 <script type="text/javascript"
   src="https://online.tableau.com/javascripts/api/tableau-2.min.js"></script>
 
-<div id="primary" class="content-area">
+<div id="primary" class="content-area full-width">
     <main id="main" class="site-main">
         <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
             <header class="entry-header">
