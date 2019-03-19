@@ -37,9 +37,6 @@ $content = apply_filters( 'the_content', $post->post_content );
             url = "https://public.tableau.com/views/TJI-BailReform/Deaths_Bail",
             options = {
                 hideTabs: true,
-                onFirstInteractive: function () {
-                    console.log("Run this code when the viz has finished loading.");
-                }
             };
 
         var viz = new tableau.Viz(containerDiv, url, options);
