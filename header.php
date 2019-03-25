@@ -33,7 +33,8 @@
 	<?php wp_head(); ?>
 </head>
 
-<body <?php body_class(); ?>>
+<!-- No ideal to load Viz like this...will change later -->
+<body <?php body_class(); ?> onLoad="initViz();">
 
 <div id="page" class="site<?php if (!is_front_page()) { echo ' subpage'; }?>">
 	<a class="skip-link screen-reader-text" href="#content"><?php esc_html_e( 'Skip to content', 'tji' ); ?></a>
